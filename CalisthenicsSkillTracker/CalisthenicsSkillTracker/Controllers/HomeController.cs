@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using CalisthenicsSkillTracker.Models;
+using CalisthenicsSkillTracker.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CalisthenicsSkillTracker.Controllers
