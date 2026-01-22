@@ -39,6 +39,9 @@ namespace CalisthenicsSkillTracker.Data
                 .WithMany(s => s.SkillProgressRecords)
                 .HasForeignKey(sp => sp.SkillId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder
+                .ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         }
     }
 }
