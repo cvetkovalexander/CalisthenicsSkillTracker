@@ -1,6 +1,5 @@
 ﻿using CalisthenicsPro.Models.Enums;
 using System.ComponentModel.DataAnnotations;
-using static CalisthenicsSkillTracker.Common.EntityValidation;
 
 namespace CalisthenicsSkillTracker.Models;
 
