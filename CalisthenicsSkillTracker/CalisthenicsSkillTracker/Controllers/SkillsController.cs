@@ -15,6 +15,7 @@ public class SkillsController : Controller
         this._context = context;
     }
 
+    [HttpGet]
     public IActionResult Index()
     {
         IEnumerable<Skill> skills = this._context
@@ -26,6 +27,7 @@ public class SkillsController : Controller
         return this.View(skills);
     }
 
+    [HttpGet]
     public IActionResult Details(Guid id) 
     {
         Skill? skill = this._context

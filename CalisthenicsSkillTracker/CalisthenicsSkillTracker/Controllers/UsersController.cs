@@ -14,6 +14,7 @@ public class UsersController : Controller
         this._context = context;
     }
 
+    [HttpGet]
     public IActionResult Index()
     {
         IEnumerable<User> users = this._context
@@ -25,6 +26,7 @@ public class UsersController : Controller
         return this.View(users);
     }
 
+    [HttpGet]
     public IActionResult Records(Guid id) 
     {
         IEnumerable<SkillProgress> records = this._context
