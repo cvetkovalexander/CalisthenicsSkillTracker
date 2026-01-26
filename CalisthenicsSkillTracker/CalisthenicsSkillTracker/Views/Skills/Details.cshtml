@@ -1,0 +1,118 @@
+﻿@model Skill
+
+@{
+    var recent = Model?.SkillProgressRecords?
+        .OrderByDescending(r => r.Date)
+        .Take(5)
+        .ToArray() ?? Array.Empty<CalisthenicsSkillTracker.Models.SkillProgress>();
+    string Measurement() => Model?.MeasurementType.ToString() ?? "—";
+    string Category() => Model?.Category.ToString() ?? "—";
+    string SkillType() => Model?.SkillType.ToString() ?? "—";
+}
+
+<div class="container py-4">
+    <div class="row mb-3">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">@Model?.Name ?? "Skill details"</h1>
+
+            <div>
+                <a asp-action="Index" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> Edit
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (Model is null)
+    {
+        <div class="alert alert-warning">Skill not found.</div>
+    }
+    else
+    {
+        <div class="row g-3">
+            <div class="col-lg-7">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h2 class="h5 card-title">@Model.Name</h2>
+                        <p class="card-text text-muted mb-3">
+                            @(string.IsNullOrWhiteSpace(Model.Description) ? "<em>No description provided.</em>" : Model.Description)
+                        </p>
+
+                        <div class="mb-3">
+                            <span class="me-2"><strong>Measurement:</strong></span>
+                            <span class="badge bg-info text-dark skill-meta">@Measurement()</span>
+
+                            <span class="ms-3 me-2"><strong>Category:</strong></span>
+                            <span class="badge bg-secondary skill-meta">@Category()</span>
+
+                            <span class="ms-3 me-2"><strong>Type:</strong></span>
+                            <span class="badge bg-success skill-meta">@SkillType()</span>
+                        </div>
+
+                        <hr />
+
+                        <h3 class="h6">Recent Progress</h3>
+                        @if (!recent.Any())
+                        {
+                            <div class="text-muted">No progress records for this skill yet.</div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">User</th>
+                                            <th scope="col">Progression</th>
+                                            <th scope="col">Reps</th>
+                                            <th scope="col">Duration</th>
+                                            <th scope="col">Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var r in recent)
+                                        {
+                                            <tr>
+                                                <td>@r.Date.ToString("yyyy-MM-dd")</td>
+                                                <td>
+                                                    @if (r.PerformedBy is not null)
+                                                    {
+                                                        @($"{r.PerformedBy.FirstName}{(string.IsNullOrWhiteSpace(r.PerformedBy.LastName) ? "" : $" {r.PerformedBy.LastName}")} ({r.PerformedBy.Username})")
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">Unknown</span>
+                                                    }
+                                                </td>
+                                                <td>@(r.Progression?.ToString() ?? "—")</td>
+                                                <td>@(r.Repetitions?.ToString() ?? "—")</td>
+                                                <td>@(r.Duration is null ? "—" : $"{r.Duration} s")</td>
+                                                <td class="text-truncate" style="max-width:20rem;">@(string.IsNullOrWhiteSpace(r.Notes) ? "—" : r.Notes)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
+    }
+</div>
+
+<style>
+    /* Small view-specific helpers */
+    .skill-meta {
+        font-size: .85rem;
+        padding: .35rem .6rem;
+    }
+
+    /* Improve truncation for notes column in small tables */
+</style>

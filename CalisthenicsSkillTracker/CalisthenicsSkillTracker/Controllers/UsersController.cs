@@ -24,4 +24,22 @@ public class UsersController : Controller
 
         return this.View(users);
     }
+
+    public IActionResult Records(Guid id) 
+    {
+        IEnumerable<SkillProgress> records = this._context
+            .SkillProgressRecords
+            .Include(r => r.PerformedBy)
+            .Include(r => r.Skill)
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(r => r.UserId == id)
+            .OrderByDescending(r => r.Date)
+            .ToArray();
+
+        if (records is null)
+            this.NotFound();
+
+        return this.View(records);
+    }
 }

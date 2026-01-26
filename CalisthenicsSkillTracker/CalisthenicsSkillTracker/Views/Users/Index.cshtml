@@ -33,7 +33,7 @@ else
                     <td>@(user.Email ?? "—")</td>
                     <td>@(user.CreatedAt.ToString("yyyy-MM-dd"))</td>
                     <td>
-                        <a asp-action="Details" asp-route-id="@(user?.Id)">Details</a>
+                        <a asp-action="Records" asp-route-id="@(user?.Id)">Records</a>
                         |
                         <a asp-action="Edit" asp-route-id="@(user?.Id)">Edit</a>
                         |
