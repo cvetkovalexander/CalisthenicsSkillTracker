@@ -1,4 +1,4 @@
-﻿namespace CalisthenicsPro.Models.Enums;
+﻿namespace CalisthenicsSkillTracker.Models.Enums;
 
 public enum Category
 {

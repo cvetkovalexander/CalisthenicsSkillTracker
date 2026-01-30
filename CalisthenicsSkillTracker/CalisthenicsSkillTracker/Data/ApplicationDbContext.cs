@@ -16,6 +16,14 @@ namespace CalisthenicsSkillTracker.Data
         public virtual DbSet<Skill> Skills { get; set; } = null!;
         public virtual DbSet<SkillProgress> SkillProgressRecords { get; set; } = null!;
 
+        public virtual DbSet<Workout> Workouts { get; set; } = null!;
+
+        public virtual DbSet<WorkoutExercise> WorkoutExercises { get; set; } = null!;
+
+        public virtual DbSet<Exercise> Exercises { get; set; } = null!;
+
+        public virtual DbSet<WorkoutSet> WorkoutSets { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

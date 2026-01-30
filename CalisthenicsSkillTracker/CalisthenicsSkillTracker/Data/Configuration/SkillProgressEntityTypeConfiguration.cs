@@ -15,7 +15,7 @@ public class SkillProgressEntityTypeConfiguration : IEntityTypeConfiguration<Ski
                 SkillId = Guid.Parse("82bb355d-d50d-472c-8ac4-0f6dc3c86cb2"), 
                 Date = DateTime.UtcNow.AddDays(-5),
                 Duration = 30,
-                Progression = CalisthenicsPro.Models.Enums.Progression.Tuck,
+                Progression = CalisthenicsSkillTracker.Models.Enums.Progression.Tuck,
                 Notes = "Good form, need more wrist strength"
             },
 

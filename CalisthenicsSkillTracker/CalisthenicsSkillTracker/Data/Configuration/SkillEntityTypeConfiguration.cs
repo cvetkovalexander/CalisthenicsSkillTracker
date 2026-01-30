@@ -1,4 +1,4 @@
-﻿using CalisthenicsPro.Models.Enums;
+﻿using CalisthenicsSkillTracker.Models.Enums;
 using CalisthenicsSkillTracker.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

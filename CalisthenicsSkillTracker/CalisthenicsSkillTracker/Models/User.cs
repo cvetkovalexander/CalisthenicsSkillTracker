@@ -1,7 +1,8 @@
 ﻿namespace CalisthenicsSkillTracker.Models;
 
 using System.ComponentModel.DataAnnotations;
-using static CalisthenicsSkillTracker.Common.EntityValidation;
+using System.ComponentModel.DataAnnotations.Schema;
+using static Common.EntityConstants;
 using static Common.EntityValidation.User;
 
 public class User
@@ -29,6 +30,8 @@ public class User
     [MaxLength(PasswordMaxLength)]
     public string PasswordHash { get; set; } = null!;
 
+    [Required]
+    [Column(TypeName = DateTimeColumnType)]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public virtual ICollection<SkillProgress> SkillProgressRecords { get; set; }

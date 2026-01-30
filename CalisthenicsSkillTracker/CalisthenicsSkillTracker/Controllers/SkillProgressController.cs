@@ -1,4 +1,4 @@
-﻿using CalisthenicsPro.Models.Enums;
+﻿using CalisthenicsSkillTracker.Models.Enums;
 using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Models;
 using CalisthenicsSkillTracker.ViewModels;

@@ -1,10 +1,11 @@
-﻿using CalisthenicsPro.Models.Enums;
+﻿using CalisthenicsSkillTracker.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CalisthenicsSkillTracker.Models;
 
 using static Common.EntityValidation.SkillProgress;
+using static Common.EntityConstants;
 
 public class SkillProgress
 {
@@ -24,14 +25,13 @@ public class SkillProgress
     public virtual Skill Skill { get; set; } = null!;
 
     [Required]
+    [Column(TypeName = DateTimeColumnType)]
     public DateTime Date { get; set; }
 
     public Progression? Progression { get; set; }
 
-    [Range(RepetitionsMinValue, RepetitionsMaxValue)]
     public int? Repetitions { get; set; }
 
-    [Range(DurationMinValue, DurationMaxValue)]
     public int? Duration { get; set; }
 
     [MaxLength(NotesMaxLength)]
