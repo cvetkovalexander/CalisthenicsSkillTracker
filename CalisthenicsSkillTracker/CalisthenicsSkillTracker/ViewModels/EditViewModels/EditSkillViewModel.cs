@@ -1,12 +1,17 @@
-﻿namespace CalisthenicsSkillTracker.ViewModels;
-
-using CalisthenicsSkillTracker.Models.Enums;
+﻿using CalisthenicsSkillTracker.Models.Enums;
+using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+
+namespace CalisthenicsSkillTracker.ViewModels.EditViewModels;
+
 using static Common.EntityValidation.Skill;
 
-public class CreateSkillViewModel
+public class EditSkillViewModel : ISkillViewModel
 {
+    [Required]
+    public Guid Id { get; set; }
+
     [Required]
     [MinLength(NameMinLength)]
     [MaxLength(NameMaxLength)]
@@ -17,7 +22,7 @@ public class CreateSkillViewModel
     public string? Description { get; set; }
 
     [Required]
-    public Measurement MeasurementType { get; set;}
+    public Measurement Measurement { get; set; }
 
     public List<SelectListItem> MeasurementOptions { get; set; } = new List<SelectListItem>();
 
@@ -35,5 +40,4 @@ public class CreateSkillViewModel
     public Difficulty Difficulty { get; set; }
 
     public List<SelectListItem> DifficultyOptions { get; set; } = new List<SelectListItem>();
-
 }

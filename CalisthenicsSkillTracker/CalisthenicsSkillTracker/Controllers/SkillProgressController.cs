@@ -1,9 +1,9 @@
 ﻿using CalisthenicsSkillTracker.Models.Enums;
 using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Models;
-using CalisthenicsSkillTracker.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using CalisthenicsSkillTracker.ViewModels.CreateViewModels;
 
 namespace CalisthenicsSkillTracker.Controllers;
 

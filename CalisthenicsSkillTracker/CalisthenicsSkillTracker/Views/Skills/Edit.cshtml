@@ -1,14 +1,16 @@
-﻿@using CalisthenicsSkillTracker.ViewModels.CreateViewModels
-@model CreateSkillViewModel
+﻿@model CalisthenicsSkillTracker.ViewModels.EditViewModels.EditSkillViewModel
 
 @{
-    ViewData["Title"] = "Add Skill";
+    ViewData["Title"] = "Edit Skill";
 }
 
 <div class="container py-4">
-    <div class="row mb-3">
-        <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1 class="h3 mb-0">Create New Skill</h1>
+    <div class="row mb-3 align-items-center">
+        <div class="col">
+            <h1 class="h3 mb-0">Edit Skill</h1>
+            <small class="text-muted d-block">Modify the details for the selected skill.</small>
+        </div>
+        <div class="col-auto">
             <a asp-action="Index" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Back to list
             </a>
@@ -16,31 +18,24 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-8">
+        <main class="col-lg-8">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <form asp-action="Create" method="post" class="row g-3 needs-validation" novalidate>
+                    <form asp-action="Edit" method="post" class="row g-3 needs-validation" novalidate>
                         @Html.AntiForgeryToken()
-                        <div class="col-12">
-                            <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert"></div>
-                        </div>
+                        <input asp-for="Id" type="hidden" />
 
-                        <div class="col-md-8">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert"></div>
+
+                        <div class="col-12">
                             <label asp-for="Name" class="form-label"></label>
                             <input asp-for="Name" class="form-control" />
-                            <div class="form-text">Required. Min and max length enforced by server.</div>
                             <span asp-validation-for="Name" class="text-danger small"></span>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label asp-for="Difficulty" class="form-label"></label>
-                            <select asp-for="Difficulty" asp-items="Model.DifficultyOptions" class="form-select"></select>
-                            <span asp-validation-for="Difficulty" class="text-danger small"></span>
                         </div>
 
                         <div class="col-12">
                             <label asp-for="Description" class="form-label"></label>
-                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Optional: short description"></textarea>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                             <span asp-validation-for="Description" class="text-danger small"></span>
                         </div>
 
@@ -62,24 +57,36 @@
                             <span asp-validation-for="SkillType" class="text-danger small"></span>
                         </div>
 
+                        <div class="col-md-6">
+                            <label asp-for="Difficulty" class="form-label"></label>
+                            <select asp-for="Difficulty" asp-items="Model.DifficultyOptions" class="form-select"></select>
+                            <span asp-validation-for="Difficulty" class="text-danger small"></span>
+                        </div>
+
                         <div class="col-12 d-flex gap-2 mt-3">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save"></i> Create Skill
+                                <i class="bi bi-save"></i> Save Changes
                             </button>
                             <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger ms-auto"
+                               onclick="return confirm('Are you sure you want to delete this skill?');">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
                         </div>
                     </form>
                 </div>
             </div>
-        </div>
+        </main>
 
         <aside class="col-lg-4 mt-3 mt-lg-0">
             <div class="card border-0">
                 <div class="card-body">
-                    <h5 class="card-title">Guidelines</h5>
-                    <p class="card-text small text-muted mb-1">- Choose the measurement type to match how progress is tracked (reps, duration, progression).</p>
-                    <p class="card-text small text-muted mb-1">- Category and skill type help group skills in lists and filters.</p>
-                    <p class="card-text small text-muted">- Difficulty is used for filtering and suggested progressions.</p>
+                    <h5 class="card-title">Hints</h5>
+                    <ul class="list-unstyled small text-muted mb-0">
+                        <li>- Name is required and must meet length limits.</li>
+                        <li>- Description is optional but helpful for context.</li>
+                        <li>- Measurement, Category, Type and Difficulty affect filtering and progress tracking.</li>
+                    </ul>
                 </div>
             </div>
         </aside>
@@ -87,9 +94,10 @@
 </div>
 
 <style>
-    /* View-scoped helpers */
-    .needs-validation .text-danger { display: block; margin-top: .25rem; }
-    .card .form-text { color: #6c757d; }
+    /* View-scoped simple helpers */
+    .needs-validation .text-danger { display:block; margin-top:.25rem; }
+    .card .form-label { font-weight: 600; }
+    .card .form-control, .card .form-select, .card textarea { min-height: calc(1.5em + 0.75rem + 2px); }
 </style>
 
 @section Scripts {

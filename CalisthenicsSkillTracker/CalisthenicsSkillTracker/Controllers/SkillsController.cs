@@ -1,7 +1,9 @@
 ﻿using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Models;
 using CalisthenicsSkillTracker.Models.Enums;
-using CalisthenicsSkillTracker.ViewModels;
+using CalisthenicsSkillTracker.ViewModels.CreateViewModels;
+using CalisthenicsSkillTracker.ViewModels.EditViewModels;
+using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -50,7 +52,7 @@ public class SkillsController : Controller
             this.NotFound();
 
         return this.View(skill);
-    }
+    }   
 
     [HttpGet]
     public IActionResult Create()
@@ -93,13 +95,86 @@ public class SkillsController : Controller
         {
             Name = model.Name,
             Description = model.Description,
-            MeasurementType = model.MeasurementType,
+            MeasurementType = model.Measurement,
             Category = model.Category,
             SkillType = model.SkillType,
             Difficulty = model.Difficulty
         };
 
         this._context.Skills.Add(skill);
+        this._context.SaveChanges();
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public IActionResult Edit(Guid id) 
+    {
+        Skill? skill = this._context
+            .Skills
+            .AsNoTracking()
+            .SingleOrDefault(s => s.Id == id)!;
+
+        if (skill is null)
+            return this.NotFound();
+
+        EditSkillViewModel model = new EditSkillViewModel()
+        {
+            Id = skill.Id,
+            Name = skill.Name,
+            Description = skill.Description,
+            Measurement = skill.MeasurementType,
+            Category = skill.Category,
+            SkillType = skill.SkillType,
+            Difficulty = skill.Difficulty
+        };
+
+        this.FetchViewModelEnums(model);                                                    
+
+        return this.View(model);
+    }
+
+    [HttpPost]
+    public IActionResult Edit(EditSkillViewModel model) 
+    {
+        if (!ModelState.IsValid) 
+        {
+            this.FetchViewModelEnums(model);
+
+            return this.View(model);
+        }
+
+        Skill? skill = this._context
+            .Skills
+            .AsNoTracking()
+            .SingleOrDefault(s => s.Id == model.Id);
+
+        if (skill is null)
+            return this.NotFound();
+
+        bool skillExistsExcludingCurrent = this._context
+            .Skills
+            .AsNoTracking()
+            .Any(s => s.Id != model.Id && s.Name.ToLower() == this.RemoveWhitespaces(model.Name).ToLower());
+
+        if (skillExistsExcludingCurrent) 
+        {
+            ModelState
+                .AddModelError(nameof(model.Name), "A skill with this name already exists.");
+
+            this.FetchViewModelEnums(model);
+
+            return View(model);
+        }
+
+        skill.Name = model.Name;
+        skill.Description = model.Description;
+        skill.MeasurementType = model.Measurement;
+        skill.Category = model.Category;
+        skill.SkillType = model.SkillType;
+        skill.Difficulty = model.Difficulty;
+
+        this._context.Skills.Update(skill);
         this._context.SaveChanges();
 
         return RedirectToAction(nameof(Index));
@@ -153,7 +228,7 @@ public class SkillsController : Controller
         return enums[key];
     }
 
-    private void FetchViewModelEnums(CreateSkillViewModel model) 
+    private void FetchViewModelEnums(ISkillViewModel model) 
     {
         model.MeasurementOptions = this.FetchSelectedEnum(MeasurementKey);
         model.CategoryOptions = this.FetchSelectedEnum(CategoryKey);
