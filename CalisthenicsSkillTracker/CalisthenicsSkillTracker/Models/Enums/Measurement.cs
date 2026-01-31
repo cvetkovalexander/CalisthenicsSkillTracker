@@ -2,7 +2,6 @@
 
 public enum Measurement
 {
-    Progression = 1,
-    Repetitions = 2,
-    Duration = 3
+    Repetitions = 1,
+    Duration = 2
 }

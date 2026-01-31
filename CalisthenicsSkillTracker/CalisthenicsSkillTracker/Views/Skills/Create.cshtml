@@ -1,0 +1,96 @@
+﻿@model CreateSkillViewModel
+
+@{
+    ViewData["Title"] = "Add Skill";
+}
+
+<div class="container py-4">
+    <div class="row mb-3">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">Create New Skill</h1>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to list
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="Create" method="post" class="row g-3 needs-validation" novalidate>
+                        @Html.AntiForgeryToken()
+                        <div class="col-12">
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert"></div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <div class="form-text">Required. Min and max length enforced by server.</div>
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="Difficulty" class="form-label"></label>
+                            <select asp-for="Difficulty" asp-items="Model.DifficultyOptions" class="form-select"></select>
+                            <span asp-validation-for="Difficulty" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Optional: short description"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="MeasurementType" class="form-label"></label>
+                            <select asp-for="MeasurementType" asp-items="Model.MeasurementOptions" class="form-select"></select>
+                            <span asp-validation-for="MeasurementType" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Category" class="form-label"></label>
+                            <select asp-for="Category" asp-items="Model.CategoryOptions" class="form-select"></select>
+                            <span asp-validation-for="Category" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="SkillType" class="form-label"></label>
+                            <select asp-for="SkillType" asp-items="Model.SkillTypeOptions" class="form-select"></select>
+                            <span asp-validation-for="SkillType" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 d-flex gap-2 mt-3">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Create Skill
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <aside class="col-lg-4 mt-3 mt-lg-0">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Guidelines</h5>
+                    <p class="card-text small text-muted mb-1">- Choose the measurement type to match how progress is tracked (reps, duration, progression).</p>
+                    <p class="card-text small text-muted mb-1">- Category and skill type help group skills in lists and filters.</p>
+                    <p class="card-text small text-muted">- Difficulty is used for filtering and suggested progressions.</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<style>
+    /* View-scoped helpers */
+    .needs-validation .text-danger { display: block; margin-top: .25rem; }
+    .card .form-text { color: #6c757d; }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
