@@ -62,7 +62,7 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
 
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder
-            .HasData(this._users);
+        //builder
+        //    .HasData(this._users);
     }
 }

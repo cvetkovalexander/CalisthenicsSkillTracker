@@ -59,7 +59,7 @@ public class SkillEntityTypeConfiguration : IEntityTypeConfiguration<Skill>
 
     public void Configure(EntityTypeBuilder<Skill> builder)
     {
-        builder
-            .HasData(this._skills);
+        //builder
+        //    .HasData(this._skills);
     }
 }

@@ -26,6 +26,9 @@ public class Skill
     [Required]
     public SkillType SkillType { get; set; }
 
+    [Required]
+    public Difficulty Difficulty { get; set; }
+
     public virtual ICollection<SkillProgress> SkillProgressRecords { get; set; }
         = new List<SkillProgress>();
 }

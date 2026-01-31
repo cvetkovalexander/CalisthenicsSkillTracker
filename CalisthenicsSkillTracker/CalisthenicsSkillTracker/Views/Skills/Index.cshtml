@@ -24,6 +24,7 @@ else
                 <th>Category</th>
                 <th>Type</th>
                 <th>Measurement</th>
+                <th>Difficulty</th>
                 <th></th>
             </tr>
         </thead>
@@ -36,6 +37,7 @@ else
                     <td>@(skill.Category.ToString() ?? "-")</td>
                     <td>@(skill.SkillType.ToString() ?? "-")</td>
                     <td>@(skill.MeasurementType.ToString() ?? "-")</td>
+                    <td>@(skill.Difficulty.ToString() ?? "-")</td>
                     <td>
                         <a asp-action="Details" asp-route-id="@(skill?.Id)">Details</a>
                         |

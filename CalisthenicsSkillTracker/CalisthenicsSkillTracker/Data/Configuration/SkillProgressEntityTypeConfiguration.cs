@@ -60,7 +60,7 @@ public class SkillProgressEntityTypeConfiguration : IEntityTypeConfiguration<Ski
 
     public void Configure(EntityTypeBuilder<SkillProgress> builder)
     {
-        builder
-            .HasData(this._records);
+        //builder
+        //    .HasData(this._records);
     }
 }
