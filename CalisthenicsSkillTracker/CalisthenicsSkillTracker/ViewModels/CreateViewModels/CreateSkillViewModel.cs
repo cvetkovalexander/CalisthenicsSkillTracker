@@ -1,6 +1,7 @@
 ﻿namespace CalisthenicsSkillTracker.ViewModels.CreateViewModels;
 
 using CalisthenicsSkillTracker.Models.Enums;
+using CalisthenicsSkillTracker.Utilities.Attributes;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
@@ -9,8 +10,7 @@ using static Common.EntityValidation.Skill;
 public class CreateSkillViewModel : ISkillViewModel
 {
     [Required]
-    [MinLength(NameMinLength)]
-    [MaxLength(NameMaxLength)]
+    [ValidSkillName]
     public string Name { get; set; } = null!;
 
     [MinLength(DescriptionMinLength)]

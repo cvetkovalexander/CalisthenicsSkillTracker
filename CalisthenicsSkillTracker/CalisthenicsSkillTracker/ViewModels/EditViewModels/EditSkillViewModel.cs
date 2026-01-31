@@ -1,4 +1,5 @@
 ﻿using CalisthenicsSkillTracker.Models.Enums;
+using CalisthenicsSkillTracker.Utilities.Attributes;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
@@ -13,8 +14,7 @@ public class EditSkillViewModel : ISkillViewModel
     public Guid Id { get; set; }
 
     [Required]
-    [MinLength(NameMinLength)]
-    [MaxLength(NameMaxLength)]
+    [ValidSkillName]
     public string Name { get; set; } = null!;
 
     [MinLength(DescriptionMinLength)]
