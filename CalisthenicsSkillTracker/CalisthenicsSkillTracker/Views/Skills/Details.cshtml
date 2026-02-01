@@ -1,26 +1,20 @@
-﻿@model Skill
+﻿@model DetailsSkillViewModel
 
 @{
-    var recent = Model?.SkillProgressRecords?
-        .OrderByDescending(r => r.Date)
-        .Take(5)
-        .ToArray() ?? Array.Empty<CalisthenicsSkillTracker.Models.SkillProgress>();
-    string Measurement() => Model?.MeasurementType.ToString() ?? "—";
+    string Measurement() => Model?.Measurement.ToString() ?? "—";
     string Category() => Model?.Category.ToString() ?? "—";
     string SkillType() => Model?.SkillType.ToString() ?? "—";
+	string Difficulty() => Model?.Difficulty.ToString() ?? "—";
 }
 
 <div class="container py-4">
     <div class="row mb-3">
         <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1 class="h3 mb-0">@Model?.Name ?? "Skill details"</h1>
+            <h1 class="h3 mb-0">@(Model?.Name ?? "Skill details")</h1>
 
             <div>
                 <a asp-action="Index" class="btn btn-outline-secondary me-2">
                     <i class="bi bi-arrow-left"></i> Back
-                </a>
-                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">
-                    <i class="bi bi-pencil-square"></i> Edit
                 </a>
             </div>
         </div>
@@ -50,12 +44,15 @@
 
                             <span class="ms-3 me-2"><strong>Type:</strong></span>
                             <span class="badge bg-success skill-meta">@SkillType()</span>
+
+                            <span class="ms-3 me-2"><strong>Difficulty:</strong></span>
+                            <span class="badge bg-dark skill-meta">@Difficulty()</span>
                         </div>
 
                         <hr />
 
                         <h3 class="h6">Recent Progress</h3>
-                        @if (!recent.Any())
+                        @if (!Model.SkillRecords.Any())
                         {
                             <div class="text-muted">No progress records for this skill yet.</div>
                         }
@@ -74,7 +71,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var r in recent)
+                                        @foreach (var r in Model.SkillRecords)
                                         {
                                             <tr>
                                                 <td>@r.Date.ToString("yyyy-MM-dd")</td>

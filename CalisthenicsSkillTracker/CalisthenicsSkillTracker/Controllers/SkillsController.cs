@@ -2,6 +2,7 @@
 using CalisthenicsSkillTracker.Models;
 using CalisthenicsSkillTracker.Models.Enums;
 using CalisthenicsSkillTracker.ViewModels.CreateViewModels;
+using CalisthenicsSkillTracker.ViewModels.DetailsViewModels;
 using CalisthenicsSkillTracker.ViewModels.EditViewModels;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -51,7 +52,24 @@ public class SkillsController : Controller
         if (skill is null)
             this.NotFound();
 
-        return this.View(skill);
+        DetailsSkillViewModel model = new DetailsSkillViewModel()
+        {
+            Name = skill.Name,
+            Description = skill.Description,
+            Measurement = skill.MeasurementType,
+            Category = skill.Category,
+            SkillType = skill.SkillType,
+            Difficulty = skill.Difficulty,
+            SkillRecords = this._context
+                .SkillProgressRecords
+                .AsNoTracking()
+                .Include(r => r.PerformedBy)
+                .Where(r => r.SkillId == skill.Id)
+                .OrderByDescending(r => r.Date)
+                .ToArray()
+        };
+
+        return this.View(model);
     }   
 
     [HttpGet]
@@ -175,6 +193,22 @@ public class SkillsController : Controller
         skill.Difficulty = model.Difficulty;
 
         this._context.Skills.Update(skill);
+        this._context.SaveChanges();
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    public IActionResult Delete(Guid id) 
+    {
+        Skill? skill = this._context
+            .Skills
+            .SingleOrDefault(s => s.Id == id);
+        if (skill is null)
+            return this.NotFound();
+
+        this._context.Skills.Remove(skill);
+
         this._context.SaveChanges();
 
         return RedirectToAction(nameof(Index));
