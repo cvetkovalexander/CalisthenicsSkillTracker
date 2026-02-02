@@ -1,0 +1,85 @@
+﻿@model CalisthenicsSkillTracker.ViewModels.WorkoutViewModels.CreateWorkoutViewModel
+
+@{
+    ViewData["Title"] = "Log Workout";
+    var dateValue = (Model?.Date ?? DateTime.Now).ToString("yyyy-MM-ddTHH:mm");
+}
+
+<div class="container py-4">
+    <div class="row mb-3 align-items-center">
+        <div class="col">
+            <h1 class="h3 mb-0">Log Workout</h1>
+            <small class="text-muted d-block">Record a workout session for a user.</small>
+        </div>
+        <div class="col-auto">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <main class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="Log" method="post" class="row g-3 needs-validation" novalidate>
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert"></div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Date" class="form-label"></label>
+                            <input asp-for="Date" type="datetime-local" class="form-control" value="@dateValue" />
+                            <span asp-validation-for="Date" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="UserId" class="form-label">User</label>
+                            <select asp-for="UserId" asp-items="Model.Users" class="form-select">
+                                <option value="">Select user...</option>
+                            </select>
+                            <span asp-validation-for="UserId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Notes" class="form-label"></label>
+                            <textarea asp-for="Notes" class="form-control" rows="5" placeholder="Required notes for better experience about the workout (warmup, focus, comments)"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 d-flex gap-2 mt-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check2-circle"></i> Next
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <aside class="col-lg-4 mt-3 mt-lg-0">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Tips</h5>
+                    <ul class="list-unstyled small text-muted mb-0">
+                        <li>- Use the date/time field to record the actual workout start time.</li>
+                        <li>- Select the user for whom you're logging the workout.</li>
+                        <li>- Add notes about focus, sets, or any observations.</li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<style>
+    /* View-scoped helpers */
+    .needs-validation .text-danger { display: block; margin-top: .25rem; }
+    .card .form-label { font-weight: 600; }
+    .card textarea { resize: vertical; min-height: 8rem; }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

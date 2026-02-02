@@ -1,10 +1,8 @@
 ﻿using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Models;
 using CalisthenicsSkillTracker.Models.Enums;
-using CalisthenicsSkillTracker.ViewModels.CreateViewModels;
-using CalisthenicsSkillTracker.ViewModels.DetailsViewModels;
-using CalisthenicsSkillTracker.ViewModels.EditViewModels;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
+using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;

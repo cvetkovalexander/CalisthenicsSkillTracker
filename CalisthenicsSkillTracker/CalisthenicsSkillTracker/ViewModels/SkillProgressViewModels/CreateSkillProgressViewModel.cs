@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace CalisthenicsSkillTracker.ViewModels.CreateViewModels;
+namespace CalisthenicsSkillTracker.ViewModels.SkillProgressViewModels;
 
 public class CreateSkillProgressViewModel
 {

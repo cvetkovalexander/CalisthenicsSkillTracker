@@ -3,7 +3,7 @@ using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using CalisthenicsSkillTracker.ViewModels.CreateViewModels;
+using CalisthenicsSkillTracker.ViewModels.SkillProgressViewModels;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
