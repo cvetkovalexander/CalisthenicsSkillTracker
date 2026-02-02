@@ -18,12 +18,10 @@ public class Exercise
     [Required]
     public Difficulty Difficulty { get; set; }
 
-    [Required]
     [ForeignKey(nameof(Skill))]
-    public Guid SkillId { get; set; }
+    public Guid? SkillId { get; set; }
 
-    [Required]
-    public virtual Skill Skill { get; set; } = null!;
+    public virtual Skill? Skill { get; set; }
 
     [Required]
     public SkillType ExerciseType { get; set; }

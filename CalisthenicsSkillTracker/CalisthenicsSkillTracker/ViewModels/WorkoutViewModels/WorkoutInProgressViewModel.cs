@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 
@@ -13,4 +12,6 @@ public class WorkoutInProgressViewModel
 
     [Required]
     public string Notes { get; set; } = null!;
+
+
 }
