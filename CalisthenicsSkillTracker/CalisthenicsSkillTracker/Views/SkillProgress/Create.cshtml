@@ -10,7 +10,7 @@
 <form asp-action="Create" method="post">
 
     <div class="mb-3">
-        <label asp-for="UserId" class="form-label"></label>
+        <label asp-for="UserId" class="form-label">User</label>
         <select asp-for="UserId" asp-items="Model.Users" class="form-select">
             <option value="">-- Select User --</option>
         </select>
@@ -18,7 +18,7 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="SkillId" class="form-label"></label>
+        <label asp-for="SkillId" class="form-label">Skill</label>
         <select asp-for="SkillId" asp-items="Model.Skills" class="form-select">
             <option value="">-- Select Skill --</option>
         </select>

@@ -2,10 +2,47 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">The app that will help you achieve progress!</h1>
-    
-    <p>Designed to track users, skills and individual progress over time.</p>
+<div class="home-container">
 
-    <a class="nav-link" asp-controller="Workouts" asp-action="Log">Log your workout</a>
+    <section class="hero">
+        <h1>Calisthenics Skill Tracker</h1>
+        <p class="subtitle">
+            Track workouts. Master skills. See real progress.
+        </p>
+
+        <div class="hero-actions">
+            <a asp-controller="Workouts" asp-action="Create" class="btn btn-primary">
+                Start Tracking
+            </a>
+            <a asp-controller="Skills" asp-action="Index" class="btn btn-secondary">
+                View Skills
+            </a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature-card">
+            <h3>📊 Log Workouts</h3>
+            <p>Track exercises, sets, reps, and volume with ease.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>🤸 Skill Progression</h3>
+            <p>Work towards skills like planche, front lever, and handstand.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>🧠 Stay Consistent</h3>
+            <p>See your training history and stay accountable.</p>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Ready to take your training seriously?</h2>
+        <a asp-controller="Workouts" asp-action="Log" class="btn btn-primary">
+            Log Your First Workout
+        </a>
+    </section>
+
 </div>
+

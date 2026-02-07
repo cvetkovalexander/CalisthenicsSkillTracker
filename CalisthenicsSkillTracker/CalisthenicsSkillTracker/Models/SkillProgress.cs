@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CalisthenicsSkillTracker.Models;
 
-using static Common.EntityValidation.SkillProgress;
+using static Common.EntityValidation.SkillSet;
 using static Common.EntityConstants;
 
 public class SkillProgress

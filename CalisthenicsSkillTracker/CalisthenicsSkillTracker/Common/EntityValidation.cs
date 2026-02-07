@@ -28,21 +28,21 @@ public static class EntityValidation
         public const int DescriptionMaxLength = 500;
     }
 
-    public static class SkillProgress
-    {
-        public const int NotesMinLength = 0;
-        public const int NotesMaxLength = 1000;
-
-        public const int RepetitionsMinValue = 0;
-        public const int RepetitionsMaxValue = 1000;
-
-        public const int DurationMinValue = 0;
-        public const int DurationMaxValue = 3600;
-    }
-
     public static class Workout 
     {
         public const int NotesMinLength = 5;
         public const int NotesMaxLength = 500;
+    }
+
+    public static class SkillSet 
+    {
+        public const int NotesMinLength = 5;
+        public const int NotesMaxLength = 500;
+
+        public const int RepetitionsMinValue = 1;
+        public const int RepetitionsMaxValue = 1000;
+
+        public const int DurationMinValue = 1;
+        public const int DurationMaxValue = 3600;
     }
 }

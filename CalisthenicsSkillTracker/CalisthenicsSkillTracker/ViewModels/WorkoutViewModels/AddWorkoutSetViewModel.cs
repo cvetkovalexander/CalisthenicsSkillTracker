@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 
-using static Common.EntityValidation.Workout;
+using static Common.EntityValidation.SkillSet;
 
 public class AddWorkoutSetViewModel
 {
@@ -18,10 +18,10 @@ public class AddWorkoutSetViewModel
     [Range(1, 100)]
     public int SetNumber { get; set; }
 
-    [Range(1, 100)]
+    [Range(RepetitionsMinValue, RepetitionsMaxValue)]
     public int? Repetitions { get; set; }
 
-    [Range(1, 1000)]
+    [Range(DurationMinValue, DurationMaxValue)]
     public int? Duration { get; set; }
 
     public Progression? Progression { get; set; }
