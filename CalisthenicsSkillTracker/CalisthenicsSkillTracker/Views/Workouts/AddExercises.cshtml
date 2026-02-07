@@ -1,0 +1,145 @@
+﻿@model CalisthenicsSkillTracker.ViewModels.WorkoutViewModels.AddWorkoutExerciseViewModel
+
+@{
+    ViewData["Title"] = "Add Exercises";
+}
+
+<div class="container py-4">
+    <div class="row mb-3 align-items-center">
+        <div class="col">
+            <h1 class="h3 mb-0">Add Exercise</h1>
+            <small class="text-muted d-block">Choose an exercise to add to the current workout. After selecting an exercise, select sets for it on the next screen.</small>
+        </div>
+
+        <div class="col-auto">
+            <a asp-action="Log" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Workout
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="row">
+        <main class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="AddExercises" method="post" class="row g-3 needs-validation">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        <input asp-for="WorkoutId" type="hidden" />
+
+                        <div class="col-12">
+                            <label asp-for="ExerciseId" class="form-label">Exercise</label>
+                            <select asp-for="ExerciseId" asp-items="Model.AvailabeExercises" class="form-select">
+                                <option value="">Select an exercise...</option>
+                            </select>
+                            <div class="invalid-feedback">Please select an exercise to continue.</div>
+                        </div>
+
+                        <div class="col-12 d-flex gap-2 mt-2">
+                            @* <button id="selectSetsBtn" type="submit" class="btn btn-primary" name="Action" value="addSets">
+                                <i class="bi bi-arrow-right-circle"></i> Next: Log Sets
+                            </button> *@
+
+                            <button id="addAnotherBtn" type="submit" class="btn btn-outline-primary" name="Action" value="addExercise">
+                                <i class="bi bi-plus-circle"></i> Add Exercise
+                            </button>
+
+                            <a asp-action="Index" asp-controller="Workouts" class="btn btn-outline-secondary ms-auto">
+                                Cancel
+                            </a>
+                        </div>
+
+
+                    </form>
+
+                    <hr />
+
+                    <div>
+                        <h6 class="mb-2">Available exercises</h6>
+                        @if (Model?.AvailabeExercises is null || !Model.AvailabeExercises.Any())
+                        {
+                            <div class="alert alert-info small mb-0">No exercises available. Create exercises first.</div>
+                        }
+                        else
+                        {
+                            <div class="list-group">
+                                @foreach (var item in Model.AvailabeExercises)
+                                {
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>@item.Text</div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <a asp-controller="Workouts"
+                       asp-action="AddSets"
+                       asp-route-workoutId="@Model.WorkoutId"
+                       class="btn btn-primary">
+                        Start entering sets
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <aside class="col-lg-4 mt-3 mt-lg-0">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h5 class="card-title">How it works</h5>
+                    <p class="small text-muted mb-2">- Select an exercise and click "Next: Select Sets" to go to the sets editor for that exercise.</p>
+                    <p class="small text-muted mb-2">- Use "Add & Keep Adding" (when implemented) to append the selected exercise to the workout and remain on this page to add more.</p>
+                    <p class="small text-muted mb-0">- If a workout is stored in TempData, the controller will associate the selected exercise with that workout.</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<style>
+    /* View-scoped helpers */
+    .needs-validation .form-select:invalid { border-color: #dc3545; }
+    .list-group-item { display: flex; gap: .75rem; justify-content: space-between; align-items: center; }
+</style>
+
+@* @section Scripts {
+    <script>
+        (function () {
+            const select = document.querySelector('select[name="ExerciseId"]');
+            const selectSetsBtn = document.getElementById('selectSetsBtn');
+            const addAnotherBtn = document.getElementById('addAnotherBtn');
+
+            function updateButtons() {
+                const hasValue = select && select.value && select.value !== "";
+                selectSetsBtn.disabled = !hasValue;
+                addAnotherBtn.disabled = !hasValue;
+            }
+
+            if (select) {
+                select.addEventListener('change', updateButtons);
+                // initialize
+                updateButtons();
+            }
+
+            // "Add & Keep Adding" would normally post to an action that appends the exercise to the workout
+            // and returns to this page. Wire a simple placeholder until controller is implemented.
+            if (addAnotherBtn) {
+                addAnotherBtn.addEventListener('click', function () {
+                    if (!select.value) return;
+                    const url = new URL(window.location.href);
+                    url.pathname = '@Url.Action("AddExerciseAndReturn", "Workouts")';
+                    url.searchParams.set('exerciseId', select.value);
+                    url.searchParams.set('workoutId', document.querySelector('input[name="WorkoutId"]').value || '');
+                    // navigate (controller should handle and redirect back)
+                    window.location.href = url.toString();
+                });
+            }
+        })();
+    </script>
+} *@

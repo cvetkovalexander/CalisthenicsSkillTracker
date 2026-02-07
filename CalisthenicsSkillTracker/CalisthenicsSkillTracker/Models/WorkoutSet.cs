@@ -23,7 +23,6 @@ public class WorkoutSet
 
     public int? Duration { get; set; }
 
-    [Required]
     public Progression? Progression { get; set; }
 
     public string? Notes { get; set; }

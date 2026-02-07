@@ -39,4 +39,10 @@ public static class EntityValidation
         public const int DurationMinValue = 0;
         public const int DurationMaxValue = 3600;
     }
+
+    public static class Workout 
+    {
+        public const int NotesMinLength = 5;
+        public const int NotesMaxLength = 500;
+    }
 }

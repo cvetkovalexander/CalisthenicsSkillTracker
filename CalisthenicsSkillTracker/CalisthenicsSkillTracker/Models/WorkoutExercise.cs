@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using CalisthenicsSkillTracker.Models.Enums;
 
 namespace CalisthenicsSkillTracker.Models;
 

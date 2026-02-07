@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+using static Common.EntityValidation.Workout;
 
 public class CreateWorkoutViewModel
 {
@@ -13,7 +14,8 @@ public class CreateWorkoutViewModel
 
     public IEnumerable<SelectListItem>? Users { get; set; }
 
-    [Required]
-    public string Notes { get; set; } = null!;
+    [MinLength(NotesMinLength)]
+    [MaxLength(NotesMaxLength)]
+    public string? Notes { get; set; }
 
 }

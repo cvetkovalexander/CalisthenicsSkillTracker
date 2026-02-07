@@ -1,0 +1,162 @@
+﻿@model CalisthenicsSkillTracker.ViewModels.WorkoutViewModels.AddWorkoutSetViewModel
+@using CalisthenicsSkillTracker.Models.Enums
+
+@{
+    ViewData["Title"] = "Add Set";
+}
+
+<div class="container py-4">
+    <div class="row mb-3 align-items-center">
+        <div class="col">
+            <h1 class="h3 mb-0">Add Set</h1>
+            <small class="text-muted d-block">Add a set for the selected exercise in your workout.</small>
+        </div>
+        <div class="col-auto">
+            <a asp-action="AddExercises" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <main class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="AddSets" method="post" class="row g-3 needs-validation" novalidate>
+                        @Html.AntiForgeryToken()
+
+                        <input asp-for="WorkoutId" type="hidden" />
+                        @* <input asp-for="WorkoutExerciseId" type="hidden" /> *@
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert"></div>
+
+                        <div class="col-12">
+                            <label class="form-label">Exercise</label>
+                            @if (Model?.Exercises != null && Model.Exercises.Any())
+                            {
+                                <select asp-for="WorkoutExerciseId" asp-items="Model.Exercises" class="form-select" required>
+                                    <option value="">Select exercise...</option>
+                                </select>
+                            }
+                            else
+                            {
+                                <input class="form-control" disabled value="No exercises available" />
+                            }
+                            <span asp-validation-for="WorkoutExerciseId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="SetNumber" class="form-label"></label>
+                            <div class="input-group">
+                                <button type="button" class="btn btn-outline-secondary" id="decSet">−</button>
+                                <input asp-for="SetNumber" type="number" min="1" max="100" class="form-control text-center" value="1" />
+                                <button type="button" class="btn btn-outline-secondary" id="incSet">+</button>
+                            </div>
+                            <span asp-validation-for="SetNumber" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="Repetitions" class="form-label"></label>
+                            <input asp-for="Repetitions" type="number" min="1" max="100" class="form-control" placeholder="e.g. 8" />
+                            <span asp-validation-for="Repetitions" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="Duration" class="form-label"></label>
+                            <div class="input-group">
+                                <input asp-for="Duration" type="number" min="1" max="1000" class="form-control" placeholder="seconds" />
+                                <span class="input-group-text">s</span>
+                            </div>
+                            <span asp-validation-for="Duration" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Progression" class="form-label"></label>
+                            <select asp-for="Progression" asp-items="@Model.Progressions" class="form-select">
+                                <option value="">(none)</option>
+                            </select>
+                            <span asp-validation-for="Progression" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Notes" class="form-label"></label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Optional notes (tempo, cues, fatigue)"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 d-flex gap-2 mt-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Add Set
+                            </button>
+
+                            <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary ms-auto">
+                                Done
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <aside class="col-lg-4 mt-3 mt-lg-0">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Set helpers</h5>
+                    <p class="small text-muted mb-2">- Use Repetitions for rep-based work or Duration for timed holds/intervals.</p>
+                    <p class="small text-muted mb-2">- Progression helps mark difficulty (easier/harder) for the set.</p>
+                    <p class="small text-muted mb-0">- Use "Save & Add Another" to quickly append several sets to the same exercise.</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<style>
+    /* View-scoped helpers */
+    .needs-validation .text-danger { display:block; margin-top:.25rem; }
+    .card .form-label { font-weight:600; }
+    .input-group .form-control { min-height: calc(1.5em + .75rem + 2px); }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const dec = document.getElementById('decSet');
+            const inc = document.getElementById('incSet');
+            const setInput = document.querySelector('input[name="SetNumber"]');
+
+            function clamp(v, min, max) {
+                v = parseInt(v) || min;
+                if (v < min) return min;
+                if (v > max) return max;
+                return v;
+            }
+
+            if (dec && inc && setInput) {
+                dec.addEventListener('click', () => {
+                    setInput.value = clamp(parseInt(setInput.value) - 1, 1, 100);
+                    setInput.dispatchEvent(new Event('input'));
+                });
+                inc.addEventListener('click', () => {
+                    setInput.value = clamp(parseInt(setInput.value) + 1, 1, 100);
+                    setInput.dispatchEvent(new Event('input'));
+                });
+            }
+
+            // Basic client-side bootstrap validation activation
+            (function () {
+                var forms = document.querySelectorAll('.needs-validation');
+                Array.prototype.slice.call(forms).forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            form.classList.add('was-validated');
+                        }
+                    }, false);
+                });
+            })();
+        })();
+    </script>
+}

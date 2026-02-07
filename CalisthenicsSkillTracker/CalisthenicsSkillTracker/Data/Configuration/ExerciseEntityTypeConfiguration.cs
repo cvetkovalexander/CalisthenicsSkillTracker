@@ -52,7 +52,7 @@ public class ExerciseEntityTypeConfiguration : IEntityTypeConfiguration<Exercise
     };
     public void Configure(EntityTypeBuilder<Exercise> builder)
     {
-        builder
-            .HasData(_exercises);
+        //builder
+        //    .HasData(_exercises);
     }
 }

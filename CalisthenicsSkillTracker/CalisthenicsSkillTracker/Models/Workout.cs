@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CalisthenicsSkillTracker.Models;
 
 using static Common.EntityConstants;
+using static Common.EntityValidation.Workout;
 
 public class Workout
 {
@@ -22,9 +23,9 @@ public class Workout
     [Required]
     public virtual User User { get; set; } = null!;
 
-    [Required]
-    public string Notes { get; set; } = null!;
+    [MaxLength(NotesMaxLength)]
+    public string? Notes { get; set; } 
 
-    public virtual ICollection<WorkoutExercise> Exercises { get; set; } 
+    public virtual ICollection<WorkoutExercise> WorkoutExercises { get; set; } 
         = new List<WorkoutExercise>();
 }
