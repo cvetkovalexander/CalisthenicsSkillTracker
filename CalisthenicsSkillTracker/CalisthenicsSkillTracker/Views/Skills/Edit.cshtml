@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Edit Skill";
+    ViewData["FormAction"] = "Edit";
+    ViewData["SubmitText"] = "Save Changes"; 
 }
 
 <div class="container py-4">
@@ -22,55 +24,7 @@
         <main class="col-lg-8">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <form asp-action="Edit" method="post" class="row g-3 needs-validation" novalidate>
-                        @Html.AntiForgeryToken()
-                        <input asp-for="Id" type="hidden" />
-
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert"></div>
-
-                        <div class="col-12">
-                            <label asp-for="Name" class="form-label"></label>
-                            <input asp-for="Name" class="form-control" />
-                            <span asp-validation-for="Name" class="text-danger small"></span>
-                        </div>
-
-                        <div class="col-12">
-                            <label asp-for="Description" class="form-label"></label>
-                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                            <span asp-validation-for="Description" class="text-danger small"></span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label asp-for="Measurement" class="form-label"></label>
-                            <select asp-for="Measurement" asp-items="Model.MeasurementOptions" class="form-select"></select>
-                            <span asp-validation-for="Measurement" class="text-danger small"></span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label asp-for="Category" class="form-label"></label>
-                            <select asp-for="Category" asp-items="Model.CategoryOptions" class="form-select"></select>
-                            <span asp-validation-for="Category" class="text-danger small"></span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label asp-for="SkillType" class="form-label"></label>
-                            <select asp-for="SkillType" asp-items="Model.SkillTypeOptions" class="form-select"></select>
-                            <span asp-validation-for="SkillType" class="text-danger small"></span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label asp-for="Difficulty" class="form-label"></label>
-                            <select asp-for="Difficulty" asp-items="Model.DifficultyOptions" class="form-select"></select>
-                            <span asp-validation-for="Difficulty" class="text-danger small"></span>
-                        </div>
-
-                        <div class="col-12 d-flex gap-2 mt-3">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save"></i> Save Changes
-                            </button>
-                            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
-                        </div>
-                    </form>
+                    <partial name="_SkillFormPartial" />
                 </div>
             </div>
         </main>

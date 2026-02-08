@@ -22,5 +22,5 @@ html {
 body {
     margin-bottom: 60px;
     font-family: 'Lato', sans-serif;
-    background: linear-gradient(135deg, #ffb703, #ffa200);
+    background: linear-gradient(135deg, #ffb703 0%, #ff9800 50%, #fb8500 100%);
 }

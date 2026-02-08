@@ -3,11 +3,8 @@ using CalisthenicsSkillTracker.Models.Enums;
 using CalisthenicsSkillTracker.Utilities.Attributes;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
 
 namespace CalisthenicsSkillTracker.ViewModels.SkillViewModels;
-
-using static Common.EntityValidation.Skill;
 
 public class DetailsSkillViewModel : ISkillViewModel
 {
@@ -32,4 +29,7 @@ public class DetailsSkillViewModel : ISkillViewModel
 
     public IReadOnlyCollection<SkillProgress> SkillRecords { get; set; }
         = new List<SkillProgress>();
+
+    public ICollection<Exercise> Exercises { get; set; }
+        = new List<Exercise>();
 }

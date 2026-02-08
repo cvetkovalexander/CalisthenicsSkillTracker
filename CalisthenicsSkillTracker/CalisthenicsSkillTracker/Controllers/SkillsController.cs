@@ -50,6 +50,7 @@ public class SkillsController : Controller
         Skill? skill = this._context
             .Skills
             .AsNoTracking()
+            .Include(s => s.Exercises)
             .SingleOrDefault(s => s.Id == id);
 
         if (skill is null)
@@ -63,6 +64,7 @@ public class SkillsController : Controller
             Category = skill.Category,
             SkillType = skill.SkillType,
             Difficulty = skill.Difficulty,
+            Exercises = skill.Exercises,
             SkillRecords = this._context
                 .SkillProgressRecords
                 .AsNoTracking()

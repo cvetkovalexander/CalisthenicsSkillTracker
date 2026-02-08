@@ -31,4 +31,7 @@ public class Skill
 
     public virtual ICollection<SkillProgress> SkillProgressRecords { get; set; }
         = new List<SkillProgress>();
+
+    public virtual ICollection<Exercise> Exercises { get; set; }
+        = new List<Exercise>();
 }
