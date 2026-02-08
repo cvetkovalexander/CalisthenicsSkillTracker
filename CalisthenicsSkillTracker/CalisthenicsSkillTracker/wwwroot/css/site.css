@@ -22,4 +22,5 @@ html {
 body {
     margin-bottom: 60px;
     font-family: 'Lato', sans-serif;
+    background: linear-gradient(135deg, #ffb703, #ffa200);
 }

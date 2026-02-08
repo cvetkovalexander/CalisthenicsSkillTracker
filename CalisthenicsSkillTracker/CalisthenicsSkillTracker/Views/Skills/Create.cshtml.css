@@ -1,0 +1,19 @@
+﻿.card-body {
+    background-color: #f8f9fa;
+    color: black;
+    font-size: 22px;
+}
+
+.card {
+    border-radius: 15px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.btn {
+    font-size: 20px;
+}

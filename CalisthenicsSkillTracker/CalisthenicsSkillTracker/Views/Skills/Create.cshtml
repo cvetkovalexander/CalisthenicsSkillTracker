@@ -7,17 +7,17 @@
 
 <div class="container py-4">
     <div class="row mb-3">
-        <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1 class="h3 mb-0">Create New Skill</h1>
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h1 class="fw-bold mb-0">Insert New Skill</h1>
             <a asp-action="Index" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back to list
+                <img src="~/backarrow.png" style="width: 25px; height: auto;" />
             </a>
         </div>
     </div>
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border overflow-hidden box-shadow">
                 <div class="card-body">
                     <form asp-action="Create" method="post" class="row g-3 needs-validation" novalidate>
                         @Html.AntiForgeryToken()
@@ -62,11 +62,11 @@
                             <span asp-validation-for="SkillType" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-12 d-flex gap-2 mt-3">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save"></i> Create Skill
+                        <div class="col-12 d-flex gap-2 mt-3 d-flex align-items-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill shadow-sm">
+                                <i class="bi bi-save me-2"></i> Insert Skill
                             </button>
-                            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                            <a asp-action="Index" class="btn btn-danger btn-lg px-5 rounded-pill ms-auto">Cancel</a>
                         </div>
                     </form>
                 </div>
@@ -74,12 +74,14 @@
         </div>
 
         <aside class="col-lg-4 mt-3 mt-lg-0">
-            <div class="card border-0">
+            <div class="card card shadow-sm border overflow-hidden bg-dark text-light">
                 <div class="card-body">
-                    <h5 class="card-title">Guidelines</h5>
-                    <p class="card-text small text-muted mb-1">- Choose the measurement type to match how progress is tracked (reps, duration, progression).</p>
-                    <p class="card-text small text-muted mb-1">- Category and skill type help group skills in lists and filters.</p>
-                    <p class="card-text small text-muted">- Difficulty is used for filtering and suggested progressions.</p>
+                    <h5 class="card-title text-center fw-bold">Guidelines</h5>
+                    <ul class="small opacity-75 mb-0">
+                        <li>Choose the measurement type to match how progress is tracked.</li>
+                        <li>Category and skill type help group skills in lists and filters.</li>
+                        <li>Difficulty is used for filtering and suggested progressions.</li>
+                    </ul>
                 </div>
             </div>
         </aside>
@@ -87,9 +89,7 @@
 </div>
 
 <style>
-    /* View-scoped helpers */
     .needs-validation .text-danger { display: block; margin-top: .25rem; }
-    .card .form-text { color: #6c757d; }
 </style>
 
 @section Scripts {

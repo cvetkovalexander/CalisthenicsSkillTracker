@@ -28,13 +28,18 @@ public class SkillsController : Controller
     }
 
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult Index(string? filter)
     {
         IEnumerable<Skill> skills = this._context
             .Skills
             .AsNoTracking()
             .OrderBy(s => s.Name)
             .ToArray();
+
+        if (filter is not null) 
+            skills = skills.Where(s => s.Name.ToLower().Contains(filter.ToLower()));
+
+        ViewData["Filter"] = filter;
 
         return this.View(skills);
     }
@@ -107,18 +112,29 @@ public class SkillsController : Controller
             return View(model);
         }
 
-        Skill skill = new Skill()
+        try
         {
-            Name = model.Name,
-            Description = model.Description,
-            MeasurementType = model.Measurement,
-            Category = model.Category,
-            SkillType = model.SkillType,
-            Difficulty = model.Difficulty
-        };
+            Skill skill = new Skill()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                MeasurementType = model.Measurement,
+                Category = model.Category,
+                SkillType = model.SkillType,
+                Difficulty = model.Difficulty
+            };
 
-        this._context.Skills.Add(skill);
-        this._context.SaveChanges();
+            this._context.Skills.Add(skill);
+            this._context.SaveChanges();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+
+            ModelState.AddModelError(string.Empty, "An error occurred while adding the skill. Please try again.");
+
+            return this.View(model);
+        }
 
         return RedirectToAction(nameof(Index));
     }

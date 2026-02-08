@@ -1,4 +1,12 @@
-﻿#highlighted-tr {
-    background-color: lightblue;
+﻿table {
+    background-color: gray;
 }
 
+input[name="filter"] {
+    padding: 5px;
+    font-size: 14px;
+}
+
+button {
+    padding: 5px 10px;
+}

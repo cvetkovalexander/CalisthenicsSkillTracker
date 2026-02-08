@@ -80,7 +80,7 @@
     color: #2563eb;
 }
 
-    .btn-secondary:hover {
-        background-color: #2563eb;
-        color: white;
-    }
+.btn-secondary:hover {
+    background-color: #2563eb;
+    color: white;
+}
