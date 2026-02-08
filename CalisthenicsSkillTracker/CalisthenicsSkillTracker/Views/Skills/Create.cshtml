@@ -5,6 +5,13 @@
     ViewData["Title"] = "Add Skill";
     ViewData["FormAction"] = "Create";
     ViewData["SubmitText"] = "Insert Skill";
+
+    IEnumerable<string> guidelines = new List<string>
+    {
+        "Choose the measurement type to match how progress is tracked.",
+        "Category and skill type help group skills in lists and filters.",
+        "Difficulty is used for filtering and suggested progressions."
+    };
 }
 
 <div class="container py-4">
@@ -18,26 +25,9 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-8">
-            <div class="card shadow-sm border overflow-hidden box-shadow">
-                <div class="card-body">
-                    <partial name="_SkillFormPartial"/>
-                </div>
-            </div>
-        </div>
+        <partial name="_SkillFormPartial" />
 
-        <aside class="col-lg-4 mt-3 mt-lg-0">
-            <div class="card card shadow-sm border overflow-hidden bg-dark text-light">
-                <div class="card-body">
-                    <h5 class="card-title text-center fw-bold">Guidelines</h5>
-                    <ul class="small opacity-75 mb-0">
-                        <li>Choose the measurement type to match how progress is tracked.</li>
-                        <li>Category and skill type help group skills in lists and filters.</li>
-                        <li>Difficulty is used for filtering and suggested progressions.</li>
-                    </ul>
-                </div>
-            </div>
-        </aside>
+        <partial name="_SkillGuidelines" model="@guidelines" />
     </div>
 </div>
 

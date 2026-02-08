@@ -4,7 +4,14 @@
 @{
     ViewData["Title"] = "Edit Skill";
     ViewData["FormAction"] = "Edit";
-    ViewData["SubmitText"] = "Save Changes"; 
+    ViewData["SubmitText"] = "Save Changes";
+
+    IEnumerable<string> guidelines = new List<string>()
+    {
+        "Name is required and must meet length limits.",
+        "Description is optional but helpful for context.",
+        "Measurement, Category, Type and Difficulty affect filtering and progress tracking."
+    };
 }
 
 <div class="container py-4">
@@ -21,34 +28,18 @@
     </div>
 
     <div class="row">
-        <main class="col-lg-8">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <partial name="_SkillFormPartial" />
-                </div>
-            </div>
-        </main>
+        <partial name="_SkillFormPartial" />
 
-        <aside class="col-lg-4 mt-3 mt-lg-0">
-            <div class="card border-0">
-                <div class="card-body">
-                    <h5 class="card-title">Hints</h5>
-                    <ul class="list-unstyled small text-muted mb-0">
-                        <li>- Name is required and must meet length limits.</li>
-                        <li>- Description is optional but helpful for context.</li>
-                        <li>- Measurement, Category, Type and Difficulty affect filtering and progress tracking.</li>
-                    </ul>
-                </div>
-                <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="g-3 mt-1 needs-validation" novalidate>
-                    @Html.AntiForgeryToken()
-                    <button type="submit"
-                            class="btn btn-danger"
-                            onclick="return confirm('Are you sure you want to delete this skill?');">
-                        <i class="bi bi-trash"></i> Delete
-                    </button>
-                </form>
-            </div>
-        </aside>
+        <partial name="_SkillGuidelines" model="@guidelines" />
+
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="g-3 mt-1 needs-validation" novalidate>
+            @Html.AntiForgeryToken()
+            <button type="submit"
+                    class="btn btn-danger"
+                    onclick="return confirm('Are you sure you want to delete this skill?');">
+                <i class="bi bi-trash"></i> Delete
+            </button>
+        </form>
     </div>
 </div>
 
