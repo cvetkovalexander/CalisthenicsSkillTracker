@@ -30,10 +30,17 @@ public class SkillsController : Controller
     [HttpGet]
     public IActionResult Index(string? filter)
     {
-        IEnumerable<Skill> skills = this._context
+        IEnumerable<ListSkillViewModel> skills = this._context
             .Skills
             .AsNoTracking()
             .OrderBy(s => s.Name)
+            .Select(s => new ListSkillViewModel 
+            {
+                Id = s.Id,
+                Name = s.Name,
+                Description = s.Description,
+                Difficulty = s.Difficulty
+            })
             .ToArray();
 
         if (filter is not null) 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Skill>
+﻿@model IEnumerable<CalisthenicsSkillTracker.ViewModels.SkillViewModels.ListSkillViewModel>
 
 <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css"/>
 
@@ -31,9 +31,6 @@ else
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Category</th>
-                    <th>Type</th>
-                    <th>Measurement</th>
                     <th>Difficulty</th>
                     <th>Actions</th>
                 </tr>
@@ -44,9 +41,6 @@ else
                     <tr>
                         <td>@(skill.Name ?? "—")</td>
                         <td>@(skill.Description ?? "—")</td>
-                        <td>@(skill.Category.ToString() ?? "-")</td>
-                        <td>@(skill.SkillType.ToString() ?? "-")</td>
-                        <td>@(skill.MeasurementType.ToString() ?? "-")</td>
                         <td>@(skill.Difficulty.ToString() ?? "-")</td>
                         <td>
                             <a class="btn" style="background-color: lawngreen;" asp-action="Details" asp-route-id="@(skill?.Id)">
