@@ -1,6 +1,6 @@
 ﻿using CalisthenicsSkillTracker.Data;
-using CalisthenicsSkillTracker.Models;
-using CalisthenicsSkillTracker.Models.Enums;
+using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.Data.Models.Enums;
 using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -182,7 +182,7 @@ public class WorkoutsController : Controller
         }
 
         WorkoutExercise? workoutExercise = this._context.WorkoutExercises
-            .FirstOrDefault(we => we.WorkoutId == model.WorkoutId && we.ExerciseId == model.WorkoutExerciseId);
+            .FirstOrDefault(we => we.WorkoutId == model.WorkoutId && we.Id == model.WorkoutExerciseId);
 
         if (workoutExercise is null) 
         {

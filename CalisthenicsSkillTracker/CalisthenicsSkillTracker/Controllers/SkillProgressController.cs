@@ -1,6 +1,6 @@
-﻿using CalisthenicsSkillTracker.Models.Enums;
+﻿using CalisthenicsSkillTracker.Data.Models.Enums;
 using CalisthenicsSkillTracker.Data;
-using CalisthenicsSkillTracker.Models;
+using CalisthenicsSkillTracker.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using CalisthenicsSkillTracker.ViewModels.SkillProgressViewModels;

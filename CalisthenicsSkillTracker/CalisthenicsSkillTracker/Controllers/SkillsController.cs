@@ -1,12 +1,11 @@
 ﻿using CalisthenicsSkillTracker.Data;
-using CalisthenicsSkillTracker.Models;
-using CalisthenicsSkillTracker.Models.Enums;
+using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.Data.Models.Enums;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 
 namespace CalisthenicsSkillTracker.Controllers;
 

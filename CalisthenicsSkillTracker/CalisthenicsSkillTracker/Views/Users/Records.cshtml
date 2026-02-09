@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<SkillProgress>
 
 @{
-    var records = Model?.ToArray() ?? Array.Empty<CalisthenicsSkillTracker.Models.SkillProgress>();
+    var records = Model?.ToArray() ?? Array.Empty<CalisthenicsSkillTracker.Data.Models.SkillProgress>();
     var first = records.FirstOrDefault();
     var userDisplay = first?.PerformedBy is not null
         ? $"{first.PerformedBy.FirstName}{(string.IsNullOrWhiteSpace(first.PerformedBy.LastName) ? "" : $" {first.PerformedBy.LastName}")} ({first.PerformedBy.Username})"

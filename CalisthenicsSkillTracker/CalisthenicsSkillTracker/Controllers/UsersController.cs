@@ -1,5 +1,5 @@
 ﻿using CalisthenicsSkillTracker.Data;
-using CalisthenicsSkillTracker.Models;
+using CalisthenicsSkillTracker.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

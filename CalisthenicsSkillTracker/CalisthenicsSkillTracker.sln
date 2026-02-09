@@ -1,9 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36603.0 d17.14
+VisualStudioVersion = 17.14.36603.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalisthenicsSkillTracker", "CalisthenicsSkillTracker\CalisthenicsSkillTracker.csproj", "{7BD7CCEC-BB0C-4EFC-80E4-E642EF5BAFAF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalisthenicsSkillTracker.ViewModels", "CalisthenicsSkillTracker.Web.ViewModels\CalisthenicsSkillTracker.ViewModels.csproj", "{F1CAD3D9-948F-4C3D-A8F2-38FABD6E2EE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalisthenicsSkillTracker.GCommon", "CalisthenicsSkillTracker.GCommon\CalisthenicsSkillTracker.GCommon.csproj", "{C39716D1-C724-4E02-B3CC-B6D044B0867A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{ADDE6F87-F441-4201-A00B-BDA00B311052}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalisthenicsSkillTracker.Data.Models", "CalisthenicsSkillTracker.Data.Models\CalisthenicsSkillTracker.Data.Models.csproj", "{D0432D8A-0E56-4084-9982-5DE2476E4157}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalisthenicsSkillTracker.Data", "CalisthenicsSkillTracker.Data\CalisthenicsSkillTracker.Data.csproj", "{04701FF6-EFF8-4516-8196-6C63E3007F75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +27,31 @@ Global
 		{7BD7CCEC-BB0C-4EFC-80E4-E642EF5BAFAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BD7CCEC-BB0C-4EFC-80E4-E642EF5BAFAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BD7CCEC-BB0C-4EFC-80E4-E642EF5BAFAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1CAD3D9-948F-4C3D-A8F2-38FABD6E2EE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1CAD3D9-948F-4C3D-A8F2-38FABD6E2EE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1CAD3D9-948F-4C3D-A8F2-38FABD6E2EE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1CAD3D9-948F-4C3D-A8F2-38FABD6E2EE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C39716D1-C724-4E02-B3CC-B6D044B0867A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C39716D1-C724-4E02-B3CC-B6D044B0867A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C39716D1-C724-4E02-B3CC-B6D044B0867A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C39716D1-C724-4E02-B3CC-B6D044B0867A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0432D8A-0E56-4084-9982-5DE2476E4157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0432D8A-0E56-4084-9982-5DE2476E4157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0432D8A-0E56-4084-9982-5DE2476E4157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0432D8A-0E56-4084-9982-5DE2476E4157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04701FF6-EFF8-4516-8196-6C63E3007F75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04701FF6-EFF8-4516-8196-6C63E3007F75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04701FF6-EFF8-4516-8196-6C63E3007F75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04701FF6-EFF8-4516-8196-6C63E3007F75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7BD7CCEC-BB0C-4EFC-80E4-E642EF5BAFAF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{F1CAD3D9-948F-4C3D-A8F2-38FABD6E2EE4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D0432D8A-0E56-4084-9982-5DE2476E4157} = {ADDE6F87-F441-4201-A00B-BDA00B311052}
+		{04701FF6-EFF8-4516-8196-6C63E3007F75} = {ADDE6F87-F441-4201-A00B-BDA00B311052}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {682AF79F-6796-49C3-9ACA-201DA7BACBE6}
