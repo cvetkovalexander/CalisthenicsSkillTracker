@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ListTableItemViewModel>
+
+<div class="rounded-3 overflow-hidden border shadow-sm">
+    <table class="table table-bordered mb-0 text-white" style="background-color: gray;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Difficulty</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var skill in Model)
+            {
+                <tr>
+                    <td>@(skill.Name ?? "—")</td>
+                    <td>@(skill.Description ?? "—")</td>
+                    <td>@(skill.Difficulty.ToString() ?? "-")</td>
+                    <td>
+                        <a class="btn" style="background-color: lawngreen;" asp-action="Details" asp-route-id="@(skill?.Id)">
+                            <img src="~/details.png" style="width: 25px; height: auto;" alt="Alternate Text" />
+                        </a>
+                        |
+                        <a class="btn" style="background-color: deepskyblue;" asp-action="Edit" asp-route-id="@(skill?.Id)">
+                            <img src="~/edit.png" style="width: 25px; height: auto;" alt="Alternate Text" />
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

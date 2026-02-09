@@ -1,0 +1,29 @@
+﻿@model IEnumerable<CalisthenicsSkillTracker.ViewModels.ListTableItemViewModel>
+
+<link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+
+@{
+    ViewData["Title"] = "All exercises";
+}
+
+<h1 class="text-center fw-bold">Available exercises for your workouts:</h1>
+
+<div style="display:flex; align-items:center; width: 100%; margin-bottom: 1em;">
+    <p style="margin: 0">
+        <a asp-action="Create" class="btn btn-primary">Insert new exercise</a>
+    </p>
+
+    <form method="get" asp-controller="Exercises" asp-action="Index" style="margin-left: auto; display: flex; gap: 5px;">
+        <input type="text" name="filter" placeholder="Search exercises..." value="@ViewData["Filter"]" />
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">No exercises found.</div>
+}
+else
+{
+    <partial name="_TablePartial" model="@Model" />
+}

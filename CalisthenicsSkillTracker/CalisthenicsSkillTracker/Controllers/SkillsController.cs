@@ -1,6 +1,7 @@
 ﻿using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Models.Enums;
+using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -29,11 +30,11 @@ public class SkillsController : Controller
     [HttpGet]
     public IActionResult Index(string? filter)
     {
-        IEnumerable<ListSkillViewModel> skills = this._context
+        IEnumerable<ListTableItemViewModel> skills = this._context
             .Skills
             .AsNoTracking()
             .OrderBy(s => s.Name)
-            .Select(s => new ListSkillViewModel 
+            .Select(s => new ListTableItemViewModel 
             {
                 Id = s.Id,
                 Name = s.Name,
