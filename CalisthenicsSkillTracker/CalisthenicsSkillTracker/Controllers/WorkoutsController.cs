@@ -214,6 +214,8 @@ public class WorkoutsController : Controller
             return this.View(model);
         }
 
+        TempData["SuccessMessage"] = "Exercise set added successfully!";
+
         return this.RedirectToAction("AddSets", new { workoutId = model.WorkoutId });
     }
 

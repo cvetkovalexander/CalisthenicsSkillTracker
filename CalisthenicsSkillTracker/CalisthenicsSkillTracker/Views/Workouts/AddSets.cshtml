@@ -10,11 +10,18 @@
             <small class="text-muted d-block">Add a set for the selected exercise in your workout.</small>
         </div>
         <div class="col-auto">
-            <a asp-action="AddExercises" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                <img src="~/backarrow.png" style="width: 25px; height: auto;" />
             </a>
         </div>
     </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
 
     <div class="row">
         <main class="col-lg-8">

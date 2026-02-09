@@ -13,7 +13,7 @@
 
         <div class="col-auto">
             <a asp-action="Log" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back to Workout
+                <img src="~/backarrow.png" style="width: 25px; height: auto;" />
             </a>
         </div>
     </div>
@@ -82,7 +82,7 @@
                     <a asp-controller="Workouts"
                        asp-action="AddSets"
                        asp-route-workoutId="@Model.WorkoutId"
-                       class="btn btn-primary">
+                       class="btn btn-primary m-2">
                         Start entering sets
                     </a>
                 </div>
