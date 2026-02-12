@@ -98,6 +98,8 @@ public class SkillsController : Controller
             DifficultyOptions = this.FetchSelectedEnum(DifficultyKey)
         };
 
+        ViewData["FormAction"] = "Create";
+
         return this.View(model);
     }
 
@@ -170,7 +172,9 @@ public class SkillsController : Controller
             Difficulty = skill.Difficulty
         };
 
-        this.FetchViewModelEnums(model);                                                    
+        this.FetchViewModelEnums(model);
+
+        ViewData["FormAction"] = "Edit";
 
         return this.View(model);
     }
