@@ -1,5 +1,4 @@
-﻿using CalisthenicsSkillTracker.Data;
-using CalisthenicsSkillTracker.Services.Core.Interfaces;
+﻿using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,13 +8,14 @@ namespace CalisthenicsSkillTracker.Controllers;
 public class SkillsController : Controller
 {
     private readonly ISkillOutputService _outputService;
-
     private readonly ISkillInputService _inputService;
+    private readonly ILogger<SkillsController> _logger;
 
-    public SkillsController(ISkillOutputService outputService, ISkillInputService inputService)
+    public SkillsController(ISkillOutputService outputService, ISkillInputService inputService, ILogger<SkillsController> logger)
     {
         this._outputService = outputService;
         this._inputService = inputService;
+        this._logger = logger;
     }
 
     [HttpGet]
@@ -68,7 +68,7 @@ public class SkillsController : Controller
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            this._logger.LogError(e, "Exception occured while trying to save a skill in database");
 
             ModelState.AddModelError(string.Empty, "An error occurred while adding the skill. Please try again.");
 
@@ -123,7 +123,7 @@ public class SkillsController : Controller
         }
         catch (Exception e) 
         {
-            Console.WriteLine(e);
+            this._logger.LogError(e, "Exception occured while trying to delete a skill from database");
 
             ModelState.AddModelError(string.Empty, "An error occurred while adding the skill. Please try again.");
 
