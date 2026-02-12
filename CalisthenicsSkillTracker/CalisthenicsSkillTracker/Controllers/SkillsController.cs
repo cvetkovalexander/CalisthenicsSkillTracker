@@ -117,7 +117,18 @@ public class SkillsController : Controller
         if (!await this._outputService.SkillExistsAsync(id))
             return this.NotFound();
 
-        await this._inputService.DeleteSkillAsync(id);
+        try
+        {
+            await this._inputService.DeleteSkillAsync(id);
+        }
+        catch (Exception e) 
+        {
+            Console.WriteLine(e);
+
+            ModelState.AddModelError(string.Empty, "An error occurred while adding the skill. Please try again.");
+
+            return this.RedirectToAction("Edit");
+        }
 
         return RedirectToAction(nameof(Index));
     }

@@ -22,10 +22,8 @@ public class Exercise
     [Required]
     public Difficulty Difficulty { get; set; }
 
-    [ForeignKey(nameof(Skill))]
-    public Guid? SkillId { get; set; }
-
-    public virtual Skill? Skill { get; set; }
+    public virtual ICollection<Skill> Skills { get; set; } 
+        = new List<Skill>();
 
     [Required]
     public SkillType ExerciseType { get; set; }

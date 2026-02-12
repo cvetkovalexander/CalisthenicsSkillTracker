@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace CalisthenicsSkillTracker.Data
 {
@@ -27,6 +28,22 @@ namespace CalisthenicsSkillTracker.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Exercise>()
+                .HasMany(e => e.Skills)
+                .WithMany(s => s.Exercises)
+                .UsingEntity<Dictionary<string, object>>(
+                    "ExerciseSkills",
+                    j => j.HasOne<Skill>()
+                          .WithMany()
+                          .HasForeignKey("SkillId")
+                          .OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasOne<Exercise>()
+                          .WithMany()
+                          .HasForeignKey("ExerciseId")
+                          .OnDelete(DeleteBehavior.Cascade)
+            );
+
 
             builder.Entity<User>()
                 .HasIndex(u => u.Username)
