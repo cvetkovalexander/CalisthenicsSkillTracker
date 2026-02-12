@@ -1,4 +1,6 @@
 using CalisthenicsSkillTracker.Data;
+using CalisthenicsSkillTracker.Services.Core.Interfaces;
+using CalisthenicsSkillTracker.Services.Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +17,9 @@ public class Program
 
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
+
+        builder.Services.AddScoped<ISkillOutputService, SkillOutputService>();
+        builder.Services.AddScoped<ISkillInputService, SkillInputService>();
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

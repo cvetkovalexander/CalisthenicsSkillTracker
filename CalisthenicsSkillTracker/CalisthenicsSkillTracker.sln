@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalisthenicsSkillTracker.Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalisthenicsSkillTracker.Data", "CalisthenicsSkillTracker.Data\CalisthenicsSkillTracker.Data.csproj", "{04701FF6-EFF8-4516-8196-6C63E3007F75}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{A614E5DB-A806-46E9-849D-E3DF2C9C6013}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalisthenicsSkillTracker.Services.Core", "CalisthenicsSkillTracker.Services.Core\CalisthenicsSkillTracker.Services.Core.csproj", "{CD62441A-B13B-4B4F-9612-3EFEE5989385}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,10 @@ Global
 		{04701FF6-EFF8-4516-8196-6C63E3007F75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04701FF6-EFF8-4516-8196-6C63E3007F75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04701FF6-EFF8-4516-8196-6C63E3007F75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD62441A-B13B-4B4F-9612-3EFEE5989385}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD62441A-B13B-4B4F-9612-3EFEE5989385}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD62441A-B13B-4B4F-9612-3EFEE5989385}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD62441A-B13B-4B4F-9612-3EFEE5989385}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +60,7 @@ Global
 		{F1CAD3D9-948F-4C3D-A8F2-38FABD6E2EE4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{D0432D8A-0E56-4084-9982-5DE2476E4157} = {ADDE6F87-F441-4201-A00B-BDA00B311052}
 		{04701FF6-EFF8-4516-8196-6C63E3007F75} = {ADDE6F87-F441-4201-A00B-BDA00B311052}
+		{CD62441A-B13B-4B4F-9612-3EFEE5989385} = {A614E5DB-A806-46E9-849D-E3DF2C9C6013}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {682AF79F-6796-49C3-9ACA-201DA7BACBE6}

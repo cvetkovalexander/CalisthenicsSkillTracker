@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CalisthenicsSkillTracker.Data\CalisthenicsSkillTracker.Data.csproj" />
     <ProjectReference Include="..\CalisthenicsSkillTracker.GCommon\CalisthenicsSkillTracker.GCommon.csproj" />
+    <ProjectReference Include="..\CalisthenicsSkillTracker.Services.Core\CalisthenicsSkillTracker.Services.Core.csproj" />
     <ProjectReference Include="..\CalisthenicsSkillTracker.Web.ViewModels\CalisthenicsSkillTracker.ViewModels.csproj" />
   </ItemGroup>
 

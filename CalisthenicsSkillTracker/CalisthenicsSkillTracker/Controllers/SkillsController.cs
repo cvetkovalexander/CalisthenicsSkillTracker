@@ -1,85 +1,41 @@
 ﻿using CalisthenicsSkillTracker.Data;
-using CalisthenicsSkillTracker.Data.Models;
-using CalisthenicsSkillTracker.Data.Models.Enums;
+using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
-using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
 public class SkillsController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ISkillOutputService _outputService;
 
-    private const string MeasurementKey = "Measurement";
+    private readonly ISkillInputService _inputService;
 
-    private const string CategoryKey = "Category";
-
-    private const string SkillTypeKey = "SkillType";
-
-    private const string DifficultyKey = "Difficulty";
-
-    public SkillsController(ApplicationDbContext context)
+    public SkillsController(ISkillOutputService outputService, ISkillInputService inputService)
     {
-        this._context = context;
+        this._outputService = outputService;
+        this._inputService = inputService;
     }
 
     [HttpGet]
-    public IActionResult Index(string? filter)
+    public async Task<IActionResult> Index(string? filter)
     {
-        IEnumerable<ListTableItemViewModel> skills = this._context
-            .Skills
-            .AsNoTracking()
-            .OrderBy(s => s.Name)
-            .Select(s => new ListTableItemViewModel 
-            {
-                Id = s.Id,
-                Name = s.Name,
-                Description = s.Description,
-                Difficulty = s.Difficulty
-            })
-            .ToArray();
-
-        if (filter is not null) 
-            skills = skills.Where(s => s.Name.ToLower().Contains(filter.ToLower()));
+        IEnumerable<ListTableItemViewModel> allSkills 
+            = await this._outputService.GetAllSkillsAsync(filter);
 
         ViewData["Filter"] = filter;
 
-        return this.View(skills);
+        return this.View(allSkills);
     }
 
     [HttpGet]
-    public IActionResult Details(Guid id) 
+    public async Task<IActionResult> Details(Guid id) 
     {
-        Skill? skill = this._context
-            .Skills
-            .AsNoTracking()
-            .Include(s => s.Exercises)
-            .SingleOrDefault(s => s.Id == id);
+        if (!await this._outputService.SkillExistsAsync(id))
+            return this.NotFound();
 
-        if (skill is null)
-            this.NotFound();
-
-        DetailsSkillViewModel model = new DetailsSkillViewModel()
-        {
-            Name = skill.Name,
-            Description = skill.Description,
-            Measurement = skill.MeasurementType,
-            Category = skill.Category,
-            SkillType = skill.SkillType,
-            Difficulty = skill.Difficulty,
-            Exercises = skill.Exercises,
-            SkillRecords = this._context
-                .SkillProgressRecords
-                .AsNoTracking()
-                .Include(r => r.PerformedBy)
-                .Where(r => r.SkillId == skill.Id)
-                .OrderByDescending(r => r.Date)
-                .ToArray()
-        };
+        DetailsSkillViewModel model = await this._outputService.GetSkillDetailsAsync(id);
 
         return this.View(model);
     }   
@@ -87,16 +43,7 @@ public class SkillsController : Controller
     [HttpGet]
     public IActionResult Create()
     {
-        CreateSkillViewModel model = new CreateSkillViewModel() 
-        {
-            MeasurementOptions = this.FetchSelectedEnum(MeasurementKey),
-
-            CategoryOptions = this.FetchSelectedEnum(CategoryKey),
-
-            SkillTypeOptions = this.FetchSelectedEnum(SkillTypeKey),
-
-            DifficultyOptions = this.FetchSelectedEnum(DifficultyKey)
-        };
+        CreateSkillViewModel model = this._inputService.CreateSkillViewModelWithEnums();
 
         ViewData["FormAction"] = "Create";
 
@@ -104,39 +51,20 @@ public class SkillsController : Controller
     }
 
     [HttpPost]
-    public IActionResult Create(CreateSkillViewModel model) 
+    public async Task<IActionResult> Create(CreateSkillViewModel model) 
     {
-        if (!ModelState.IsValid) 
-        {
-            this.FetchViewModelEnums(model);
+        this._inputService.FetchEnums(model);
 
-            return View(model);
-        }
-
-        if (this.SkillExists(model.Name)) 
-        {
+        if (await this._inputService.SkillNameExistsAsync(model.Name)) 
             ModelState
                 .AddModelError(nameof(model.Name), "A skill with this name already exists.");
 
-            this.FetchViewModelEnums(model);
-
+        if (!ModelState.IsValid)
             return View(model);
-        }
 
         try
         {
-            Skill skill = new Skill()
-            {
-                Name = model.Name,
-                Description = model.Description,
-                MeasurementType = model.Measurement,
-                Category = model.Category,
-                SkillType = model.SkillType,
-                Difficulty = model.Difficulty
-            };
-
-            this._context.Skills.Add(skill);
-            this._context.SaveChanges();
+            await this._inputService.CreateSkillAsync(model);
         }
         catch (Exception e)
         {
@@ -151,28 +79,12 @@ public class SkillsController : Controller
     }
 
     [HttpGet]
-    public IActionResult Edit(Guid id) 
+    public async Task<IActionResult> Edit(Guid id) 
     {
-        Skill? skill = this._context
-            .Skills
-            .AsNoTracking()
-            .SingleOrDefault(s => s.Id == id)!;
-
-        if (skill is null)
+        if (!await this._outputService.SkillExistsAsync(id))
             return this.NotFound();
 
-        EditSkillViewModel model = new EditSkillViewModel()
-        {
-            Id = skill.Id,
-            Name = skill.Name,
-            Description = skill.Description,
-            Measurement = skill.MeasurementType,
-            Category = skill.Category,
-            SkillType = skill.SkillType,
-            Difficulty = skill.Difficulty
-        };
-
-        this.FetchViewModelEnums(model);
+        EditSkillViewModel model = await this._inputService.CreateEditSkillViewModelAsync(id);
 
         ViewData["FormAction"] = "Edit";
 
@@ -180,126 +92,33 @@ public class SkillsController : Controller
     }
 
     [HttpPost]
-    public IActionResult Edit(EditSkillViewModel model) 
+    public async Task<IActionResult> Edit(EditSkillViewModel model) 
     {
-        if (!ModelState.IsValid) 
-        {
-            this.FetchViewModelEnums(model);
+        this._inputService.FetchEnums(model);
 
-            return this.View(model);
-        }
-
-        Skill? skill = this._context
-            .Skills
-            .AsNoTracking()
-            .SingleOrDefault(s => s.Id == model.Id);
-
-        if (skill is null)
+        if (!await this._outputService.SkillExistsAsync(model.Id))
             return this.NotFound();
 
-        bool skillExistsExcludingCurrent = this._context
-            .Skills
-            .AsNoTracking()
-            .Any(s => s.Id != model.Id && s.Name.ToLower() == this.RemoveWhitespaces(model.Name).ToLower());
-
-        if (skillExistsExcludingCurrent) 
-        {
+        if (await this._inputService.SkillNameExcludingCurrentExistsAsync(model.Id, model.Name))
             ModelState
                 .AddModelError(nameof(model.Name), "A skill with this name already exists.");
 
-            this.FetchViewModelEnums(model);
+        if (!ModelState.IsValid)
+            return this.View(model);
 
-            return View(model);
-        }
-
-        skill.Name = model.Name;
-        skill.Description = model.Description;
-        skill.MeasurementType = model.Measurement;
-        skill.Category = model.Category;
-        skill.SkillType = model.SkillType;
-        skill.Difficulty = model.Difficulty;
-
-        this._context.Skills.Update(skill);
-        this._context.SaveChanges();
+        await this._inputService.EditSkillDataAsync(model);
 
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
-    public IActionResult Delete(Guid id) 
+    public async Task<IActionResult> Delete(Guid id) 
     {
-        Skill? skill = this._context
-            .Skills
-            .SingleOrDefault(s => s.Id == id);
-        if (skill is null)
+        if (!await this._outputService.SkillExistsAsync(id))
             return this.NotFound();
 
-        this._context.Skills.Remove(skill);
-
-        this._context.SaveChanges();
+        await this._inputService.DeleteSkillAsync(id);
 
         return RedirectToAction(nameof(Index));
     }
-
-    private List<SelectListItem> FetchSelectedEnum(string key) 
-    {
-        Dictionary<string, List<SelectListItem>> enums = new Dictionary<string, List<SelectListItem>>
-        {
-            [MeasurementKey] = Enum
-                .GetValues(typeof(Measurement))
-                .Cast<Measurement>()
-                .Select(m => new SelectListItem
-                {
-                    Value = ((int)m).ToString(),
-                    Text = m.ToString()
-                })
-                .ToList(),
-
-            [CategoryKey] = Enum
-                .GetValues(typeof(Category))
-                .Cast<Category>()
-                .Select(c => new SelectListItem
-                {
-                    Value = ((int)c).ToString(),
-                    Text = c.ToString()
-                })
-                .ToList(),
-
-            [SkillTypeKey] = Enum
-                .GetValues(typeof(SkillType))
-                .Cast<SkillType>()
-                .Select(sk => new SelectListItem
-                {
-                    Value = ((int)sk).ToString(),
-                    Text = sk.ToString()
-                })
-                .ToList(),
-
-            [DifficultyKey] = Enum
-                .GetValues(typeof(Difficulty))
-                .Cast<Difficulty>()
-                .Select(d => new SelectListItem
-                {
-                    Value = ((int)d).ToString(),
-                    Text = d.ToString()
-                })
-                .ToList()
-        };
-
-        return enums[key];
-    }
-
-    private void FetchViewModelEnums(ISkillViewModel model) 
-    {
-        model.MeasurementOptions = this.FetchSelectedEnum(MeasurementKey);
-        model.CategoryOptions = this.FetchSelectedEnum(CategoryKey);
-        model.SkillTypeOptions = this.FetchSelectedEnum(SkillTypeKey);
-        model.DifficultyOptions = this.FetchSelectedEnum(DifficultyKey);
-    }
-
-    private bool SkillExists(string name) 
-        => this._context.Skills.Any(s => s.Name.ToLower() == this.RemoveWhitespaces(name).ToLower());
-
-    private string RemoveWhitespaces(string input)
-        => string.Concat(input.Where(c => !char.IsWhiteSpace(c)));
 }
