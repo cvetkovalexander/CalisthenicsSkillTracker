@@ -1,0 +1,199 @@
+﻿using CalisthenicsSkillTracker.Data;
+using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.Data.Models.Enums;
+using CalisthenicsSkillTracker.Services.Core.Interfaces;
+using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
+
+namespace CalisthenicsSkillTracker.Services.Core.Services
+{
+    // TODO: Separate the helper methods in a individual service.
+
+    public class WorkoutService : IWorkoutService
+    {
+        private readonly ApplicationDbContext _context;
+
+        public WorkoutService(ApplicationDbContext context)
+        {
+            this._context = context;
+        }
+
+        public async Task<Workout> CreateWorkoutAsync(CreateWorkoutViewModel model)
+        {
+            Workout workout = new Workout()
+            {
+                Date = model.Date,
+                UserId = model.UserId,
+                Notes = model.Notes
+            };
+
+            await this._context.Workouts.AddAsync(workout);
+            await this._context.SaveChangesAsync();
+
+            return workout;
+        }
+
+        public async Task CreateWorkoutExerciseAsync(AddWorkoutExerciseViewModel model)
+        {
+            WorkoutExercise workoutExercise = new WorkoutExercise()
+            {
+                WorkoutId = model.WorkoutId,
+                ExerciseId = model.ExerciseId
+            };
+
+            await this._context.WorkoutExercises.AddAsync(workoutExercise);
+            await this._context.SaveChangesAsync();
+        }
+
+        public async Task CreateWorkoutSetAsync(AddWorkoutSetViewModel model)
+        {
+            WorkoutSet set = new WorkoutSet()
+            {
+                WorkoutExerciseId = model.WorkoutExerciseId,
+                SetNumber = model.SetNumber,
+                Repetitions = model.Repetitions,
+                Duration = model.Duration,
+                Progression = model.Progression,
+                Notes = model.Notes
+            };
+
+            await this._context.WorkoutSets.AddAsync(set);
+            await this._context.SaveChangesAsync();
+        }
+
+        public async Task<Workout> GetWorkoutWithExercisesAsync(Guid id)
+        {
+            return await this._context.Workouts
+                .AsNoTracking()
+                .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Exercise)
+                .FirstAsync(w => w.Id == id);
+        }
+
+        public async Task<CreateWorkoutViewModel> CreateWorkoutViewModelAsync()
+        {
+            return new CreateWorkoutViewModel()
+            {
+                Users = await this.FetchUsersAsync(),
+                Date = DateTime.UtcNow
+            };
+        }
+
+        public async Task<AddWorkoutExerciseViewModel> CreateWorkoutExerciseViewModelAsync(Guid workoutId)
+        {
+            return new AddWorkoutExerciseViewModel()
+            {
+                AvailabeExercises = await this.FetchExercisesAsync(),
+                WorkoutId = workoutId,
+            };
+        }
+
+        public AddWorkoutSetViewModel AddWorkoutSetViewModel(Workout workout)
+        {
+            return new AddWorkoutSetViewModel()
+            {
+                WorkoutId = workout.Id,
+                Exercises = this.GetWorkoutExercises(workout),
+                Progressions = this.FetchProgressions()
+            };
+        }
+
+        public async Task<WorkoutExercise> GetWorkoutExerciseAsync(Guid workoutId, Guid workoutExerciseId)
+        {
+            return await this._context
+                .WorkoutExercises
+                .FirstAsync(we => we.WorkoutId == workoutId && we.Id == workoutExerciseId);
+        }
+
+        /* Helper methods */
+        public async Task<bool> UserExistsAsync(Guid id)
+        {
+            return await this._context
+                .Users
+                .AnyAsync(u => u.Id == id);
+        }
+
+        public async Task<bool> ExerciseExistsAsync(Guid id)
+        {
+            return await this._context
+                .Exercises
+                .AnyAsync(e => e.Id == id);
+        }
+
+        public async Task<List<SelectListItem>> FetchExercisesAsync()
+        {
+            return await this._context
+            .Exercises
+            .AsNoTracking()
+            .Select(e => new SelectListItem
+            {
+                Value = e.Id.ToString(),
+                Text = e.Name
+            })
+            .ToListAsync();
+        }
+
+        public async Task<List<SelectListItem>> FetchUsersAsync()
+        {
+            return await this._context
+                .Users
+                .AsNoTracking()
+                .Select(u => new SelectListItem
+                {
+                    Text = u.Username,
+                    Value = u.Id.ToString()
+                })
+                .ToListAsync();
+        }
+
+        public List<SelectListItem> GetWorkoutExercises(Workout workout)
+        {
+            return workout.WorkoutExercises
+                .Select(we => new SelectListItem
+                {
+                    Value = we.Id.ToString(),
+                    Text = we.Exercise.Name
+                })
+                .ToList();
+        }
+
+        public List<SelectListItem> FetchProgressions()
+        {
+            return Enum.GetValues<Progression>()
+                .Select(p => new SelectListItem
+                {
+                    Value = p.ToString(),
+                    Text = p.ToString()
+                })
+                .ToList();
+        }
+
+        public async Task<List<SelectListItem>> GetWorkoutExercisesAsync(Guid id)
+        {
+            Workout workout = await this._context
+                .Workouts
+                .AsNoTracking()
+                .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Exercise)
+                .SingleAsync(w => w.Id == id);
+
+            return this.GetWorkoutExercises(workout);
+        }
+
+        public async Task<bool> WorkoutExerciseExistsAsync(Guid workoutId, Guid workoutExerciseId)
+        {
+            return await this._context.
+                WorkoutExercises
+                .AnyAsync(we => we.WorkoutId == workoutId && we.Id == workoutExerciseId);
+        }
+
+        public async Task<bool> WorkoutExistsAsync(Guid id)
+        {
+            return await this._context
+                .Workouts
+                .AnyAsync(w => w.Id == id);
+        }
+    }
+}

@@ -28,12 +28,12 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <form asp-action="AddSets" method="post" class="row g-3 needs-validation" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
                         @Html.AntiForgeryToken()
 
                         <input asp-for="WorkoutId" type="hidden" />
                         @* <input asp-for="WorkoutExerciseId" type="hidden" /> *@
 
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert"></div>
 
                         <div class="col-12">
                             <label class="form-label">Exercise</label>

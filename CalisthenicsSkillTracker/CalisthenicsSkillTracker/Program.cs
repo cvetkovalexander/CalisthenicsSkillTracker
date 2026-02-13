@@ -20,6 +20,7 @@ public class Program
 
         builder.Services.AddScoped<ISkillOutputService, SkillOutputService>();
         builder.Services.AddScoped<ISkillInputService, SkillInputService>();
+        builder.Services.AddScoped<IWorkoutService, WorkoutService>();
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

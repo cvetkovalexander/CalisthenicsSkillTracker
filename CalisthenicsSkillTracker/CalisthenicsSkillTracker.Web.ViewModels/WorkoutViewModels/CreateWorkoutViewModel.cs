@@ -10,6 +10,7 @@ public class CreateWorkoutViewModel
     public DateTime Date { get; set; }
 
     [Required]
+    [Display(Name = "User")]
     public Guid UserId { get; set; }
 
     public IEnumerable<SelectListItem>? Users { get; set; }
