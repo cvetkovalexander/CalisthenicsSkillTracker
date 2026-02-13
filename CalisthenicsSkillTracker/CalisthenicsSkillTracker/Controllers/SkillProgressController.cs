@@ -1,112 +1,55 @@
-﻿using CalisthenicsSkillTracker.Data.Models.Enums;
-using CalisthenicsSkillTracker.Data;
-using CalisthenicsSkillTracker.Data.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using CalisthenicsSkillTracker.ViewModels.SkillProgressViewModels;
+using CalisthenicsSkillTracker.Services.Core.Interfaces;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
 public class SkillProgressController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ISkillProgressService _skillProgressService;
+    private readonly ILogger<SkillProgressController> _logger;
 
-    private const string UsersFetchKey = "Users";
-    private const string SkillsFetchKey = "Skills";
-    private const string ProgressionsFetchKey = "Progressions";
-
-    public SkillProgressController(ApplicationDbContext context)
+    public SkillProgressController(ISkillProgressService skillProgress, ILogger<SkillProgressController> logger)
     {
-        this._context = context;
+        this._skillProgressService = skillProgress;
+        this._logger = logger;
     }
 
     [HttpGet]
     public IActionResult Create()
     {
-        CreateSkillProgressViewModel model = new CreateSkillProgressViewModel();
-        this.PopulateSelectLists(model);
+        CreateSkillProgressViewModel model = this._skillProgressService.CreateSkillProgressViewModel();
 
         return View(model);
     }
 
     [HttpPost]
-    public IActionResult Create(CreateSkillProgressViewModel model)
+    public async Task<IActionResult> Create(CreateSkillProgressViewModel model)
     {
-        this.PopulateSelectLists(model);
-        if (!ModelState.IsValid) 
-        {
-            return this.View(model);
-        }
+        this._skillProgressService.PopulateSelectListItems(model);
 
-        User? user = this._context.Users.Find(model.UserId);
-        if (user is null) 
-        {
+        if (!await this._skillProgressService.UserExistsAsync(model.UserId)) 
             ModelState.AddModelError(nameof(model.UserId), "Invalid user id!");
 
-            return this.View(model);
-        }
-
-        Skill? skill = this._context.Skills.Find(model.SkillId);
-        if (skill is null) 
-        {
+        if (!await this._skillProgressService.SkillExistsAsync(model.SkillId)) 
             ModelState.AddModelError(nameof(model.SkillId), "Invalid skill id!");
 
+        if (!ModelState.IsValid)
             return this.View(model);
-        }
-
-       
 
         try 
         {
-            SkillProgress record = new SkillProgress
-            {
-                Id = Guid.NewGuid(),
-                UserId = model.UserId,
-                SkillId = model.SkillId,
-                Date = DateTime.UtcNow,
-                Progression = model.Progression,
-                Repetitions = model.Repetitions,
-                Duration = model.Duration,
-                Notes = model.Notes
-            };
-
-            this._context.SkillProgressRecords.Add(record);
-            this._context.SaveChanges();
+            await this._skillProgressService.CreateSkillProgress(model);
         }
         catch (Exception e) 
         {
-            Console.WriteLine(e);
+            this._logger.LogError(e, "Exception occured while trying to add a skill progress to database");
+
             ModelState.AddModelError(string.Empty, "An error occurred while logging the skill progress. Please try again.");
+
             return this.View(model);
         }
 
         return RedirectToAction("Index", "Home");
-    }
-
-    private void PopulateSelectLists(CreateSkillProgressViewModel model)
-    {
-        model.Users = this._context
-            .Users
-            .Select(u => new SelectListItem 
-            { 
-                Value = u.Id.ToString(), 
-                Text = u.Username 
-            })
-            .ToList();
-        model.Skills = this._context
-            .Skills
-            .Select(s => new SelectListItem 
-            { 
-                Value = s.Id.ToString(), 
-                Text = s.Name 
-            })
-            .ToList();
-        model.Progressions = Enum.GetValues<Progression>()
-            .Select(p => new SelectListItem 
-            { 
-                Value = p.ToString(), 
-                Text = p.ToString() 
-            })
-            .ToList();
     }
 }
