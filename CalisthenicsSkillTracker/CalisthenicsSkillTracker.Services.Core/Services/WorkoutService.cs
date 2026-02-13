@@ -5,7 +5,6 @@ using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 
 namespace CalisthenicsSkillTracker.Services.Core.Services
 {
@@ -83,10 +82,17 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
 
         public async Task<AddWorkoutExerciseViewModel> CreateWorkoutExerciseViewModelAsync(Guid workoutId)
         {
+            Workout workout = await this._context
+                .Workouts
+                .AsNoTracking()
+                .Include(w => w.WorkoutExercises)
+                .SingleAsync(w => w.Id == workoutId);
+
             return new AddWorkoutExerciseViewModel()
             {
                 AvailabeExercises = await this.FetchExercisesAsync(),
                 WorkoutId = workoutId,
+                HasExercises = workout.WorkoutExercises.Any()
             };
         }
 

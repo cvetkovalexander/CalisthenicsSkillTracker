@@ -10,11 +10,6 @@
             <h1 class="h3 mb-0">Log Workout</h1>
             <small class="text-muted d-block">Record a workout session for a user.</small>
         </div>
-        <div class="col-auto">
-            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
-                <img src="~/backarrow.png" style="width: 25px; height: auto;" />
-            </a>
-        </div>
     </div>
 
     <div class="row">
@@ -28,7 +23,7 @@
 
                         <div class="col-md-6">
                             <label asp-for="Date" class="form-label"></label>
-                            <input asp-for="Date" type="datetime-local" class="form-control" value="@Model.Date"/>
+                            <input asp-for="Date" type="datetime-local" class="form-control" value="@Model.Date.ToString("yyyy-MM-dd HH:mm:ss")" />
                             <span asp-validation-for="Date" class="text-danger small"></span>
                         </div>
 

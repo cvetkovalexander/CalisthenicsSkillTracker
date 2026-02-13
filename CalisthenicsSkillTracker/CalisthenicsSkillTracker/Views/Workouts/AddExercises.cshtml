@@ -10,12 +10,6 @@
             <h1 class="h3 mb-0">Add Exercise</h1>
             <small class="text-muted d-block">Choose an exercise to add to the current workout. After selecting an exercise, select sets for it on the next screen.</small>
         </div>
-
-        <div class="col-auto">
-            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
-                <img src="~/backarrow.png" style="width: 25px; height: auto;" />
-            </a>
-        </div>
     </div>
 
     @if (TempData["SuccessMessage"] != null)
@@ -79,12 +73,20 @@
                         }
                     </div>
 
-                    <a asp-controller="Workouts"
-                       asp-action="AddSets"
-                       asp-route-workoutId="@Model.WorkoutId"
-                       class="btn btn-primary m-2">
-                        Start entering sets
-                    </a>
+                    @if (Model!.HasExercises)
+                    {
+                        <a asp-controller="Workouts"
+                           asp-action="AddSets"
+                           asp-route-workoutId="@Model.WorkoutId"
+                           class="btn btn-primary m-2">
+                            Log sets
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary m-2" disabled>
+                            Log sets
+                        </button>                    }
                 </div>
             </div>
         </main>
@@ -108,38 +110,8 @@
     .list-group-item { display: flex; gap: .75rem; justify-content: space-between; align-items: center; }
 </style>
 
-@* @section Scripts {
+@section Scripts {
     <script>
-        (function () {
-            const select = document.querySelector('select[name="ExerciseId"]');
-            const selectSetsBtn = document.getElementById('selectSetsBtn');
-            const addAnotherBtn = document.getElementById('addAnotherBtn');
-
-            function updateButtons() {
-                const hasValue = select && select.value && select.value !== "";
-                selectSetsBtn.disabled = !hasValue;
-                addAnotherBtn.disabled = !hasValue;
-            }
-
-            if (select) {
-                select.addEventListener('change', updateButtons);
-                // initialize
-                updateButtons();
-            }
-
-            // "Add & Keep Adding" would normally post to an action that appends the exercise to the workout
-            // and returns to this page. Wire a simple placeholder until controller is implemented.
-            if (addAnotherBtn) {
-                addAnotherBtn.addEventListener('click', function () {
-                    if (!select.value) return;
-                    const url = new URL(window.location.href);
-                    url.pathname = '@Url.Action("AddExerciseAndReturn", "Workouts")';
-                    url.searchParams.set('exerciseId', select.value);
-                    url.searchParams.set('workoutId', document.querySelector('input[name="WorkoutId"]').value || '');
-                    // navigate (controller should handle and redirect back)
-                    window.location.href = url.toString();
-                });
-            }
-        })();
+        
     </script>
-} *@
+}

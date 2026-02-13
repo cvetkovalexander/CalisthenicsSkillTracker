@@ -33,7 +33,10 @@ public class WorkoutsController : Controller
             ModelState.AddModelError(nameof(model.UserId), "Invalid user id!");
 
         if (!ModelState.IsValid)
+        {
+
             return this.View(model);
+        }
 
         Workout workout = null!;
         try 
@@ -55,6 +58,9 @@ public class WorkoutsController : Controller
     [HttpGet]
     public async Task<IActionResult> AddExercises(Guid workoutId)
     {
+        if (!await this._workoutService.WorkoutExistsAsync(workoutId))
+            return this.NotFound();
+
         AddWorkoutExerciseViewModel model = await this._workoutService
             .CreateWorkoutExerciseViewModelAsync(workoutId);
 

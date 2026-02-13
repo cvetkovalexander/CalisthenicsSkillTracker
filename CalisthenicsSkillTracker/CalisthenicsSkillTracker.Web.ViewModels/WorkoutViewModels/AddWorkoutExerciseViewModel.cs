@@ -13,6 +13,8 @@ public class AddWorkoutExerciseViewModel
 
     public string Action { get; set; } = null!;
 
+    public bool HasExercises { get; set; }
+
     public List<SelectListItem> AvailabeExercises { get; set; } 
         = new List<SelectListItem>();
 }
