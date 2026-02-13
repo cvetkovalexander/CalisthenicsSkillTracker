@@ -1,38 +1,37 @@
-﻿using CalisthenicsSkillTracker.Data;
+﻿using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
+using CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
 public class ExercisesController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IExerciseInputService _inputService;
+    private readonly IExerciseOutputService _outputService;
 
-    public ExercisesController(ApplicationDbContext context)
+    public ExercisesController(IExerciseOutputService outputService, IExerciseInputService inputService)
     {
-        this._context = context;
+        this._inputService = inputService;
+        this._outputService = outputService;
     }
-    public IActionResult Index(string? filter)
+    public async Task<IActionResult> Index(string? filter)
     {
-        IEnumerable<ListTableItemViewModel> exercises = this._context
-            .Exercises
-            .AsNoTracking()
-            .OrderBy(e => e.Name)
-            .Select(e => new ListTableItemViewModel
-            {
-                Id = e.Id,
-                Name = e.Name,
-                Description = e.Description,
-                Difficulty = e.Difficulty
-            })
-            .ToArray();
-
-        if (filter is not null)
-              exercises = exercises.Where(s => s.Name.ToLower().Contains(filter.ToLower()));
+        IEnumerable<ListTableItemViewModel> exercises = await this._outputService.GetAllExercisesAsync(filter);
 
         ViewData["Filter"] = filter;
 
         return this.View(exercises);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(Guid id)
+    {
+        if (!await this._outputService.ExerciseExistsAsync(id))
+            return this.NotFound();
+
+        DetailsExerciseViewModel model = await this._outputService.GetExerciseDetailsAsync(id);
+
+        return this.View(model);
     }
 }

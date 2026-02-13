@@ -1,0 +1,67 @@
+﻿.details-card {
+    max-width: 800px;
+    margin: 2rem auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #dee2e6;
+}
+
+.details-card-header {
+    background-color: #0d6efd;
+    color: white;
+    padding: 1.5rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    border-bottom: 1px solid #0b5ed7;
+}
+
+.details-card-body {
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+}
+
+.details-field {
+    margin-bottom: 1.2rem;
+}
+
+    .details-field label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.3rem;
+        color: #343a40;
+    }
+
+    .details-field p {
+        margin: 0;
+        font-size: 1.05rem;
+        color: #212529;
+    }
+
+.skills-list {
+    padding-left: 1.2rem;
+    margin: 0;
+}
+
+.details-actions {
+    padding: 1rem 1.5rem;
+    background-color: #e9ecef;
+    text-align: right;
+    border-top: 1px solid #dee2e6;
+}
+
+    .details-actions a,
+    .details-actions form button {
+        margin-left: 0.5rem;
+    }
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+    .btn-delete:hover {
+        background-color: #c82333;
+        color: white;
+    }

@@ -1,11 +1,10 @@
 ﻿using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Models.Enums;
-using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace CalisthenicsSkillTracker.ViewModels.SkillViewModels;
+namespace CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
 
-public class DetailsSkillViewModel : ISkillViewModel
+public class DetailsExerciseViewModel
 {
     public string Name { get; set; } = null!;
 
@@ -18,7 +17,7 @@ public class DetailsSkillViewModel : ISkillViewModel
 
     public List<SelectListItem> CategoryOptions { get; set; } = new List<SelectListItem>();
 
-    public SkillType SkillType { get; set; }
+    public SkillType ExerciseType { get; set; }
 
     public List<SelectListItem> SkillTypeOptions { get; set; } = new List<SelectListItem>();
 
@@ -26,9 +25,6 @@ public class DetailsSkillViewModel : ISkillViewModel
 
     public List<SelectListItem> DifficultyOptions { get; set; } = new List<SelectListItem>();
 
-    public IReadOnlyCollection<SkillProgress> SkillRecords { get; set; }
-        = new List<SkillProgress>();
-
-    public ICollection<Exercise> Exercises { get; set; }
-        = new List<Exercise>();
+    public ICollection<Skill> Skills { get; set; }
+        = new List<Skill>();
 }

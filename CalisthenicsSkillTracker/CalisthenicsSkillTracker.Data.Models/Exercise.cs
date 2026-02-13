@@ -1,6 +1,5 @@
 ﻿using CalisthenicsSkillTracker.Data.Models.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CalisthenicsSkillTracker.Data.Models;
 
@@ -21,6 +20,9 @@ public class Exercise
 
     [Required]
     public Difficulty Difficulty { get; set; }
+
+    [Required]
+    public Measurement MeasurementType { get; set; }
 
     public virtual ICollection<Skill> Skills { get; set; } 
         = new List<Skill>();

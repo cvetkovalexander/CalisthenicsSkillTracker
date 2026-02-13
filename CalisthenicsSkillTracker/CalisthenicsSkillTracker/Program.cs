@@ -22,6 +22,8 @@ public class Program
         builder.Services.AddScoped<ISkillInputService, SkillInputService>();
         builder.Services.AddScoped<IWorkoutService, WorkoutService>();
         builder.Services.AddScoped<ISkillProgressService, SkillProgressService>();
+        builder.Services.AddScoped<IExerciseInputService, ExerciseInputService>();
+        builder.Services.AddScoped<IExerciseOutputService, ExerciseOutputService>();
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
