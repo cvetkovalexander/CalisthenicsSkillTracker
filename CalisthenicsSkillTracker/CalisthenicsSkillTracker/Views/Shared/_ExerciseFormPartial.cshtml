@@ -1,4 +1,4 @@
-﻿@model CalisthenicsSkillTracker.ViewModels.Interfaces.ISkillViewModel
+﻿@model CalisthenicsSkillTracker.ViewModels.Interfaces.IExerciseViewModel
 @{
     var formAction = ViewData["FormAction"] as string ?? "Create";
     var submitText = ViewData["SubmitText"] as string ?? "Save";
@@ -34,11 +34,11 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="SkillType"></label>
-                <select asp-for="SkillType" asp-items="Model.SkillTypeOptions" class="form-select custom-input">
+                <label asp-for="ExerciseType"></label>
+                <select asp-for="ExerciseType" asp-items="Model.ExerciseTypeOptions" class="form-select custom-input">
                     <option value="">Select type...</option>
                 </select>
-                <span asp-validation-for="SkillType" class="validation-text"></span>
+                <span asp-validation-for="ExerciseType" class="validation-text"></span>
             </div>
 
             <div class="form-group">
@@ -74,9 +74,9 @@
             <div class="delete-button-wrapper">
                 <form asp-action="Delete" method="post" class="d-inline">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" name="id" value="@ViewData["SkillId"]" />
+                    <input type="hidden" name="id" value="@ViewData["ExerciseId"]" />
                     <button type="submit" class="btn-delete"
-                            onclick="return confirm('Are you sure you want to delete this skill?');">
+                            onclick="return confirm('Are you sure you want to delete this exercise?');">
                         Delete
                     </button>
                 </form>
@@ -89,3 +89,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+

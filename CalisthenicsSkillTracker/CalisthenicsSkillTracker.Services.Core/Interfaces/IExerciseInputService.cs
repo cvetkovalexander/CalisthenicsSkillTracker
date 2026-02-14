@@ -1,4 +1,6 @@
-﻿using CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
+﻿using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
+using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CalisthenicsSkillTracker.Services.Core.Interfaces;
@@ -7,8 +9,13 @@ public interface IExerciseInputService
 {
     CreateExerciseViewModel CreateExerciseViewModelWithEnums();
     List<SelectListItem> FetchSelectedEnum(string key);
-    void FetchEnums(CreateExerciseViewModel model);
+    void FetchEnums(IExerciseViewModel model);
     Task<bool> ExerciseNameExistsAsync(string name);
     string RemoveWhitespaces(string input);
     Task CreateExerciseAsync(CreateExerciseViewModel model);
+    Task<EditExerciseViewModel> CreateEditExerciseViewModelAsync(Guid id);
+    Task<Exercise> GetExerciseByIdAsync(Guid id);
+    Task<bool> ExerciseNameExcludingCurrentExistsAsync(Guid id, string name);
+    Task EditExerciseDataAsync(EditExerciseViewModel model);
+    Task DeleteExerciseAsync(Guid id);
 }

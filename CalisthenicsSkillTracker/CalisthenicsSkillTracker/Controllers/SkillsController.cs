@@ -125,7 +125,7 @@ public class SkillsController : Controller
         {
             this._logger.LogError(e, "Exception occured while trying to delete a skill from database");
 
-            ModelState.AddModelError(string.Empty, "An error occurred while adding the skill. Please try again.");
+            ModelState.AddModelError(string.Empty, "An error occurred while deleting the skill. Please try again.");
 
             return this.RedirectToAction("Edit");
         }

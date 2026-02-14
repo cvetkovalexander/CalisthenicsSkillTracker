@@ -1,13 +1,16 @@
-﻿namespace CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
-
-using CalisthenicsSkillTracker.Data.Models.Enums;
+﻿using CalisthenicsSkillTracker.Data.Models.Enums;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+
+namespace CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
+
 using static GCommon.EntityValidation.Exercise;
 
-public class CreateExerciseViewModel : IExerciseViewModel
+public class EditExerciseViewModel : IExerciseViewModel
 {
+    public Guid Id { get; set; }
+
     [Required]
     [MinLength(NameMinLength)]
     [MaxLength(NameMaxLength)]

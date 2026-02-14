@@ -83,7 +83,7 @@ public class ExerciseInputService : IExerciseInputService
         return enums[key];
     }
 
-    public void FetchEnums(CreateExerciseViewModel model)
+    public void FetchEnums(IExerciseViewModel model)
     {
         model.MeasurementOptions = this.FetchSelectedEnum(MeasurementKey);
         model.CategoryOptions = this.FetchSelectedEnum(CategoryKey);
@@ -110,6 +110,66 @@ public class ExerciseInputService : IExerciseInputService
         };
 
         await this._context.Exercises.AddAsync(exercise);
+        await this._context.SaveChangesAsync();
+    }
+
+    public async Task<EditExerciseViewModel> CreateEditExerciseViewModelAsync(Guid id)
+    {
+        Exercise exerciseEntity = await this.GetExerciseByIdAsync(id);
+
+        EditExerciseViewModel model = new EditExerciseViewModel()
+        {
+            Id = exerciseEntity.Id,
+            Name = exerciseEntity.Name,
+            Description = exerciseEntity.Description,
+            Measurement = exerciseEntity.MeasurementType,
+            Category = exerciseEntity.Category,
+            ExerciseType = exerciseEntity.ExerciseType,
+            Difficulty = exerciseEntity.Difficulty
+        };
+
+        this.FetchEnums(model);
+
+        return model;
+    }
+
+    public async Task<Exercise> GetExerciseByIdAsync(Guid id)
+    {
+        return await this._context
+            .Exercises
+            .AsNoTracking()
+            .SingleAsync(e => e.Id == id);
+    }
+
+    public async Task<bool> ExerciseNameExcludingCurrentExistsAsync(Guid id, string name)
+    {
+        return await this._context
+            .Exercises
+            .AsNoTracking()
+            .AnyAsync(e => e.Id != id && e.Name.ToLower() == this.RemoveWhitespaces(name).ToLower());
+    }
+
+    public async Task EditExerciseDataAsync(EditExerciseViewModel model)
+    {
+        Exercise exercise = await this.GetExerciseByIdAsync(model.Id);
+
+        exercise.Name = model.Name;
+        exercise.Description = model.Description;
+        exercise.MeasurementType = model.Measurement;
+        exercise.Category = model.Category;
+        exercise.ExerciseType = model.ExerciseType;
+        exercise.Difficulty = model.Difficulty;
+
+        this._context.Exercises.Update(exercise);
+        await this._context.SaveChangesAsync();
+    }
+
+    public async Task DeleteExerciseAsync(Guid id)
+    {
+        Exercise exerciseEntity = await this.GetExerciseByIdAsync(id);
+
+        this._context.Exercises.Remove(exerciseEntity);
+
         await this._context.SaveChangesAsync();
     }
 }

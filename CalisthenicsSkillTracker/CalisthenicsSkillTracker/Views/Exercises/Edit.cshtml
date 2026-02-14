@@ -1,0 +1,36 @@
+﻿@using CalisthenicsSkillTracker.ViewModels.ExerciseViewModels
+@model EditExerciseViewModel
+
+@{
+    ViewData["Title"] = "Edit Exercise";
+    ViewData["FormAction"] = "Edit";
+    ViewData["SubmitText"] = "Save Changes";
+    ViewData["ExerciseId"] = Model.Id;
+}
+
+<div class="container py-4">
+    <div class="row">
+        <partial name="_ExerciseFormPartial" />
+
+        @* <partial name="_SkillGuidelines" model="@guidelines" /> *@ @*TODO: Add guidelines in the future*@
+    </div>
+</div>
+
+<style>
+    .needs-validation .text-danger {
+        display: block;
+        margin-top: .25rem;
+    }
+
+    .card .form-label {
+        font-weight: 600;
+    }
+
+    .card .form-control, .card .form-select, .card textarea {
+        min-height: calc(1.5em + 0.75rem + 2px);
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

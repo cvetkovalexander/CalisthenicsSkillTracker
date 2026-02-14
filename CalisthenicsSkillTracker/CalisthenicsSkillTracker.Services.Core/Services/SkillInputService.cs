@@ -64,7 +64,7 @@ public class SkillInputService : ISkillInputService
 
     public async Task EditSkillDataAsync(EditSkillViewModel model)
     {
-        Data.Models.Skill skill = await this.GetSkillByIdAsync(model.Id);
+        Skill skill = await this.GetSkillByIdAsync(model.Id);
 
         skill.Name = model.Name;
         skill.Description = model.Description;
