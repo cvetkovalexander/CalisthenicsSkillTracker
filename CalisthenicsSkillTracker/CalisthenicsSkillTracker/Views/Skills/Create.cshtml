@@ -2,32 +2,16 @@
 @model CreateSkillViewModel
 
 @{
-    ViewData["Title"] = "Add Skill";
+    ViewData["Title"] = "Insert New Skill";
     ViewData["FormAction"] = "Create";
-    ViewData["SubmitText"] = "Insert Skill";
-
-    IEnumerable<string> guidelines = new List<string>
-    {
-        "Choose the measurement type to match how progress is tracked.",
-        "Category and skill type help group skills in lists and filters.",
-        "Difficulty is used for filtering and suggested progressions."
-    };
+    ViewData["SubmitText"] = "Create Skill";
 }
 
 <div class="container py-4">
-    <div class="row mb-3">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <h1 class="fw-bold mb-0">Insert New Skill</h1>
-            <a asp-action="Index" class="btn btn-outline-secondary">
-                <img src="~/backarrow.png" style="width: 25px; height: auto;" />
-            </a>
-        </div>
-    </div>
-
     <div class="row">
         <partial name="_SkillFormPartial" />
 
-        <partial name="_SkillGuidelines" model="@guidelines" />
+        @* <partial name="_SkillGuidelines" model="@guidelines" /> *@ @*TODO: Add guidelines in the future*@
     </div>
 </div>
 

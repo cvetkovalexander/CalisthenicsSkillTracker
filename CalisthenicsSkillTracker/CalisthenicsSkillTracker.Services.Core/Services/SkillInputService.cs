@@ -28,7 +28,7 @@ public class SkillInputService : ISkillInputService
 
     public async Task CreateSkillAsync(CreateSkillViewModel model)
     {
-        Data.Models.Skill skill = new Data.Models.Skill()
+        Skill skill = new Data.Models.Skill()
         {
             Name = model.Name,
             Description = model.Description,
@@ -44,7 +44,7 @@ public class SkillInputService : ISkillInputService
 
     public async Task<EditSkillViewModel> CreateEditSkillViewModelAsync(Guid id)
     {
-        Data.Models.Skill skillEntity = await this.GetSkillByIdAsync(id);
+        Skill skillEntity = await this.GetSkillByIdAsync(id);
 
         EditSkillViewModel model = new EditSkillViewModel()
         {

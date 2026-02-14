@@ -48,4 +48,13 @@ public static class EntityValidation
         public const int DurationMinValue = 1;
         public const int DurationMaxValue = 3600;
     }
+
+    public static class Exercise 
+    {
+        public const int NameMinLength = 3;
+        public const int NameMaxLength = 50;
+
+        public const int DescriptionMinLength = 5;
+        public const int DescriptionMaxLength = 500;
+    }
 }
