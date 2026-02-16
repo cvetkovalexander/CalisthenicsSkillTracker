@@ -28,7 +28,10 @@ public class Program
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+        {
+            ConfigureIdentity(options, builder.Configuration);
+        })
             .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddControllersWithViews();
 
@@ -60,5 +63,42 @@ public class Program
         app.MapRazorPages();
 
         app.Run();
+    }
+
+    private static void ConfigureIdentity(IdentityOptions options, ConfigurationManager configuration) 
+    {
+        /* Development settings */
+
+        // Sign in settings
+        options.SignIn.RequireConfirmedAccount = configuration
+            .GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedAccount");
+        options.SignIn.RequireConfirmedEmail = configuration
+            .GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedEmail"); ;
+        options.SignIn.RequireConfirmedPhoneNumber = configuration
+            .GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedPhoneNumber");
+
+        //User settings
+        options.User.RequireUniqueEmail = configuration
+            .GetValue<bool>("IdentityOptions:User:RequireUniqueEmail");
+
+        // Locout settings
+        options.Lockout.MaxFailedAccessAttempts = configuration
+            .GetValue<int>("IdentityOptions:Lockout:MaxFailedAttempts");
+        options.Lockout.DefaultLockoutTimeSpan = configuration
+            .GetValue<TimeSpan>("IdentityOptions:Lockout:DefaultLockoutTimeSpan");
+
+        // Password settings - security is not requred for development
+        options.Password.RequireDigit = configuration
+            .GetValue<bool>("IdentityOptions:Password:RequireDigit"); ;
+        options.Password.RequireLowercase = configuration
+            .GetValue<bool>("IdentityOptions:Password:RequireLowercase");
+        options.Password.RequireUppercase = configuration
+            .GetValue<bool>("IdentityOptions:Password:RequireConfirmedAccount");
+        options.Password.RequireNonAlphanumeric = configuration
+            .GetValue<bool>("IdentityOptions:Password:RequireNonAlphanumeric");
+        options.Password.RequiredLength = configuration
+            .GetValue<int>("IdentityOptions:Password:RequiredLength");
+        options.Password.RequiredUniqueChars = configuration
+            .GetValue<int>("IdentityOptions:Password:RequiredUniqueChars");
     }
 }
