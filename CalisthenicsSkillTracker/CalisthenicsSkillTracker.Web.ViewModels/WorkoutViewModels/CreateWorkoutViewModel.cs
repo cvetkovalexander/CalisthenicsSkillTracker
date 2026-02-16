@@ -1,7 +1,6 @@
 ﻿namespace CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 
 using CalisthenicsSkillTracker.GCommon.Utilities.Attributes;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using static GCommon.EntityValidation.Workout;
 
@@ -12,10 +11,13 @@ public class CreateWorkoutViewModel
     public DateTime Date { get; set; }
 
     [Required]
-    [Display(Name = "User")]
     public string UserId { get; set; } = null!;
 
-    public IEnumerable<SelectListItem>? Users { get; set; }
+    [Required]
+    public string Start { get; set; } = null!;
+
+    [Required]
+    public string End { get; set; } = null!;
 
     [MinLength(NotesMinLength)]
     [MaxLength(NotesMaxLength)]

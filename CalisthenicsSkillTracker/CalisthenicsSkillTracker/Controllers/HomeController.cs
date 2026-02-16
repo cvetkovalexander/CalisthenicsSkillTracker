@@ -17,13 +17,13 @@ namespace CalisthenicsSkillTracker.Controllers
             return View();
         }
 
-        [AllowAnonymous
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();
         }
 
-        [AllowAnonymousA]
+        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

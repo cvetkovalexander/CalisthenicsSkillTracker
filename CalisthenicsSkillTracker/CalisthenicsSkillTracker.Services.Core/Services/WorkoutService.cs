@@ -5,7 +5,7 @@ using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-
+using System.Globalization;
 namespace CalisthenicsSkillTracker.Services.Core.Services
 {
     // TODO: Separate the helper methods in a individual service.
@@ -19,13 +19,15 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
             this._context = context;
         }
 
-        public async Task<Workout> CreateWorkoutAsync(CreateWorkoutViewModel model)
+        public async Task<Workout> CreateWorkoutAsync(CreateWorkoutViewModel model, TimeSpan start, TimeSpan end)
         {
             Workout workout = new Workout()
             {
                 Date = model.Date,
                 UserId = model.UserId,
-                Notes = model.Notes
+                Notes = model.Notes,
+                Start = start,
+                End = end
             };
 
             await this._context.Workouts.AddAsync(workout);
@@ -71,11 +73,11 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 .FirstAsync(w => w.Id == id);
         }
 
-        public async Task<CreateWorkoutViewModel> CreateWorkoutViewModelAsync()
+        public CreateWorkoutViewModel CreateWorkoutViewModel(string userId)
         {
             return new CreateWorkoutViewModel()
             {
-                Users = await this.FetchUsersAsync(),
+                UserId = userId,
                 Date = DateTime.UtcNow
             };
         }
@@ -114,13 +116,6 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
         }
 
         /* Helper methods */
-        public async Task<bool> UserExistsAsync(string id)
-        {
-            return await this._context
-                .Users
-                .AnyAsync(u => u.Id == id);
-        }
-
         public async Task<bool> ExerciseExistsAsync(Guid id)
         {
             return await this._context
@@ -140,20 +135,6 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
             })
             .ToListAsync();
         }
-
-        public async Task<List<SelectListItem>> FetchUsersAsync()
-        {
-            return await this._context
-                .Users
-                .AsNoTracking()
-                .Select(u => new SelectListItem
-                {
-                    Text = u.UserName,
-                    Value = u.Id.ToString()
-                })
-                .ToListAsync();
-        }
-
         public List<SelectListItem> GetWorkoutExercises(Workout workout)
         {
             return workout.WorkoutExercises
@@ -200,6 +181,22 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
             return await this._context
                 .Workouts
                 .AnyAsync(w => w.Id == id);
+        }
+
+        public async Task<bool> UserExistsAsync(string id)
+        {
+            return await this._context
+                .Users
+                .AnyAsync(u => u.Id == id);
+        }
+
+        public bool isTimeValid(string input, out TimeSpan output)
+        {
+            return TimeSpan.TryParseExact(
+                input,
+                new[] { @"h\:mm", @"hh\:mm" },
+                CultureInfo.InvariantCulture,
+                out output);
         }
     }
 }

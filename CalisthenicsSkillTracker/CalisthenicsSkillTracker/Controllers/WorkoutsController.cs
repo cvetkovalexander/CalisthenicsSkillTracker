@@ -17,9 +17,13 @@ public class WorkoutsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Log()
+    public IActionResult Log()
     {
-        CreateWorkoutViewModel model = await this._workoutService.CreateWorkoutViewModelAsync();
+        string? userId = GetUserId();
+        if (userId is null)
+            return this.Unauthorized();
+
+        CreateWorkoutViewModel model = this._workoutService.CreateWorkoutViewModel(userId);
 
         return this.View(model);
     }
@@ -27,21 +31,27 @@ public class WorkoutsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Log(CreateWorkoutViewModel model)
     {
-        model.Users = await this._workoutService.FetchUsersAsync();
+        if (string.IsNullOrEmpty(model.UserId))
+            ModelState.AddModelError(string.Empty, "User ID is missing.");
 
-        if (!await this._workoutService.UserExistsAsync(model.UserId)) 
-            ModelState.AddModelError(nameof(model.UserId), "Invalid user id!");
+        if (!await this._workoutService.UserExistsAsync(model.UserId))
+            ModelState.AddModelError(string.Empty, "User is not found.");
+
+        if (!this._workoutService.isTimeValid(model.Start, out TimeSpan start))
+            ModelState.AddModelError(nameof(model.Start), "Use time format {HH:mm} for start");
+
+        if (!this._workoutService.isTimeValid(model.End, out TimeSpan end))
+            ModelState.AddModelError(nameof(model.End), "Use time format {HH:mm} for end");
 
         if (!ModelState.IsValid)
         {
-
             return this.View(model);
         }
 
         Workout workout = null!;
         try 
         {
-            workout = await this._workoutService.CreateWorkoutAsync(model);
+            workout = await this._workoutService.CreateWorkoutAsync(model, start, end);
         }
         catch (Exception e) 
         {

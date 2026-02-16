@@ -4,68 +4,67 @@
     ViewData["Title"] = "Log Workout";
 }
 
-<div class="container py-4">
-    <div class="row mb-3 align-items-center">
-        <div class="col">
-            <h1 class="h3 mb-0">Log Workout</h1>
-            <small class="text-muted d-block">Record a workout session for a user.</small>
+<div class="log-workout-wrapper">
+    <div class="log-workout-card">
+        <h1 class="log-workout-title">Log workout date and notes</h1>
+        <form asp-action="Log" method="post" class="needs-validation" novalidate>
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
+
+            <input asp-for="UserId" type="hidden" />
+
+            <div class="form-group">
+                <label asp-for="Date">Date</label>
+                <input asp-for="Date" type="date" class="custom-input" value="@Model.Date.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Start" class="form-label"></label>
+                <input asp-for="Start"
+                       type="text"
+                       class="form-control"
+                       placeholder="HH:mm"
+                       pattern="^([0-9]|1[0-9]|2[0-3]):([0-5][0-9])$" />
+                <span asp-validation-for="Start" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="End" class="form-label"></label>
+                <input asp-for="End"
+                       type="text"
+                       class="form-control"
+                       placeholder="HH:mm"
+                       pattern="^([0-9]|1[0-9]|2[0-3]):([0-5][0-9])$" />
+                <span asp-validation-for="End" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="Notes">Notes</label>
+                <textarea asp-for="Notes" class="custom-textarea" rows="5" placeholder="Optional notes for better experience about the workout (warmup, focus, comments)"></textarea>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn-log">
+                    <i class="bi bi-check2-circle"></i> Log exercises and sets
+                </button>
+                <button type="button" class="btn-cancel" onclick="location.href='@Url.Action("Index")'">
+                    Cancel
+                </button>
+            </div>
+        </form>
+
+        <div class="card-tips text-center">
+            <h5>Tips</h5>
+            <p>Use 24-hour format when entering your workout times (e.g., 09:30 or 18:45).</p>
+            <p>If your workout passes midnight, enter the finish time as it appears on the clock (e.g., 22:30 to 01:00).</p>
         </div>
     </div>
-
-    <div class="row">
-        <main class="col-lg-8">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <form asp-action="Log" method="post" class="row g-3 needs-validation" novalidate>
-                        @Html.AntiForgeryToken()
-
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert"></div>
-
-                        <div class="col-md-6">
-                            <label asp-for="Date" class="form-label"></label>
-                            <input asp-for="Date" type="datetime-local" class="form-control" value="@Model.Date.ToString("yyyy-MM-dd HH:mm:ss")" />
-                            <span asp-validation-for="Date" class="text-danger small"></span>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label asp-for="UserId" class="form-label">User</label>
-                            <select asp-for="UserId" asp-items="Model.Users" class="form-select">
-                                <option value="">Select user...</option>
-                            </select>
-                            <span asp-validation-for="UserId" class="text-danger small"></span>
-                        </div>
-
-                        <div class="col-12">
-                            <label asp-for="Notes" class="form-label"></label>
-                            <textarea asp-for="Notes" class="form-control" rows="5" placeholder="Optional notes for better experience about the workout (warmup, focus, comments)"></textarea>
-                            <span asp-validation-for="Notes" class="text-danger small"></span>
-                        </div>
-
-                        <div class="col-12 d-flex gap-2 mt-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check2-circle"></i> Log exercises and sets
-                            </button>
-                            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </main>
-
-        <aside class="col-lg-4 mt-3 mt-lg-0">
-            <div class="card border-0">
-                <div class="card-body">
-                    <h5 class="card-title">Tips</h5>
-                    <ul class="list-unstyled small text-muted mb-0">
-                        <li>- Use the date/time field to record the actual workout start time.</li>
-                        <li>- Select the user for whom you're logging the workout.</li>
-                        <li>- Add notes about focus, sets, or any observations.</li>
-                    </ul>
-                </div>
-            </div>
-        </aside>
-    </div>
 </div>
+
 
 <style>
     /* View-scoped helpers */

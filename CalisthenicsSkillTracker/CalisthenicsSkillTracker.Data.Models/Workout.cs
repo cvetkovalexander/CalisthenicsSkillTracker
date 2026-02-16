@@ -17,6 +17,15 @@ public class Workout
     public DateTime Date { get; set; }
 
     [Required]
+    public TimeSpan Start { get; set; }
+
+    [Required]
+    public TimeSpan End { get; set; }
+
+    [Required]
+    public TimeSpan Duration { get; set; }
+
+    [Required]
     [ForeignKey(nameof(User))]
     public string UserId { get; set; } = null!;
 
