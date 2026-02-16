@@ -1,4 +1,4 @@
-﻿@model IEnumerable<User>
+﻿@model IEnumerable<ApplicationUser>
 
 @{
     ViewData["Title"] = "All users";
@@ -28,7 +28,7 @@ else
         <tbody>
             @foreach (var user in Model)
             {
-                <tr>
+                @* <tr>
                     <td>@(user.Username ?? "—")</td>
                     <td>@(user.Email ?? "—")</td>
                     <td>@(user.CreatedAt.ToString("yyyy-MM-dd"))</td>
@@ -39,7 +39,7 @@ else
                         |
                         <a asp-action="Delete" asp-route-id="@(user?.Id)">Delete</a>
                     </td>
-                </tr>
+                </tr> *@
             }
         </tbody>
     </table>

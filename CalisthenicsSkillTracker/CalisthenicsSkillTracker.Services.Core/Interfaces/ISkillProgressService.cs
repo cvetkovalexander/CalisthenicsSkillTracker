@@ -11,6 +11,6 @@ public interface ISkillProgressService
     /* Helper methods */
 
     void PopulateSelectListItems(CreateSkillProgressViewModel model);
-    Task<bool> UserExistsAsync(Guid id);
+    Task<bool> UserExistsAsync(string id);
     Task<bool> SkillExistsAsync(Guid id);
 }

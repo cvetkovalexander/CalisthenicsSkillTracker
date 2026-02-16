@@ -4,8 +4,7 @@
     var records = Model?.ToArray() ?? Array.Empty<CalisthenicsSkillTracker.Data.Models.SkillProgress>();
     var first = records.FirstOrDefault();
     var userDisplay = first?.PerformedBy is not null
-        ? $"{first.PerformedBy.FirstName}{(string.IsNullOrWhiteSpace(first.PerformedBy.LastName) ? "" : $" {first.PerformedBy.LastName}")} ({first.PerformedBy.Username})"
-        : "Unknown user";
+        ? first.PerformedBy.UserName : "Unknown";
 }
 
 <h1>Progress Records</h1>

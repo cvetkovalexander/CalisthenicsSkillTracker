@@ -13,7 +13,7 @@ public class CreateWorkoutViewModel
 
     [Required]
     [Display(Name = "User")]
-    public Guid UserId { get; set; }
+    public string UserId { get; set; } = null!;
 
     public IEnumerable<SelectListItem>? Users { get; set; }
 

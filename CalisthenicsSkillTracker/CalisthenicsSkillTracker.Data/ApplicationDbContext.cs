@@ -1,19 +1,16 @@
 ﻿using CalisthenicsSkillTracker.Data.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace CalisthenicsSkillTracker.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
-        public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<Skill> Skills { get; set; } = null!;
         public virtual DbSet<SkillProgress> SkillProgressRecords { get; set; } = null!;
 
@@ -43,15 +40,6 @@ namespace CalisthenicsSkillTracker.Data
                           .HasForeignKey("ExerciseId")
                           .OnDelete(DeleteBehavior.Cascade)
             );
-
-
-            builder.Entity<User>()
-                .HasIndex(u => u.Username)
-                .IsUnique();
-
-            builder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
 
             builder.Entity<SkillProgress>()
                 .HasOne(sp => sp.PerformedBy)

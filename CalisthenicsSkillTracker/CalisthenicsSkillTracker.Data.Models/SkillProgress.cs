@@ -12,11 +12,12 @@ public class SkillProgress
     [Key]
     public Guid Id { get; set; }
 
-    [ForeignKey(nameof(User))]
-    public Guid UserId { get; set; }
+    [Required]
+    [ForeignKey(nameof(PerformedBy))]
+    public string UserId { get; set; } = null!;
 
     [Required]
-    public virtual User PerformedBy { get; set; } = null!;
+    public virtual ApplicationUser PerformedBy { get; set; } = null!;
 
     [ForeignKey(nameof(Skill))]
     public Guid SkillId { get; set; }

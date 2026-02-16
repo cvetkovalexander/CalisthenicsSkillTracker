@@ -18,7 +18,7 @@ public interface IWorkoutService
     AddWorkoutSetViewModel AddWorkoutSetViewModel(Workout workout);
 
     /* Helper methods */
-    Task<bool> UserExistsAsync(Guid id);
+    Task<bool> UserExistsAsync(string id);
     Task<bool> ExerciseExistsAsync(Guid id);
     Task<bool> WorkoutExistsAsync(Guid id);
     Task<List<SelectListItem>> FetchUsersAsync();

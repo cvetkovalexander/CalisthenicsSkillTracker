@@ -52,7 +52,7 @@ public class SkillProgressService : ISkillProgressService
             .Select(u => new SelectListItem
             {
                 Value = u.Id.ToString(),
-                Text = u.Username
+                Text = u.UserName
             })
             .ToList();
         model.Skills = this._context
@@ -79,7 +79,7 @@ public class SkillProgressService : ISkillProgressService
             .AnyAsync(s => s.Id == id);
     }
 
-    public async Task<bool> UserExistsAsync(Guid id)
+    public async Task<bool> UserExistsAsync(string id)
     {
         return await this._context
             .Users

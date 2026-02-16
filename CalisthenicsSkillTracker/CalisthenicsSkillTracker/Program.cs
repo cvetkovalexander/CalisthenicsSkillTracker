@@ -1,4 +1,5 @@
 using CalisthenicsSkillTracker.Data;
+using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.Services.Core.Services;
 using Microsoft.AspNetCore.Identity;
@@ -50,6 +51,7 @@ public class Program
 
         app.UseRouting();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllerRoute(

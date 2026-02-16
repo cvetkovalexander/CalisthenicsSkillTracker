@@ -114,7 +114,7 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
         }
 
         /* Helper methods */
-        public async Task<bool> UserExistsAsync(Guid id)
+        public async Task<bool> UserExistsAsync(string id)
         {
             return await this._context
                 .Users
@@ -148,7 +148,7 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 .AsNoTracking()
                 .Select(u => new SelectListItem
                 {
-                    Text = u.Username,
+                    Text = u.UserName,
                     Value = u.Id.ToString()
                 })
                 .ToListAsync();

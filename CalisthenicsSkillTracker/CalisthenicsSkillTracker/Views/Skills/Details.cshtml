@@ -73,7 +73,7 @@
                                                 <td>
                                                     @if (r.PerformedBy is not null)
                                                     {
-                                                        @($"{r.PerformedBy.FirstName}{(string.IsNullOrWhiteSpace(r.PerformedBy.LastName) ? "" : $" {r.PerformedBy.LastName}")} ({r.PerformedBy.Username})")
+                                                        @* @($"{r.PerformedBy.UserName}{(string.IsNullOrWhiteSpace(r.PerformedBy.LastName) ? "" : $" {r.PerformedBy.LastName}")} ({r.PerformedBy.Username})") *@
                                                     }
                                                     else
                                                     {

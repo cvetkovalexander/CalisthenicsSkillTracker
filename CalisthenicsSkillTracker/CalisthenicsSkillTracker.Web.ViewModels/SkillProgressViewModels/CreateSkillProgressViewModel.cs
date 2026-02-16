@@ -10,7 +10,7 @@ using static GCommon.EntityValidation.SkillSet;
 public class CreateSkillProgressViewModel
 {
     [Required]
-    public Guid UserId { get; set; }
+    public string UserId { get; set; }
 
     [Required]
     public Guid SkillId { get; set; }

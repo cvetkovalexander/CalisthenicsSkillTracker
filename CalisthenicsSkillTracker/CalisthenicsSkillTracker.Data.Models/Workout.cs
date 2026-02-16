@@ -18,10 +18,10 @@ public class Workout
 
     [Required]
     [ForeignKey(nameof(User))]
-    public Guid UserId { get; set; }
+    public string UserId { get; set; } = null!;
 
     [Required]
-    public virtual User User { get; set; } = null!;
+    public virtual ApplicationUser User { get; set; } = null!;
 
     [MaxLength(NotesMaxLength)]
     public string? Notes { get; set; } 
