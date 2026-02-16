@@ -3,6 +3,8 @@ using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using NuGet.Packaging.Signing;
+using System.Threading.Tasks;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
@@ -169,5 +171,17 @@ public class WorkoutsController : ControllerBase
         TempData["SuccessMessage"] = "Exercise set added successfully!";
 
         return this.RedirectToAction("AddSets", new { workoutId = model.WorkoutId });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> MyWorkouts() 
+    {
+        string? userId = GetUserId();
+        if (userId is null)
+            return this.Unauthorized();
+
+        IEnumerable<WorkoutDetailsViewModel> models = await this._workoutService.CreateWorkoutDetailsViewModels(userId);
+
+        return this.View(models);
     }
 }

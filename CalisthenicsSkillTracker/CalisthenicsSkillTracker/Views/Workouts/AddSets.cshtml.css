@@ -1,5 +1,4 @@
-﻿/* Wrapper & Card */
-.log-workout-wrapper {
+﻿.log-workout-wrapper {
     min-height: 90vh;
     display: flex;
     justify-content: center;
@@ -25,7 +24,6 @@
     margin-bottom: 30px;
 }
 
-/* Form Inputs */
 .form-group {
     margin-bottom: 25px;
     display: flex;
@@ -62,7 +60,6 @@
     margin-top: 5px;
 }
 
-/* Buttons */
 .button-group {
     display: flex;
     gap: 15px;
@@ -114,7 +111,6 @@
         box-shadow: 0 7px 20px rgba(79, 195, 247, 0.4);
     }
 
-/* Tips Card */
 .card-tips {
     background: #2a2a3d;
     border-radius: 16px;

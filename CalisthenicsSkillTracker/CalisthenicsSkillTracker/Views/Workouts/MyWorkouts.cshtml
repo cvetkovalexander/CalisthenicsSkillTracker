@@ -1,0 +1,38 @@
+﻿@using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels
+@model IEnumerable<WorkoutDetailsViewModel>
+
+@{
+    ViewData["Title"] = "My workouts";
+}
+
+<h2 class="text-center">My Workouts</h2>
+
+<table class="table table-striped workout-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Duration</th>
+            <th>Notes</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var workout in Model)
+        {
+            <tr>
+                <td>@workout.Date.ToShortDateString()</td>
+                <td>@workout.Start</td>
+                <td>@workout.End</td>
+                <td>@workout.Duration</td>
+                <td>@(workout.Notes is null ? "---" : workout.Notes)</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@workout.Id">
+                        Details
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

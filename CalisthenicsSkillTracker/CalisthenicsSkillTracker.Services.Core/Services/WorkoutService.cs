@@ -209,5 +209,29 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
 
             return workout.WorkoutExercises.Any(e => e.ExerciseId == exerciseId);
         }
+
+        public async Task<IEnumerable<WorkoutDetailsViewModel>> CreateWorkoutDetailsViewModels(string userId)
+        {
+            IEnumerable<Workout> workouts = await this._context
+                .Workouts
+                .Where(w => w.UserId == userId)
+                .OrderByDescending(w => w.Date)
+                .ThenByDescending(w => w.Start)
+                .AsNoTracking()
+                .ToListAsync();
+
+            IEnumerable<WorkoutDetailsViewModel> viewModels = workouts.Select(w => new WorkoutDetailsViewModel
+            {
+                Id = w.Id,
+                Date = w.Date,
+                Start = w.Start,
+                End = w.End,
+                Duration = w.Duration,
+                Notes = w.Notes,  
+                
+            }).ToList();
+
+            return viewModels;
+        }
     }
 }
