@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
-public class WorkoutsController : Controller
+public class WorkoutsController : ControllerBase
 {
     private readonly IWorkoutService _workoutService;
     private readonly ILogger<WorkoutsController> _logger;
