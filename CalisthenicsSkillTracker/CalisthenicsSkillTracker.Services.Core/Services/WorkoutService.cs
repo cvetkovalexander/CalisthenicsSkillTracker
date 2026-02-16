@@ -198,5 +198,16 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 CultureInfo.InvariantCulture,
                 out output);
         }
+
+        public async Task<bool> ExerciseAlreadyAddedAsync(Guid workoutId, Guid exerciseId)
+        {
+            Workout workout  = await this._context
+                .Workouts
+                .Include(w => w.WorkoutExercises)
+                .AsNoTracking()
+                .FirstAsync(w => w.Id == workoutId);
+
+            return workout.WorkoutExercises.Any(e => e.ExerciseId == exerciseId);
+        }
     }
 }

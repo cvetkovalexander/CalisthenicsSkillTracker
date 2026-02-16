@@ -2,6 +2,7 @@
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
@@ -102,6 +103,13 @@ public class WorkoutsController : ControllerBase
             return this.View(model);
         }
 
+        if (await this._workoutService.ExerciseAlreadyAddedAsync(model.WorkoutId, model.ExerciseId)) 
+        {
+            ModelState.AddModelError(string.Empty, "Exercise already added, please select another one.");
+
+            return this.View(model);
+        }
+                
         try 
         {
             await this._workoutService.CreateWorkoutExerciseAsync(model);

@@ -6,6 +6,7 @@ namespace CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 public class AddWorkoutExerciseViewModel
 {
     [Required]
+    [Display(Name = "Exercise")]
     public Guid ExerciseId { get; set; }
 
     [Required]

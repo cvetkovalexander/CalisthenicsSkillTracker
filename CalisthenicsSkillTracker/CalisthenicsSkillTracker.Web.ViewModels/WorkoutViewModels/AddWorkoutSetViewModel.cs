@@ -12,6 +12,7 @@ public class AddWorkoutSetViewModel
     public Guid WorkoutId { get; set; }
 
     [Required]
+    [Display(Name = "Exercise")]
     public Guid WorkoutExerciseId { get; set; }
 
     [Required]
