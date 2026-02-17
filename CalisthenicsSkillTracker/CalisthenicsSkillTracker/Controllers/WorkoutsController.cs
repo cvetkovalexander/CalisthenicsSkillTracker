@@ -84,6 +84,16 @@ public class WorkoutsController : ControllerBase
     public async Task<IActionResult> AddExercises(AddWorkoutExerciseViewModel model)
     {
         model.AvailabeExercises = await this._workoutService.FetchExercisesAsync();
+        if (!await this._workoutService.WorkoutExistsAsync(model.WorkoutId))
+        {
+            ModelState.AddModelError(string.Empty, "Invalid workout id!");
+
+            return this.View(model);
+        }
+
+        Workout workout = await this._workoutService.GetWorkoutWithExercisesAsync(model.WorkoutId);
+        model.HasExercises = workout.WorkoutExercises.Any();
+
         if (!ModelState.IsValid)
         {
             ModelState.AddModelError(string.Empty, "Please select exercise!");
@@ -98,12 +108,6 @@ public class WorkoutsController : ControllerBase
             return this.View(model);
         }
 
-        if (!await this._workoutService.WorkoutExistsAsync(model.WorkoutId))
-        {
-            ModelState.AddModelError(string.Empty, "Invalid workout id!");
-
-            return this.View(model);
-        }
 
         if (await this._workoutService.ExerciseAlreadyAddedAsync(model.WorkoutId, model.ExerciseId)) 
         {
@@ -150,7 +154,7 @@ public class WorkoutsController : ControllerBase
         if (!await this._workoutService.WorkoutExerciseExistsAsync(model.WorkoutId, model.WorkoutExerciseId)) 
             ModelState.AddModelError(string.Empty, "Invalid workout exercise id!");
 
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid) 
             return this.View(model);
 
         WorkoutExercise workoutExercise = await this._workoutService.GetWorkoutExerciseAsync(model.WorkoutId, model.WorkoutExerciseId);
