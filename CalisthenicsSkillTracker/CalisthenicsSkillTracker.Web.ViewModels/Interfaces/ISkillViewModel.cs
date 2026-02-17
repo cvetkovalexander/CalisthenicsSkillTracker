@@ -7,6 +7,8 @@ public interface ISkillViewModel
 {
     string Name { get; set; }
     string? Description { get; set; }
+
+    string? ImageUrl { get; set; }
     Measurement Measurement { get; set; }
     List<SelectListItem> MeasurementOptions { get; set; }
     Category Category { get; set; }

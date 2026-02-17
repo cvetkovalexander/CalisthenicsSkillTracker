@@ -19,6 +19,14 @@
     </div>
 
     <div class="details-card-body">
+
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <div class="details-image mb-3 text-center">
+                <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded" style="max-height: 300px;" />
+            </div>
+        }
+
         <div class="details-field">
             <label>Skill Name</label>
             <p>@Model.Name</p>

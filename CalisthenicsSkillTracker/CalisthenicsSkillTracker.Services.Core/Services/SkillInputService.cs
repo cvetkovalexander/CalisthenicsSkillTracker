@@ -28,10 +28,11 @@ public class SkillInputService : ISkillInputService
 
     public async Task CreateSkillAsync(CreateSkillViewModel model)
     {
-        Skill skill = new Data.Models.Skill()
+        Skill skill = new Skill()
         {
             Name = model.Name,
             Description = model.Description,
+            ImageUrl = model.ImageUrl,
             MeasurementType = model.Measurement,
             Category = model.Category,
             SkillType = model.SkillType,
@@ -51,6 +52,7 @@ public class SkillInputService : ISkillInputService
             Id = skillEntity.Id,
             Name = skillEntity.Name,
             Description = skillEntity.Description,
+            ImageUrl = skillEntity.ImageUrl,
             Measurement = skillEntity.MeasurementType,
             Category = skillEntity.Category,
             SkillType = skillEntity.SkillType,
@@ -68,6 +70,7 @@ public class SkillInputService : ISkillInputService
 
         skill.Name = model.Name;
         skill.Description = model.Description;
+        skill.ImageUrl = model.ImageUrl;
         skill.MeasurementType = model.Measurement;
         skill.Category = model.Category;
         skill.SkillType = model.SkillType;

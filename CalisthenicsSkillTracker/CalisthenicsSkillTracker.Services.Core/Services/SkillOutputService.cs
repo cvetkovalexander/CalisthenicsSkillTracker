@@ -49,6 +49,7 @@ public class SkillOutputService : ISkillOutputService
         {
             Name = skill.Name,
             Description = skill.Description,
+            ImageUrl = skill.ImageUrl,
             Measurement = skill.MeasurementType,
             Category = skill.Category,
             SkillType = skill.SkillType,

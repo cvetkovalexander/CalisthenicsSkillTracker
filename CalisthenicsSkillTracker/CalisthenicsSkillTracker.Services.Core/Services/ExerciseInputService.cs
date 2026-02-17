@@ -111,9 +111,12 @@ public class ExerciseInputService : IExerciseInputService
             ImageUrl = model.ImageUrl
         };
 
-        Skill skill = await this.GetSkillAsync(Guid.Parse(model.SkillId!));
-        exercise.Skills.Add(skill);
-        skill.Exercises.Add(exercise);
+        if (model.SkillId is not null) 
+        {
+            Skill skill = await this.GetSkillAsync(Guid.Parse(model.SkillId!));
+            exercise.Skills.Add(skill);
+            skill.Exercises.Add(exercise);
+        }
 
         await this._context.Exercises.AddAsync(exercise);
         await this._context.SaveChangesAsync();

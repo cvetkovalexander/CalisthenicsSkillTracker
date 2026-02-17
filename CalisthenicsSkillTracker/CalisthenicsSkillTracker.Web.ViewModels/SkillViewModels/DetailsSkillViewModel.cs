@@ -2,6 +2,7 @@
 using CalisthenicsSkillTracker.Data.Models.Enums;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace CalisthenicsSkillTracker.ViewModels.SkillViewModels;
 
@@ -10,6 +11,9 @@ public class DetailsSkillViewModel : ISkillViewModel
     public string Name { get; set; } = null!;
 
     public string? Description { get; set; }
+
+    [Url(ErrorMessage = "Please enter a valid image URL")]
+    public string? ImageUrl { get; set; }
 
     public Measurement Measurement { get; set; }
 
