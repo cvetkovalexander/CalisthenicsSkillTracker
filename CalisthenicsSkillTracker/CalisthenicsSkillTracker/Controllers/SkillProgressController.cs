@@ -4,7 +4,7 @@ using CalisthenicsSkillTracker.Services.Core.Interfaces;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
-public class SkillProgressController : Controller
+public class SkillProgressController : ControllerBase
 {
     private readonly ISkillProgressService _skillProgressService;
     private readonly ILogger<SkillProgressController> _logger;
@@ -16,9 +16,25 @@ public class SkillProgressController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        string? userId = this.GetUserId();
+        if (userId is null)
+            return this.Unauthorized();
+
+        IEnumerable<ListRecordViewModel> models = await this._skillProgressService.GetRecordsAsync(userId);
+
+        return this.View(models);
+    }
+
+    [HttpGet]
     public IActionResult Create()
     {
-        CreateSkillProgressViewModel model = this._skillProgressService.CreateSkillProgressViewModel();
+        string? userId = this.GetUserId();
+        if (userId is null)
+            return this.Unauthorized();
+
+        CreateSkillProgressViewModel model = this._skillProgressService.CreateSkillProgressViewModel(userId);
 
         return View(model);
     }
@@ -28,20 +44,17 @@ public class SkillProgressController : Controller
     {
         this._skillProgressService.PopulateSelectListItems(model);
 
-        if (!await this._skillProgressService.UserExistsAsync(model.UserId)) 
-            ModelState.AddModelError(nameof(model.UserId), "Invalid user id!");
-
-        if (!await this._skillProgressService.SkillExistsAsync(model.SkillId)) 
+        if (!await this._skillProgressService.SkillExistsAsync(model.SkillId))
             ModelState.AddModelError(nameof(model.SkillId), "Invalid skill id!");
 
         if (!ModelState.IsValid)
             return this.View(model);
 
-        try 
+        try
         {
             await this._skillProgressService.CreateSkillProgress(model);
         }
-        catch (Exception e) 
+        catch (Exception e)
         {
             this._logger.LogError(e, "Exception occured while trying to add a skill progress to database");
 
@@ -50,6 +63,26 @@ public class SkillProgressController : Controller
             return this.View(model);
         }
 
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Delete(Guid id) 
+    {
+        if (!await this._skillProgressService.SkillRecordExistsAsync(id))
+            return this.NotFound();
+
+        try
+        {
+            await this._skillProgressService.DeleteSkillRecordAsync(id);
+        }
+        catch (Exception e)
+        {
+            this._logger.LogError(e, "Exception occured while trying to delete a skill record from database");
+
+            ModelState.AddModelError(string.Empty, "An error occurred while deleting the skill record. Please try again.");
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 }

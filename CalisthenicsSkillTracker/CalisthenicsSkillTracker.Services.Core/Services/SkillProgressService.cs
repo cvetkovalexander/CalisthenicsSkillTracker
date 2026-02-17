@@ -35,26 +35,50 @@ public class SkillProgressService : ISkillProgressService
         await this._context.SaveChangesAsync();
     }
 
-    public CreateSkillProgressViewModel CreateSkillProgressViewModel()
+    public CreateSkillProgressViewModel CreateSkillProgressViewModel(string userId)
     {
-        CreateSkillProgressViewModel model = new CreateSkillProgressViewModel();
+        CreateSkillProgressViewModel model = new CreateSkillProgressViewModel 
+        {
+            UserId = userId,
+        };
         this.PopulateSelectListItems(model);
 
         return model;
+    }
+
+    public async Task DeleteSkillRecordAsync(Guid id)
+    {
+        SkillProgress skillProgress = await this._context.SkillProgressRecords.FirstAsync(sp => sp.Id == id);
+
+        this._context.SkillProgressRecords.Remove(skillProgress);
+
+        await this._context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<ListRecordViewModel>> GetRecordsAsync(string userId)
+    {
+        return await this._context
+            .SkillProgressRecords
+            .Where(sp => sp.UserId == userId)
+            .Include(sp => sp.Skill)
+            .OrderByDescending(sp => sp.Date)
+            .Select(sp => new ListRecordViewModel
+            {
+                Id = sp.Id,
+                SkillName = sp.Skill.Name,
+                Date = sp.Date,
+                Progression = sp.Progression.ToString(),
+                Repetitions = sp.Repetitions,
+                Duration = sp.Duration,
+                Notes = sp.Notes
+            })
+            .ToListAsync();
     }
 
     /* Helper methods */
 
     public void PopulateSelectListItems(CreateSkillProgressViewModel model)
     {
-        model.Users = this._context
-            .Users
-            .Select(u => new SelectListItem
-            {
-                Value = u.Id.ToString(),
-                Text = u.UserName
-            })
-            .ToList();
         model.Skills = this._context
             .Skills
             .Select(s => new SelectListItem
@@ -79,10 +103,10 @@ public class SkillProgressService : ISkillProgressService
             .AnyAsync(s => s.Id == id);
     }
 
-    public async Task<bool> UserExistsAsync(string id)
+    public async Task<bool> SkillRecordExistsAsync(Guid id)
     {
         return await this._context
-            .Users
-            .AnyAsync(u => u.Id == id);
+            .SkillProgressRecords
+            .AnyAsync(sp => sp.Id == id);
     }
 }

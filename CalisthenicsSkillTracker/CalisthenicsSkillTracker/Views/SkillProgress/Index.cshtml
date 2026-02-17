@@ -1,0 +1,62 @@
+﻿@using CalisthenicsSkillTracker.ViewModels.SkillProgressViewModels
+@model IEnumerable<ListRecordViewModel>
+
+@{
+    ViewData["Title"] = "My Skill Progress";
+}
+
+<h2 class="text-center text-2xl font-semibold mb-4">My Skill Progress Records</h2>
+
+<div class="text-center mb-6">
+    <form asp-controller="SkillProgress" asp-action="Create" method="get">
+        <button type="submit" class="btn btn-info hero-btn">
+            Submit new record
+        </button>
+    </form>
+</div>
+
+<div class="skill-progress-container">
+    @foreach (var record in Model)
+    {
+        <div class="skill-progress-card">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3>@record.SkillName</h3>
+                    <p class="progress-date">@record.Date.ToString("dd MMM yyyy")</p>
+                </div>
+            </div>
+
+            <div class="skill-progress-details mt-2">
+                @if (!string.IsNullOrEmpty(record.Progression))
+                {
+                    <div><strong>Progression:</strong> @record.Progression</div>
+                }
+                @if (record.Repetitions.HasValue)
+                {
+                    <div><strong>Reps:</strong> @record.Repetitions</div>
+                }
+                @if (record.Duration.HasValue)
+                {
+                    <div><strong>Duration:</strong> @record.Duration s</div>
+                }
+                @if (!string.IsNullOrEmpty(record.Notes))
+                {
+                    <div class="notes"><strong>Notes:</strong> @record.Notes</div>
+                }
+            </div>
+
+            <form asp-controller="SkillProgress" asp-action="Delete" asp-route-id="@record.Id" method="post"
+                  onsubmit="return confirm('Are you sure you want to delete this record?');">
+                <button class="mt2 btn btn-delete btn-info hero-btn" type="submit">
+                    Delete
+                </button>
+            </form>
+        </div>
+
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <p class="skill-progress-empty">You haven't uploaded any skill progress yet.</p>
+}

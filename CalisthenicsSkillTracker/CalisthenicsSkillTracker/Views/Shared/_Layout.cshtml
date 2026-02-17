@@ -33,6 +33,14 @@
                                 </a>
                             </li>
                         }
+                        @if (User.Identity != null && User.Identity.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link fw-bold" asp-controller="SkillProgress" asp-action="Index">
+                                    <i class="bi bi-clipboard-data me-1"></i> My skill records
+                                </a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

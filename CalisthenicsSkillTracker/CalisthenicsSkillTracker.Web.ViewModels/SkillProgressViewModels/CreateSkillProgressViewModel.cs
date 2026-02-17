@@ -10,9 +10,10 @@ using static GCommon.EntityValidation.SkillSet;
 public class CreateSkillProgressViewModel
 {
     [Required]
-    public string UserId { get; set; }
+    public string UserId { get; set; } = null!;
 
     [Required]
+    [Display(Name = "Skill")]
     public Guid SkillId { get; set; }
 
     [ValidNullableEnumType]
@@ -27,8 +28,6 @@ public class CreateSkillProgressViewModel
     [MinLength(NotesMinLength)]
     [MaxLength(NotesMaxLength)]
     public string? Notes { get; set; }
-
-    public IEnumerable<SelectListItem>? Users { get; set; }
 
     public IEnumerable<SelectListItem>? Skills { get; set; }
 

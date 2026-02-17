@@ -1,0 +1,79 @@
+﻿
+.skill-progress-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.skill-progress-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    padding: 1rem 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.skill-progress-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.skill-progress-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+}
+
+.skill-progress-card .progress-date {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.skill-progress-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem 1rem;
+    font-size: 0.9rem;
+    color: #334155;
+}
+
+.skill-progress-details .notes {
+    grid-column: 1 / -1;
+}
+
+.skill-progress-empty {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 1rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.hero-btn {
+    padding: 12px 28px;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+    border: none;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+.hero-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(59, 130, 246, 0.4);
+}
+
+.btn-delete {
+    background: linear-gradient(to right, #ef4444, #b91c1c);
+}
