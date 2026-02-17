@@ -108,6 +108,7 @@ public class ExerciseInputService : IExerciseInputService
             Category = model.Category,
             ExerciseType = model.ExerciseType,
             Difficulty = model.Difficulty,
+            ImageUrl = model.ImageUrl
         };
 
         Skill skill = await this.GetSkillAsync(Guid.Parse(model.SkillId!));
@@ -127,6 +128,7 @@ public class ExerciseInputService : IExerciseInputService
             Id = exerciseEntity.Id,
             Name = exerciseEntity.Name,
             Description = exerciseEntity.Description,
+            ImageUrl= exerciseEntity.ImageUrl,
             Measurement = exerciseEntity.MeasurementType,
             Category = exerciseEntity.Category,
             ExerciseType = exerciseEntity.ExerciseType,
@@ -160,6 +162,7 @@ public class ExerciseInputService : IExerciseInputService
 
         exercise.Name = model.Name;
         exercise.Description = model.Description;
+        exercise.ImageUrl = model.ImageUrl;
         exercise.MeasurementType = model.Measurement;
         exercise.Category = model.Category;
         exercise.ExerciseType = model.ExerciseType;

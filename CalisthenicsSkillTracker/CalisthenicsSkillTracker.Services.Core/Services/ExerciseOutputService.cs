@@ -49,6 +49,7 @@ public class ExerciseOutputService : IExerciseOutputService
         {
             Name = exercise.Name,
             Description = exercise.Description,
+            ImageUrl = exercise.ImageUrl,
             Difficulty = exercise.Difficulty,
             Measurement = exercise.MeasurementType,
             Category = exercise.Category,

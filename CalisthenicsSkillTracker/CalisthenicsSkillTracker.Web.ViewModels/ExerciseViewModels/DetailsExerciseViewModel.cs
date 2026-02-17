@@ -10,6 +10,8 @@ public class DetailsExerciseViewModel
 
     public string? Description { get; set; }
 
+    public string? ImageUrl { get; set; }
+
     public Measurement Measurement { get; set; }
 
     public List<SelectListItem> MeasurementOptions { get; set; } = new List<SelectListItem>();

@@ -17,6 +17,9 @@ public class Skill
     [MaxLength(DescriptionMaxLength)]
     public string? Description { get; set; }
 
+    [Url(ErrorMessage = "Please enter valid URL.")]
+    public string? ImageUrl { get; set; }
+
     [Required]
     public Measurement MeasurementType { get; set; }
 

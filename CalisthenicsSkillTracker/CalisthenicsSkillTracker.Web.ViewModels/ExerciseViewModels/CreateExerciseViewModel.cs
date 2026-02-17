@@ -19,6 +19,9 @@ public class CreateExerciseViewModel : IExerciseViewModel
     [MaxLength(DescriptionMaxLength)]
     public string? Description { get; set; }
 
+    [Url(ErrorMessage = "Please enter a valid image URL")]
+    public string? ImageUrl { get; set; }
+
     [Required]
     public Measurement Measurement { get; set; }
 
