@@ -180,8 +180,25 @@ public class WorkoutsController : ControllerBase
         if (userId is null)
             return this.Unauthorized();
 
-        IEnumerable<WorkoutDetailsViewModel> models = await this._workoutService.CreateWorkoutDetailsViewModels(userId);
+        IEnumerable<WorkoutDetailsViewModel> models = await this._workoutService.CreateWorkoutDetailsViewModelsAsync(userId);
 
         return this.View(models);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> MyWorkoutDetails(Guid id) 
+    {
+        string? userId = GetUserId();
+        if (userId is null)
+            return this.Unauthorized();
+
+        if (!await this._workoutService.WorkoutExistsAsync(id))
+            return this.NotFound();
+
+        Workout workout = await this._workoutService.GetWorkoutWithExercisesAndSetsAsync(id, userId);
+
+        WorkoutExercisesViewModel model = this._workoutService.GetWorkoutExercisesDetailsViewModel(workout);
+
+        return this.View(model);
     }
 }

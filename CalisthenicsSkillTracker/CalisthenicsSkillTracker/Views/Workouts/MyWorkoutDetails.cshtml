@@ -1,0 +1,71 @@
+﻿@using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels
+@model WorkoutExercisesViewModel
+
+<div class="container workout-details-container">
+    <div class="page-header text-center">
+        <h2 class="fw-bold">Workout Exercises</h2>
+        <p class="">Detailed breakdown of your logged sets</p>
+    </div>
+
+    @foreach (var exercise in Model.Exercises)
+    {
+        <div class="exercise-card">
+            <div class="exercise-header">
+                <h4>@exercise.ExerciseName</h4>
+            </div>
+
+            <div class="exercise-body">
+                @if (exercise.Sets.Any())
+                {
+                    <div class="sets-wrapper">
+                        @foreach (var set in exercise.Sets)
+                        {
+                            <div class="set-item">
+                                <div class="set-badge">
+                                    Set @set.SetNumber
+                                </div>
+
+                                <div class="set-details">
+                                    @if (set.Repetitions is not null)
+                                    {
+                                        <span>
+                                            <strong>🔁 Reps:</strong>
+                                            @(set.Repetitions.ToString())
+                                        </span>
+                                    }
+                                    @if (set.Duration is not null)
+                                    {
+                                        <span>
+                                            <strong>⏱ Duration:</strong>
+                                            @(set.Duration.ToString())
+                                        </span>   
+                                    }
+                                    @if (set.Progression is not null)
+                                    {
+                                        <span>
+                                            <strong>📈 Progression:</strong>
+                                            @(set.Progression.ToString())
+                                        </span>
+                                    }
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(set.Notes))
+                                {
+                                    <div class="set-notes">
+                                        @set.Notes
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="no-sets">
+                        No sets recorded.
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+

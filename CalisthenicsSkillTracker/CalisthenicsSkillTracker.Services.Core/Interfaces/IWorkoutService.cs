@@ -16,7 +16,9 @@ public interface IWorkoutService
     Task<AddWorkoutExerciseViewModel> CreateWorkoutExerciseViewModelAsync(Guid workoutId);
     CreateWorkoutViewModel CreateWorkoutViewModel(string userId);
     AddWorkoutSetViewModel AddWorkoutSetViewModel(Workout workout);
-    Task<IEnumerable<WorkoutDetailsViewModel>> CreateWorkoutDetailsViewModels(string userId);   
+    Task<IEnumerable<WorkoutDetailsViewModel>> CreateWorkoutDetailsViewModelsAsync(string userId);
+    Task<Workout> GetWorkoutWithExercisesAndSetsAsync(Guid id, string userId);
+    WorkoutExercisesViewModel GetWorkoutExercisesDetailsViewModel(Workout workout);
 
     /* Helper methods */
     Task<bool> ExerciseExistsAsync(Guid id);

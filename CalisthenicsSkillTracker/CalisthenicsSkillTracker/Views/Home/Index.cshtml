@@ -36,13 +36,35 @@
             <p>See your training history and stay accountable.</p>
         </div>
     </section>
+        
+    <div class="hero-section text-center">
 
-    <section class="cta">
-        <h2>Ready to take your training seriously?</h2>
-        <a asp-controller="Workouts" asp-action="Log" class="btn btn-primary">
-            Log Your First Workout
-        </a>
-    </section>
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <h2 class="welcome-title">
+                Welcome back, @User.Identity.Name
+            </h2>
 
+            <p class="welcome-subtitle">
+                Ready to continue building your strength today?
+            </p>
+        }
+        else
+        {
+            <h2 class="welcome-title">
+                Track Your Calisthenics Progress
+            </h2>
+
+            <p class="welcome-subtitle">
+                Log workouts, track sets, and master your skills.
+            </p>
+        }
+
+        <form asp-controller="Workout" asp-action="Log" method="get">
+            <button type="submit" class="btn btn-info hero-btn">
+                Log Workout
+            </button>
+        </form>
+
+    </div>
 </div>
-

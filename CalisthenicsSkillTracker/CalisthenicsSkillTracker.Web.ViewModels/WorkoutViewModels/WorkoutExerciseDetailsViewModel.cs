@@ -2,6 +2,7 @@
 
 public class WorkoutExerciseDetailsViewModel
 {
+    public Guid WorkoutId { get; set; }
     public Guid Id { get; set; }
     public Guid ExerciseId { get; set; }
 

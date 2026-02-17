@@ -210,7 +210,7 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
             return workout.WorkoutExercises.Any(e => e.ExerciseId == exerciseId);
         }
 
-        public async Task<IEnumerable<WorkoutDetailsViewModel>> CreateWorkoutDetailsViewModels(string userId)
+        public async Task<IEnumerable<WorkoutDetailsViewModel>> CreateWorkoutDetailsViewModelsAsync(string userId)
         {
             IEnumerable<Workout> workouts = await this._context
                 .Workouts
@@ -220,7 +220,7 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 .AsNoTracking()
                 .ToListAsync();
 
-            IEnumerable<WorkoutDetailsViewModel> viewModels = workouts.Select(w => new WorkoutDetailsViewModel
+            IEnumerable<WorkoutDetailsViewModel> viewModel = workouts.Select(w => new WorkoutDetailsViewModel
             {
                 Id = w.Id,
                 Date = w.Date,
@@ -231,7 +231,44 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 
             }).ToList();
 
-            return viewModels;
+            return viewModel;
+        }
+
+        public async Task<Workout> GetWorkoutWithExercisesAndSetsAsync(Guid id, string userId)
+        {
+            return await this._context
+                .Workouts
+                .Where(w => w.UserId == userId && w.Id == id)
+                .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Sets)
+                .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Exercise)
+                .AsNoTracking()
+                .FirstAsync();
+        }
+
+        public WorkoutExercisesViewModel GetWorkoutExercisesDetailsViewModel(Workout workout)
+        {
+            WorkoutExercisesViewModel viewModel = new WorkoutExercisesViewModel
+            {
+                WorkoutId = workout.Id,
+                Exercises = workout.WorkoutExercises.Select(we => new WorkoutExerciseDetailsViewModel
+                {
+                    Id = we.Id,
+                    ExerciseName = we.Exercise.Name,
+                    Sets = we.Sets.Select(ws => new WorkoutSetDetailsViewModel
+                    {
+                        Id = ws.Id,
+                        SetNumber = ws.SetNumber,
+                        Repetitions = ws.Repetitions,
+                        Duration = ws.Duration,
+                        Progression = ws.Progression,
+                        Notes = ws.Notes,     
+                    }).ToList()
+                }).ToList()
+            };
+
+            return viewModel;
         }
     }
 }

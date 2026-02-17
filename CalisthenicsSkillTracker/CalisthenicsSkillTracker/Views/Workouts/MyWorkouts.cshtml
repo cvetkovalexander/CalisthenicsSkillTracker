@@ -28,7 +28,7 @@
                 <td>@workout.Duration</td>
                 <td>@(workout.Notes is null ? "---" : workout.Notes)</td>
                 <td>
-                    <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@workout.Id">
+                    <a class="btn btn-primary btn-sm" asp-action="MyWorkoutDetails" asp-route-id="@workout.Id">
                         Details
                     </a>
                 </td>
