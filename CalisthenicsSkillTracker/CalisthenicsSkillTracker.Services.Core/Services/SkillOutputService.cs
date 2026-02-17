@@ -53,14 +53,7 @@ public class SkillOutputService : ISkillOutputService
             Category = skill.Category,
             SkillType = skill.SkillType,
             Difficulty = skill.Difficulty,
-            Exercises = skill.Exercises,
-            SkillRecords = this._context
-                .SkillProgressRecords
-                .AsNoTracking()
-                .Include(r => r.PerformedBy)
-                .Where(r => r.SkillId == skill.Id)
-                .OrderByDescending(r => r.Date)
-                .ToArray()
+            Exercises = skill.Exercises
         };
 
         return model;

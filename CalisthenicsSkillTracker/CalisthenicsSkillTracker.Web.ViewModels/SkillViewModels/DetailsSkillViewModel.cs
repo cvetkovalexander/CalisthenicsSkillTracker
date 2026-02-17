@@ -26,9 +26,6 @@ public class DetailsSkillViewModel : ISkillViewModel
 
     public List<SelectListItem> DifficultyOptions { get; set; } = new List<SelectListItem>();
 
-    public IReadOnlyCollection<SkillProgress> SkillRecords { get; set; }
-        = new List<SkillProgress>();
-
     public ICollection<Exercise> Exercises { get; set; }
         = new List<Exercise>();
 }

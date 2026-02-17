@@ -1,9 +1,7 @@
 ﻿using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
-using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
@@ -40,9 +38,9 @@ public class ExercisesController : Controller
     }
 
     [HttpGet]
-    public IActionResult Create() 
+    public async Task<IActionResult> Create() 
     {
-        CreateExerciseViewModel model = this._inputService.CreateExerciseViewModelWithEnums();
+        CreateExerciseViewModel model = await this._inputService.CreateExerciseViewModelWithEnumsAsync();
 
         ViewData["FormAction"] = "Create";
 
@@ -53,10 +51,15 @@ public class ExercisesController : Controller
     public async Task<IActionResult> Create(CreateExerciseViewModel model) 
     {
         this._inputService.FetchEnums(model);
+        model.AvailableExercises = await this._inputService.GetAvailableSkillsAsync();
 
         if (await this._inputService.ExerciseNameExistsAsync(model.Name))
             ModelState
                 .AddModelError(nameof(model.Name), "A exercise with this name already exists.");
+
+        if (model.SkillId is not null)
+            if (!await this._inputService.SkillExistsAsync(Guid.Parse(model.SkillId)))
+                ModelState.AddModelError(nameof(model.SkillId), "Ivalid skill id");
 
         if (!ModelState.IsValid)
             return View(model);

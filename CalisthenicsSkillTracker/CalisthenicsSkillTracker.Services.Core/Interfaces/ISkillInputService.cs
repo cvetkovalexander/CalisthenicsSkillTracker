@@ -23,4 +23,5 @@ public interface ISkillInputService
     CreateSkillViewModel CreateSkillViewModelWithEnums();
     void FetchEnums(ISkillViewModel model);
     string RemoveWhitespaces(string input);
+    Task<List<SelectListItem>> GetAvailableExercisesAsync();
 }

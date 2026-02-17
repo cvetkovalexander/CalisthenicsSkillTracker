@@ -26,10 +26,11 @@ public class ExerciseInputService : IExerciseInputService
         this._context = context;
     }
 
-    public CreateExerciseViewModel CreateExerciseViewModelWithEnums()
+    public async Task<CreateExerciseViewModel> CreateExerciseViewModelWithEnumsAsync()
     {
         CreateExerciseViewModel model = new CreateExerciseViewModel();
 
+        model.AvailableExercises = await this.GetAvailableSkillsAsync();
         this.FetchEnums(model);
 
         return model;
@@ -106,8 +107,12 @@ public class ExerciseInputService : IExerciseInputService
             MeasurementType = model.Measurement,
             Category = model.Category,
             ExerciseType = model.ExerciseType,
-            Difficulty = model.Difficulty
+            Difficulty = model.Difficulty,
         };
+
+        Skill skill = await this.GetSkillAsync(Guid.Parse(model.SkillId!));
+        exercise.Skills.Add(skill);
+        skill.Exercises.Add(exercise);
 
         await this._context.Exercises.AddAsync(exercise);
         await this._context.SaveChangesAsync();
@@ -171,5 +176,33 @@ public class ExerciseInputService : IExerciseInputService
         this._context.Exercises.Remove(exerciseEntity);
 
         await this._context.SaveChangesAsync();
+    }
+
+    public async Task<List<SelectListItem>> GetAvailableSkillsAsync()
+    {
+        return await this._context
+            .Skills
+            .AsNoTracking()
+            .Select(s => new SelectListItem
+            {
+                Text = s.Name,
+                Value = s.Id.ToString()
+            })
+            .ToListAsync();
+
+    }
+
+    public async Task<Skill> GetSkillAsync(Guid id)
+    {
+        return await this._context
+            .Skills
+            .FirstAsync(s => s.Id == id);
+    }
+
+    public async Task<bool> SkillExistsAsync(Guid id)
+    {
+        return await this._context
+            .Skills
+            .AnyAsync(s => s.Id == id);
     }
 }

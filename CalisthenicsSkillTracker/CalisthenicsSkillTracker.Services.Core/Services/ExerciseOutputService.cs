@@ -41,6 +41,7 @@ public class ExerciseOutputService : IExerciseOutputService
     {
         Exercise exercise = await this._context
             .Exercises
+            .Include(e => e.Skills)
             .AsNoTracking()
             .SingleAsync(e => e.Id == id);
 
@@ -52,7 +53,8 @@ public class ExerciseOutputService : IExerciseOutputService
             Measurement = exercise.MeasurementType,
             Category = exercise.Category,
             ExerciseType = exercise.ExerciseType,
-            Skills = exercise.Skills
+            Skills = exercise
+                .Skills
         };
 
         return model;

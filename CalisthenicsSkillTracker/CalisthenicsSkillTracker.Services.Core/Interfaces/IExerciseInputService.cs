@@ -7,7 +7,7 @@ namespace CalisthenicsSkillTracker.Services.Core.Interfaces;
 
 public interface IExerciseInputService
 {
-    CreateExerciseViewModel CreateExerciseViewModelWithEnums();
+    Task<CreateExerciseViewModel> CreateExerciseViewModelWithEnumsAsync();
     List<SelectListItem> FetchSelectedEnum(string key);
     void FetchEnums(IExerciseViewModel model);
     Task<bool> ExerciseNameExistsAsync(string name);
@@ -18,4 +18,7 @@ public interface IExerciseInputService
     Task<bool> ExerciseNameExcludingCurrentExistsAsync(Guid id, string name);
     Task EditExerciseDataAsync(EditExerciseViewModel model);
     Task DeleteExerciseAsync(Guid id);
+    Task<List<SelectListItem>> GetAvailableSkillsAsync();
+    Task<Skill> GetSkillAsync(Guid id);
+    Task<bool> SkillExistsAsync(Guid id);
 }

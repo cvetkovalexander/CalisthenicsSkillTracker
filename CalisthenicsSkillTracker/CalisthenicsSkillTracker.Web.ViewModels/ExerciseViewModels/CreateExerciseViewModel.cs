@@ -13,6 +13,8 @@ public class CreateExerciseViewModel : IExerciseViewModel
     [MaxLength(NameMaxLength)]
     public string Name { get; set; } = null!;
 
+    public string? SkillId { get; set; }
+
     [MinLength(DescriptionMinLength)]
     [MaxLength(DescriptionMaxLength)]
     public string? Description { get; set; }
@@ -36,5 +38,8 @@ public class CreateExerciseViewModel : IExerciseViewModel
     [Required]
     public Category Category { get; set; }
     public List<SelectListItem> CategoryOptions { get; set; }
+        = new List<SelectListItem>();
+
+    public List<SelectListItem> AvailableExercises { get; set; }
         = new List<SelectListItem>();
 }

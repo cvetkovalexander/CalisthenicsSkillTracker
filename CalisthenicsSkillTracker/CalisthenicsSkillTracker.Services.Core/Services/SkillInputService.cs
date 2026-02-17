@@ -173,4 +173,17 @@ public class SkillInputService : ISkillInputService
             .AsNoTracking()
             .SingleAsync(s => s.Id == id);
     }
+
+    public async Task<List<SelectListItem>> GetAvailableExercisesAsync()
+    {
+        return await this._context
+            .Skills
+            .AsNoTracking()
+            .Select(s => new SelectListItem 
+            {
+                Text = s.Name,
+                Value = s.Id.ToString()
+            })
+            .ToListAsync();
+    }
 }
