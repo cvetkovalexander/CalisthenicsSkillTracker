@@ -53,17 +53,6 @@
         box-shadow: 0 0 0 4px rgba(0, 255, 136, 0.25);
     }
 
-.validation-text {
-    font-size: 0.9rem;
-    color: #ff6b6b;
-    margin-top: 5px;
-}
-
-.validation-summary {
-    color: #ff6b6b;
-    margin-bottom: 18px;
-}
-
 .button-group {
     display: flex;
     gap: 15px;

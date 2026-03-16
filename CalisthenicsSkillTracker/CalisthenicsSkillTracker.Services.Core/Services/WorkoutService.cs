@@ -92,7 +92,7 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
 
             return new AddWorkoutExerciseViewModel()
             {
-                AvailabeExercises = await this.FetchExercisesAsync(),
+                AvailableExercises = await this.FetchExercisesAsync(),
                 WorkoutId = workoutId,
                 HasExercises = workout.WorkoutExercises.Any()
             };

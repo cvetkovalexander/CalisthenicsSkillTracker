@@ -8,9 +8,7 @@
     <div class="log-workout-card">
         <h1 class="log-workout-title">Log workout date and notes</h1>
         <form asp-action="Log" method="post" class="needs-validation" novalidate>
-            @Html.AntiForgeryToken()
-
-            <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
+            @Html.AntiForgeryToken()       
 
             <input asp-for="UserId" type="hidden" />
 

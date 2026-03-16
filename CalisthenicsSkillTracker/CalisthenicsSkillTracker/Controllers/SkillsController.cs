@@ -51,6 +51,7 @@ public class SkillsController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateSkillViewModel model) 
     {
         this._inputService.FetchEnums(model);
@@ -92,6 +93,7 @@ public class SkillsController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(EditSkillViewModel model) 
     {
         this._inputService.FetchEnums(model);
@@ -111,7 +113,8 @@ public class SkillsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpPost]
+    [HttpPost] 
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id) 
     {
         if (!await this._outputService.SkillExistsAsync(id))

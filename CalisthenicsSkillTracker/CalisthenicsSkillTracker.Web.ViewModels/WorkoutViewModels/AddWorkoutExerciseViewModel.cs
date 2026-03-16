@@ -5,7 +5,7 @@ namespace CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 
 public class AddWorkoutExerciseViewModel
 {
-    [Required]
+    [Required(ErrorMessage = "Please select an exercise.")]
     [Display(Name = "Exercise")]
     public Guid ExerciseId { get; set; }
 
@@ -16,6 +16,6 @@ public class AddWorkoutExerciseViewModel
 
     public bool HasExercises { get; set; }
 
-    public List<SelectListItem> AvailabeExercises { get; set; } 
+    public List<SelectListItem> AvailableExercises { get; set; } 
         = new List<SelectListItem>();
 }

@@ -47,6 +47,7 @@
 
             <form asp-controller="SkillProgress" asp-action="Delete" asp-route-id="@record.Id" method="post"
                   onsubmit="return confirm('Are you sure you want to delete this record?');">
+				@Html.AntiForgeryToken()
                 <button class="mt2 btn btn-delete btn-info hero-btn" type="submit">
                     Delete
                 </button>

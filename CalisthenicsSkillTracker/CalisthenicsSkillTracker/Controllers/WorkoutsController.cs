@@ -32,6 +32,7 @@ public class WorkoutsController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Log(CreateWorkoutViewModel model)
     {
         if (string.IsNullOrEmpty(model.UserId))
@@ -81,9 +82,10 @@ public class WorkoutsController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddExercises(AddWorkoutExerciseViewModel model)
     {
-        model.AvailabeExercises = await this._workoutService.FetchExercisesAsync();
+        model.AvailableExercises = await this._workoutService.FetchExercisesAsync();
         if (!await this._workoutService.WorkoutExistsAsync(model.WorkoutId))
         {
             ModelState.AddModelError(string.Empty, "Invalid workout id!");
@@ -103,7 +105,7 @@ public class WorkoutsController : ControllerBase
 
         if (!await this._workoutService.ExerciseExistsAsync(model.ExerciseId)) 
         {
-            ModelState.AddModelError(string.Empty, "Invalid exercise id!");
+            ModelState.AddModelError(nameof(model.ExerciseId), "Invalid exercise id!");
 
             return this.View(model);
         }
@@ -111,7 +113,7 @@ public class WorkoutsController : ControllerBase
 
         if (await this._workoutService.ExerciseAlreadyAddedAsync(model.WorkoutId, model.ExerciseId)) 
         {
-            ModelState.AddModelError(string.Empty, "Exercise already added, please select another one.");
+            ModelState.AddModelError(nameof(model.ExerciseId), "Exercise already added, please select another one.");
 
             return this.View(model);
         }
@@ -147,12 +149,13 @@ public class WorkoutsController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddSets(AddWorkoutSetViewModel model)
     {
         model.Exercises = await this._workoutService.GetWorkoutExercisesAsync(model.WorkoutId);
 
         if (!await this._workoutService.WorkoutExerciseExistsAsync(model.WorkoutId, model.WorkoutExerciseId)) 
-            ModelState.AddModelError(string.Empty, "Invalid workout exercise id!");
+            ModelState.AddModelError(nameof(model.WorkoutExerciseId), "Invalid workout exercise id!");
 
         if (!ModelState.IsValid) 
             return this.View(model);

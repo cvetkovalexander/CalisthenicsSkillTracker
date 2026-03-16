@@ -40,6 +40,7 @@ public class SkillProgressController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateSkillProgressViewModel model)
     {
         this._skillProgressService.PopulateSelectListItems(model);
@@ -67,6 +68,7 @@ public class SkillProgressController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id) 
     {
         if (!await this._skillProgressService.SkillRecordExistsAsync(id))

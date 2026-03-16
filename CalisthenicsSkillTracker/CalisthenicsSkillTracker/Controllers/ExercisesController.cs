@@ -48,6 +48,7 @@ public class ExercisesController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateExerciseViewModel model) 
     {
         this._inputService.FetchEnums(model);
@@ -59,7 +60,7 @@ public class ExercisesController : Controller
 
         if (model.SkillId is not null)
             if (!await this._inputService.SkillExistsAsync(Guid.Parse(model.SkillId)))
-                ModelState.AddModelError(nameof(model.SkillId), "Ivalid skill id");
+                ModelState.AddModelError(nameof(model.SkillId), "Ivalid skill id.");
 
         if (!ModelState.IsValid)
             return View(model);
@@ -93,6 +94,8 @@ public class ExercisesController : Controller
         return this.View(model);
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(EditExerciseViewModel model)
     {
         this._inputService.FetchEnums(model);
@@ -113,6 +116,7 @@ public class ExercisesController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id)
     {
         if (!await this._outputService.ExerciseExistsAsync(id))

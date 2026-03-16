@@ -13,8 +13,8 @@ public class CreateSkillViewModel : ISkillViewModel
     [ValidSkillName]
     public string Name { get; set; } = null!;
 
-    [MinLength(DescriptionMinLength)]
-    [MaxLength(DescriptionMaxLength)]
+    [MinLength(DescriptionMinLength, ErrorMessage = "Description must be with a minimum length of 5 characters.")]
+    [MaxLength(DescriptionMaxLength, ErrorMessage = "Description must be with a maximum length of 500 characters.")]
     public string? Description { get; set; }
 
     [Url(ErrorMessage = "Please enter a valid image URL")]
