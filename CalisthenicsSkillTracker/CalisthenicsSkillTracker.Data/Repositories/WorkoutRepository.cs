@@ -5,17 +5,16 @@ using System.Linq.Expressions;
 
 namespace CalisthenicsSkillTracker.Data.Repositories;
 
-public class WorkoutRepository : IWorkoutRepository
+public class WorkoutRepository : BaseRepository, IWorkoutRepository
 {
-    private readonly ApplicationDbContext _context;
     public WorkoutRepository(ApplicationDbContext context)
+        : base(context)
     {
-        this._context = context;
     }
 
     public async Task<IEnumerable<Workout>> GetAllUserWorkoutsWithProjectionAsync(string userId, Func<Workout, Workout>? projectFunc = null)
     {
-        IQueryable<Workout> fetchQuery = this._context
+        IQueryable<Workout> fetchQuery = this.Context
             .Workouts
             .AsNoTracking()
             .Where(w => w.UserId == userId);
@@ -32,7 +31,7 @@ public class WorkoutRepository : IWorkoutRepository
 
     public async Task<bool> AddWorkoutAsync(Workout workout)
     {
-        await this._context.Workouts.AddAsync(workout);
+        await this.Context.Workouts.AddAsync(workout);
         int resultCount = await this.SaveChangesAsync();
 
         return resultCount == 1;
@@ -40,7 +39,7 @@ public class WorkoutRepository : IWorkoutRepository
 
     public async Task<bool> AddWorkoutExerciseAsync(WorkoutExercise exercise)
     {
-        await this._context.WorkoutExercises.AddAsync(exercise);
+        await this.Context.WorkoutExercises.AddAsync(exercise);
         int resultCount = await this.SaveChangesAsync();
 
         return resultCount == 1;
@@ -48,7 +47,7 @@ public class WorkoutRepository : IWorkoutRepository
 
     public async Task<bool> AddWorkoutSetAsync(WorkoutSet set)
     {
-        await this._context.WorkoutSets.AddAsync(set);
+        await this.Context.WorkoutSets.AddAsync(set);
         int resultCount = await this.SaveChangesAsync();
 
         return resultCount == 1;
@@ -56,7 +55,7 @@ public class WorkoutRepository : IWorkoutRepository
 
     public async Task<Workout> GetWorkoutWithExercisesAsync(Guid id)
     {
-        return await this._context
+        return await this.Context
             .Workouts
             .AsNoTracking()
             .Include(w => w.WorkoutExercises)
@@ -66,14 +65,14 @@ public class WorkoutRepository : IWorkoutRepository
 
     public async Task<WorkoutExercise> GetWorkoutExerciseAsync(Guid workoutId, Guid workoutExerciseId)
     {
-        return await this._context
+        return await this.Context
             .WorkoutExercises
             .FirstAsync(we => we.WorkoutId == workoutId && we.Id == workoutExerciseId);
     }
 
     public async Task<Workout> GetWorkoutWithExercisesAndSetsAsync(Guid id, string userId)
     {
-        return await this._context
+        return await this.Context
             .Workouts
             .Where(w => w.UserId == userId && w.Id == id)
             .Include(w => w.WorkoutExercises)
@@ -85,20 +84,20 @@ public class WorkoutRepository : IWorkoutRepository
     }
     public IQueryable<Exercise> GetAllExercisesAsNoTracking()
     {
-        return this._context
+        return this.Context
             .Exercises
             .AsNoTracking();
     }
     public async Task<bool> WorkoutExerciseExistsAsync(Guid workoutId, Guid workoutExerciseId)
     {
-        return await this._context.
+        return await this.Context.
             WorkoutExercises
             .AnyAsync(we => we.WorkoutId == workoutId && we.Id == workoutExerciseId);
     }
     public async Task<bool> EntityExistsAsync<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class
-            => await this._context.Set<TEntity>().AnyAsync(predicate);
+            => await this.Context.Set<TEntity>().AnyAsync(predicate);
 
     private async Task<int> SaveChangesAsync()
-        => await this._context.SaveChangesAsync();
+        => await this.Context.SaveChangesAsync();
 
 }
