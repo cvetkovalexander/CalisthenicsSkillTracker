@@ -1,5 +1,7 @@
 using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.Data.Repositories;
+using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.Services.Core.Services;
 using Microsoft.AspNetCore.Identity;
@@ -25,6 +27,7 @@ public class Program
         builder.Services.AddScoped<ISkillProgressService, SkillProgressService>();
         builder.Services.AddScoped<IExerciseInputService, ExerciseInputService>();
         builder.Services.AddScoped<IExerciseOutputService, ExerciseOutputService>();
+        builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

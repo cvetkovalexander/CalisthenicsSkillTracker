@@ -41,10 +41,10 @@ public class WorkoutsController : ControllerBase
         if (!await this._workoutService.UserExistsAsync(model.UserId))
             ModelState.AddModelError(string.Empty, "User is not found.");
 
-        if (!this._workoutService.isTimeValid(model.Start, out TimeSpan start))
+        if (!this._workoutService.IsTimeValid(model.Start, out TimeSpan start))
             ModelState.AddModelError(nameof(model.Start), "Use time format {HH:mm} for start");
 
-        if (!this._workoutService.isTimeValid(model.End, out TimeSpan end))
+        if (!this._workoutService.IsTimeValid(model.End, out TimeSpan end))
             ModelState.AddModelError(nameof(model.End), "Use time format {HH:mm} for end");
 
         if (!ModelState.IsValid)

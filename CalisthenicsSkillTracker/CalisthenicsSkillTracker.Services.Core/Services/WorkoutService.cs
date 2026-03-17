@@ -1,6 +1,7 @@
 ﻿using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Models.Enums;
+using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,10 +13,13 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
 
     public class WorkoutService : IWorkoutService
     {
+        private readonly IWorkoutRepository _repository;
+
         private readonly ApplicationDbContext _context;
 
-        public WorkoutService(ApplicationDbContext context)
+        public WorkoutService(IWorkoutRepository repository, ApplicationDbContext context)
         {
+            this._repository = repository;
             this._context = context;
         }
 
@@ -34,18 +38,6 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
             await this._context.SaveChangesAsync();
 
             return workout;
-        }
-
-        public async Task CreateWorkoutExerciseAsync(AddWorkoutExerciseViewModel model)
-        {
-            WorkoutExercise workoutExercise = new WorkoutExercise()
-            {
-                WorkoutId = model.WorkoutId,
-                ExerciseId = model.ExerciseId
-            };
-
-            await this._context.WorkoutExercises.AddAsync(workoutExercise);
-            await this._context.SaveChangesAsync();
         }
 
         public async Task CreateWorkoutSetAsync(AddWorkoutSetViewModel model)
@@ -73,12 +65,41 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 .FirstAsync(w => w.Id == id);
         }
 
+        public async Task<WorkoutExercise> GetWorkoutExerciseAsync(Guid workoutId, Guid workoutExerciseId)
+        {
+            return await this._context
+                .WorkoutExercises
+                .FirstAsync(we => we.WorkoutId == workoutId && we.Id == workoutExerciseId);
+        }
+
         public CreateWorkoutViewModel CreateWorkoutViewModel(string userId)
         {
             return new CreateWorkoutViewModel()
             {
                 UserId = userId,
                 Date = DateTime.UtcNow
+            };
+        }
+
+        public async Task CreateWorkoutExerciseAsync(AddWorkoutExerciseViewModel model)
+        {
+            WorkoutExercise workoutExercise = new WorkoutExercise()
+            {
+                WorkoutId = model.WorkoutId,
+                ExerciseId = model.ExerciseId
+            };
+
+            await this._context.WorkoutExercises.AddAsync(workoutExercise);
+            await this._context.SaveChangesAsync();
+        }
+
+        public AddWorkoutSetViewModel AddWorkoutSetViewModel(Workout workout)
+        {
+            return new AddWorkoutSetViewModel()
+            {
+                WorkoutId = workout.Id,
+                Exercises = this.GetWorkoutExercises(workout),
+                Progressions = this.FetchProgressions()
             };
         }
 
@@ -98,21 +119,61 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
             };
         }
 
-        public AddWorkoutSetViewModel AddWorkoutSetViewModel(Workout workout)
+        public async Task<IEnumerable<WorkoutDetailsViewModel>> CreateWorkoutDetailsViewModelsAsync(string userId)
         {
-            return new AddWorkoutSetViewModel()
-            {
-                WorkoutId = workout.Id,
-                Exercises = this.GetWorkoutExercises(workout),
-                Progressions = this.FetchProgressions()
-            };
+            IEnumerable<WorkoutDetailsViewModel> viewModels = await this._repository
+                .GetAllUserWorkouts(userId)
+                .Select(w => new WorkoutDetailsViewModel 
+                {
+                    Id = w.Id,
+                    Date = w.Date,
+                    Start = w.Start,
+                    End = w.End,
+                    Duration = w.Duration,
+                    Notes = w.Notes,
+                })
+                .OrderByDescending(w => w.Date)
+                .ThenByDescending(w => w.Start)
+                .ToListAsync();
+
+            return viewModels;
         }
 
-        public async Task<WorkoutExercise> GetWorkoutExerciseAsync(Guid workoutId, Guid workoutExerciseId)
+        public async Task<Workout> GetWorkoutWithExercisesAndSetsAsync(Guid id, string userId)
         {
             return await this._context
-                .WorkoutExercises
-                .FirstAsync(we => we.WorkoutId == workoutId && we.Id == workoutExerciseId);
+                .Workouts
+                .Where(w => w.UserId == userId && w.Id == id)
+                .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Sets)
+                .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Exercise)
+                .AsNoTracking()
+                .FirstAsync();
+        }
+
+        public WorkoutExercisesViewModel GetWorkoutExercisesDetailsViewModel(Workout workout)
+        {
+            WorkoutExercisesViewModel viewModel = new WorkoutExercisesViewModel
+            {
+                WorkoutId = workout.Id,
+                Exercises = workout.WorkoutExercises.Select(we => new WorkoutExerciseDetailsViewModel
+                {
+                    Id = we.Id,
+                    ExerciseName = we.Exercise.Name,
+                    Sets = we.Sets.Select(ws => new WorkoutSetDetailsViewModel
+                    {
+                        Id = ws.Id,
+                        SetNumber = ws.SetNumber,
+                        Repetitions = ws.Repetitions,
+                        Duration = ws.Duration,
+                        Progression = ws.Progression,
+                        Notes = ws.Notes,
+                    }).ToList()
+                }).ToList()
+            };
+
+            return viewModel;
         }
 
         /* Helper methods */
@@ -190,7 +251,7 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 .AnyAsync(u => u.Id == id);
         }
 
-        public bool isTimeValid(string input, out TimeSpan output)
+        public bool IsTimeValid(string input, out TimeSpan output)
         {
             return TimeSpan.TryParseExact(
                 input,
@@ -208,67 +269,6 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 .FirstAsync(w => w.Id == workoutId);
 
             return workout.WorkoutExercises.Any(e => e.ExerciseId == exerciseId);
-        }
-
-        public async Task<IEnumerable<WorkoutDetailsViewModel>> CreateWorkoutDetailsViewModelsAsync(string userId)
-        {
-            IEnumerable<Workout> workouts = await this._context
-                .Workouts
-                .Where(w => w.UserId == userId)
-                .OrderByDescending(w => w.Date)
-                .ThenByDescending(w => w.Start)
-                .AsNoTracking()
-                .ToListAsync();
-
-            IEnumerable<WorkoutDetailsViewModel> viewModel = workouts.Select(w => new WorkoutDetailsViewModel
-            {
-                Id = w.Id,
-                Date = w.Date,
-                Start = w.Start,
-                End = w.End,
-                Duration = w.Duration,
-                Notes = w.Notes,  
-                
-            }).ToList();
-
-            return viewModel;
-        }
-
-        public async Task<Workout> GetWorkoutWithExercisesAndSetsAsync(Guid id, string userId)
-        {
-            return await this._context
-                .Workouts
-                .Where(w => w.UserId == userId && w.Id == id)
-                .Include(w => w.WorkoutExercises)
-                .ThenInclude(we => we.Sets)
-                .Include(w => w.WorkoutExercises)
-                .ThenInclude(we => we.Exercise)
-                .AsNoTracking()
-                .FirstAsync();
-        }
-
-        public WorkoutExercisesViewModel GetWorkoutExercisesDetailsViewModel(Workout workout)
-        {
-            WorkoutExercisesViewModel viewModel = new WorkoutExercisesViewModel
-            {
-                WorkoutId = workout.Id,
-                Exercises = workout.WorkoutExercises.Select(we => new WorkoutExerciseDetailsViewModel
-                {
-                    Id = we.Id,
-                    ExerciseName = we.Exercise.Name,
-                    Sets = we.Sets.Select(ws => new WorkoutSetDetailsViewModel
-                    {
-                        Id = ws.Id,
-                        SetNumber = ws.SetNumber,
-                        Repetitions = ws.Repetitions,
-                        Duration = ws.Duration,
-                        Progression = ws.Progression,
-                        Notes = ws.Notes,     
-                    }).ToList()
-                }).ToList()
-            };
-
-            return viewModel;
         }
     }
 }

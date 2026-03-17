@@ -29,6 +29,6 @@ public interface IWorkoutService
     Task<bool> WorkoutExerciseExistsAsync(Guid workoutId, Guid workoutExerciseId);
     List<SelectListItem> FetchProgressions();
     Task<bool> UserExistsAsync(string id);
-    bool isTimeValid(string input, out TimeSpan output);
+    bool IsTimeValid(string input, out TimeSpan output);
     Task<bool> ExerciseAlreadyAddedAsync(Guid workoutId, Guid exerciseId);
 }
