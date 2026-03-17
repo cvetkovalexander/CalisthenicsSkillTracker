@@ -2,6 +2,7 @@ using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Repositories;
 using CalisthenicsSkillTracker.Data.Repositories.Contracts;
+using CalisthenicsSkillTracker.Infrastructure.Extensions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.Services.Core.Services;
 using Microsoft.AspNetCore.Identity;
@@ -21,13 +22,8 @@ public class Program
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
 
-        builder.Services.AddScoped<ISkillOutputService, SkillOutputService>();
-        builder.Services.AddScoped<ISkillInputService, SkillInputService>();
-        builder.Services.AddScoped<IWorkoutService, WorkoutService>();
-        builder.Services.AddScoped<ISkillProgressService, SkillProgressService>();
-        builder.Services.AddScoped<IExerciseInputService, ExerciseInputService>();
-        builder.Services.AddScoped<IExerciseOutputService, ExerciseOutputService>();
-        builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
+        builder.Services.RegisterRepositories(typeof(WorkoutRepository));
+        builder.Services.RegisterServices(typeof(WorkoutService));
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
