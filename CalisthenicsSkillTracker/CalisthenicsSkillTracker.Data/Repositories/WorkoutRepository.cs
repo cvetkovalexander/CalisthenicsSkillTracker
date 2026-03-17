@@ -12,17 +12,34 @@ public class WorkoutRepository : IWorkoutRepository
         this._context = context;
     }
 
-    public IQueryable<Workout> GetAllUserWorkouts(string userId)
+    public async Task<IEnumerable<Workout>> GetAllUserWorkoutsWithProjectionAsync(string userId, Func<Workout, Workout>? projectFunc = null)
     {
-        return this._context
+        IQueryable<Workout> fetchQuery = this._context
             .Workouts
             .AsNoTracking()
             .Where(w => w.UserId == userId);
+
+        if (projectFunc is not null) 
+        {
+            fetchQuery = fetchQuery
+                .Select(w => projectFunc(w))
+                .AsQueryable();
+        }
+
+        return await fetchQuery.ToArrayAsync();
     }
 
     public async Task<bool> AddWorkoutAsync(Workout workout)
     {
         await this._context.Workouts.AddAsync(workout);
+        int resultCount = await this.SaveChangesAsync();
+
+        return resultCount == 1;
+    }
+
+    public async Task<bool> AddWorkoutSetAsync(WorkoutSet set)
+    {
+        await this._context.WorkoutSets.AddAsync(set);
         int resultCount = await this.SaveChangesAsync();
 
         return resultCount == 1;

@@ -55,8 +55,9 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 Notes = model.Notes
             };
 
-            await this._context.WorkoutSets.AddAsync(set);
-            await this._context.SaveChangesAsync();
+            bool successfulAdd = await this._repository.AddWorkoutSetAsync(set);
+            if (!successfulAdd)
+                throw new EntityCreatePersistException();
         }
 
         public async Task<Workout> GetWorkoutWithExercisesAsync(Guid id)
@@ -124,8 +125,20 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
 
         public async Task<IEnumerable<WorkoutDetailsViewModel>> CreateWorkoutDetailsViewModelsAsync(string userId)
         {
-            IEnumerable<WorkoutDetailsViewModel> viewModels = await this._repository
-                .GetAllUserWorkouts(userId)
+            // Fetch data
+            IEnumerable<Workout> workouts = await this._repository
+                .GetAllUserWorkoutsWithProjectionAsync(userId, w => new Workout
+                {
+                    Id = w.Id,
+                    Date = w.Date,
+                    Start = w.Start,
+                    End = w.End,
+                    Duration = w.Duration,
+                    Notes = w.Notes,
+                });
+
+            // Process data
+            IEnumerable<WorkoutDetailsViewModel> viewModels = workouts
                 .Select(w => new WorkoutDetailsViewModel 
                 {
                     Id = w.Id,
@@ -137,8 +150,9 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 })
                 .OrderByDescending(w => w.Date)
                 .ThenByDescending(w => w.Start)
-                .ToListAsync();
+                .ToArray();
 
+            // Return data
             return viewModels;
         }
 
