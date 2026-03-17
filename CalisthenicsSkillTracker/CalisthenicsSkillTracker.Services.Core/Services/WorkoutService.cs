@@ -7,6 +7,8 @@ using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using CalisthenicsSkillTracker.GCommon.Exceptions;
+
 namespace CalisthenicsSkillTracker.Services.Core.Services
 {
     // TODO: Separate the helper methods in a individual service.
@@ -34,8 +36,9 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 End = end
             };
 
-            await this._context.Workouts.AddAsync(workout);
-            await this._context.SaveChangesAsync();
+            bool successfulAdd = await this._repository.AddWorkoutAsync(workout);
+            if (!successfulAdd)
+                throw new EntityCreatePersistException();
 
             return workout;
         }

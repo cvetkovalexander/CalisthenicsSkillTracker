@@ -12,6 +12,8 @@
 
             <input asp-for="UserId" type="hidden" />
 
+            <div asp-validation-summary="All"></div>
+
             <div class="form-group">
                 <label asp-for="Date">Date</label>
                 <input asp-for="Date" type="date" class="custom-input" value="@Model.Date.ToString("yyyy-MM-dd")" />

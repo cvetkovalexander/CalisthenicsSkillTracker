@@ -1,10 +1,11 @@
 ﻿using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.GCommon.Exceptions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
+using static CalisthenicsSkillTracker.GCommon.OutputMessages.Workout;
+using static CalisthenicsSkillTracker.GCommon.EntityConstants;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using NuGet.Packaging.Signing;
-using System.Threading.Tasks;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
@@ -53,15 +54,23 @@ public class WorkoutsController : ControllerBase
         }
 
         Workout workout = null!;
-        try 
+        try
         {
             workout = await this._workoutService.CreateWorkoutAsync(model, start, end);
         }
-        catch (Exception e) 
+        catch (EntityCreatePersistException ecpe)
         {
-            this._logger.LogError(e, "Exception occured while trying to save a workout in database");
+            this._logger.LogError(ecpe, WorkoutSaveErrorMessage);
 
-            ModelState.AddModelError(string.Empty, "An error occurred while creating the workout. Please try again.");
+            ModelState.AddModelError(string.Empty, WorkoutSaveErrorMessage);
+
+            return this.View(model);
+        }
+        catch (Exception ex) 
+        {
+            this._logger.LogError(ex, UnexpectedErrorMessage);
+
+            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
 
             return this.View(model);
         }

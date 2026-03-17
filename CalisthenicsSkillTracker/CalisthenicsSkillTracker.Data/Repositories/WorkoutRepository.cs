@@ -19,4 +19,15 @@ public class WorkoutRepository : IWorkoutRepository
             .AsNoTracking()
             .Where(w => w.UserId == userId);
     }
+
+    public async Task<bool> AddWorkoutAsync(Workout workout)
+    {
+        await this._context.Workouts.AddAsync(workout);
+        int resultCount = await this.SaveChangesAsync();
+
+        return resultCount == 1;
+    }
+
+    private async Task<int> SaveChangesAsync()
+        => await this._context.SaveChangesAsync();
 }

@@ -4,5 +4,7 @@ namespace CalisthenicsSkillTracker.Data.Repositories.Contracts;
 
 public interface IWorkoutRepository
 {
-    IQueryable<Workout> GetAllUserWorkouts(string userId); 
+    IQueryable<Workout> GetAllUserWorkouts(string userId);
+
+    Task<bool> AddWorkoutAsync(Workout workout);
 }
