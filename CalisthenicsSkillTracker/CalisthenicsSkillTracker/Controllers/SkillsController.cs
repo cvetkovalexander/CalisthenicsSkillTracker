@@ -1,6 +1,11 @@
-﻿using CalisthenicsSkillTracker.Services.Core.Interfaces;
+﻿using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.GCommon.Exceptions;
+using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
+using static CalisthenicsSkillTracker.GCommon.OutputMessages;
+using static CalisthenicsSkillTracker.GCommon.EntityConstants;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace CalisthenicsSkillTracker.Controllers;
@@ -67,11 +72,19 @@ public class SkillsController : Controller
         {
             await this._inputService.CreateSkillAsync(model);
         }
-        catch (Exception e)
+        catch (EntityCreatePersistException ecpe)
         {
-            this._logger.LogError(e, "Exception occured while trying to save a skill in database");
+            this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(Skill)));
 
-            ModelState.AddModelError(string.Empty, "An error occurred while adding the skill. Please try again.");
+            ModelState.AddModelError(string.Empty, string.Format(EntitySaveError, nameof(Skill)));
+
+            return this.View(model);
+        }
+        catch (Exception ex)
+        {
+            this._logger.LogError(ex, UnexpectedErrorMessage);
+
+            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
 
             return this.View(model);
         }
@@ -108,7 +121,26 @@ public class SkillsController : Controller
         if (!ModelState.IsValid)
             return this.View(model);
 
-        await this._inputService.EditSkillDataAsync(model);
+        try
+        {
+            await this._inputService.EditSkillDataAsync(model);
+        }
+        catch (EntityEditPersistException eepe) 
+        {
+            this._logger.LogError(eepe, string.Format(EntityEditError, nameof(Skill)));
+
+            ModelState.AddModelError(string.Empty, string.Format(EntityEditError, nameof(Skill)));
+
+            return this.View(model);
+        }
+        catch (Exception ex)
+        {
+            this._logger.LogError(ex, UnexpectedErrorMessage);
+
+            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+
+            return this.View(model);
+        }
 
         return RedirectToAction(nameof(Index));
     }

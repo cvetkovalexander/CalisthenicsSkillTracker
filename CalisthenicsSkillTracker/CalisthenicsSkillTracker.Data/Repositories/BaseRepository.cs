@@ -12,6 +12,9 @@ public abstract class BaseRepository : IDisposable
 
     protected ApplicationDbContext Context => this._context;
 
+    protected async Task<int> SaveChangesAsync()
+        => await this.Context.SaveChangesAsync();
+
     public void Dispose()
     {
         Dispose(true);

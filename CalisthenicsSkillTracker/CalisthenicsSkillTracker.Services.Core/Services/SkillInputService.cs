@@ -1,6 +1,8 @@
 ﻿using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Models.Enums;
+using CalisthenicsSkillTracker.Data.Repositories.Contracts;
+using CalisthenicsSkillTracker.GCommon.Exceptions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
@@ -21,9 +23,12 @@ public class SkillInputService : ISkillInputService
 
     private readonly ApplicationDbContext _context;
 
-    public SkillInputService(ApplicationDbContext context)
+    private readonly ISkillRepository _repository;
+
+    public SkillInputService(ApplicationDbContext context, ISkillRepository repository)
     {
         this._context = context;
+        this._repository = repository;
     }
 
     public async Task CreateSkillAsync(CreateSkillViewModel model)
@@ -39,8 +44,9 @@ public class SkillInputService : ISkillInputService
             Difficulty = model.Difficulty
         };
 
-        await this._context.Skills.AddAsync(skill);
-        await this._context.SaveChangesAsync();
+        bool successfulAdd = await this._repository.AddSkillAsync(skill);
+        if (!successfulAdd)
+            throw new EntityCreatePersistException();
     }
 
     public async Task<EditSkillViewModel> CreateEditSkillViewModelAsync(Guid id)
@@ -76,8 +82,9 @@ public class SkillInputService : ISkillInputService
         skill.SkillType = model.SkillType;
         skill.Difficulty = model.Difficulty;
 
-        this._context.Skills.Update(skill);
-        await this._context.SaveChangesAsync();
+        bool successfulEdit = await this._repository.EditSkillAsync(skill);
+        if (!successfulEdit)
+            throw new EntityEditPersistException();
     }
 
     public async Task DeleteSkillAsync(Guid id)

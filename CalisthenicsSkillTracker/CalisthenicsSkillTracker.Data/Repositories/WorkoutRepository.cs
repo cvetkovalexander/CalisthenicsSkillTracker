@@ -96,8 +96,4 @@ public class WorkoutRepository : BaseRepository, IWorkoutRepository
     }
     public async Task<bool> EntityExistsAsync<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class
             => await this.Context.Set<TEntity>().AnyAsync(predicate);
-
-    private async Task<int> SaveChangesAsync()
-        => await this.Context.SaveChangesAsync();
-
 }
