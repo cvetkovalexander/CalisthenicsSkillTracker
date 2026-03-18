@@ -1,6 +1,11 @@
-﻿using CalisthenicsSkillTracker.Services.Core.Interfaces;
+﻿using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.GCommon.Exceptions;
+using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
+using static CalisthenicsSkillTracker.GCommon.OutputMessages;
+using static CalisthenicsSkillTracker.GCommon.EntityConstants;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace CalisthenicsSkillTracker.Controllers;
@@ -69,11 +74,19 @@ public class ExercisesController : Controller
         {
             await this._inputService.CreateExerciseAsync(model);
         }
-        catch (Exception e)
+        catch (EntityCreatePersistException ecpe)
         {
-            this._logger.LogError(e, "Exception occured while trying to save a exercise in database");
+            this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(Exercise)));
 
-            ModelState.AddModelError(string.Empty, "An error occurred while adding the exercise. Please try again.");
+            ModelState.AddModelError(string.Empty, string.Format(EntitySaveError, nameof(Exercise)));
+
+            return this.View(model);
+        }
+        catch (Exception ex)
+        {
+            this._logger.LogError(ex, UnexpectedErrorMessage);
+
+            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
 
             return this.View(model);
         }
@@ -99,6 +112,7 @@ public class ExercisesController : Controller
     public async Task<IActionResult> Edit(EditExerciseViewModel model)
     {
         this._inputService.FetchEnums(model);
+        model.AvailableExercises = await this._inputService.GetAvailableSkillsAsync();
 
         if (!await this._outputService.ExerciseExistsAsync(model.Id))
             return this.NotFound();
@@ -107,10 +121,33 @@ public class ExercisesController : Controller
             ModelState
                 .AddModelError(nameof(model.Name), "A exercise with this name already exists.");
 
+        if (model.SkillId is not null)
+            if (!await this._inputService.SkillExistsAsync(Guid.Parse(model.SkillId)))
+                ModelState.AddModelError(nameof(model.SkillId), "Ivalid skill id.");
+
         if (!ModelState.IsValid)
             return this.View(model);
 
-        await this._inputService.EditExerciseDataAsync(model);
+        try 
+        {
+            await this._inputService.EditExerciseDataAsync(model);
+        }
+        catch (EntityEditPersistException eepe)
+        {
+            this._logger.LogError(eepe, string.Format(EntityEditError, nameof(Exercise)));
+
+            ModelState.AddModelError(string.Empty, string.Format(EntityEditError, nameof(Exercise)));
+
+            return this.View(model);
+        }
+        catch (Exception ex)
+        {
+            this._logger.LogError(ex, UnexpectedErrorMessage);
+
+            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+
+            return this.View(model);
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -126,11 +163,17 @@ public class ExercisesController : Controller
         {
             await this._inputService.DeleteExerciseAsync(id);
         }
+        catch (EntityDeleteException ede)
+        {
+            this._logger.LogError(ede, string.Format(EntityDeleteError, nameof(Exercise)));
+            ModelState.AddModelError(string.Empty, string.Format(EntityDeleteError, nameof(Exercise)));
+            return this.RedirectToAction("Edit");
+        }
         catch (Exception e)
         {
-            this._logger.LogError(e, "Exception occured while trying to delete an exercise from database");
+            this._logger.LogError(e, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, "An error occurred while deleting the exercise. Please try again.");
+            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
 
             return this.RedirectToAction("Edit");
         }

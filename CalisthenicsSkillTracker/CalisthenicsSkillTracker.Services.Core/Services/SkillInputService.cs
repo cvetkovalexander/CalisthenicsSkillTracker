@@ -88,7 +88,7 @@ public class SkillInputService : ISkillInputService
     {
         Skill skillEntity = await this._repository.GetSkillByIdAsync(id);
 
-        bool successfulDelete = await this._repository.HardDeleteAsync(skillEntity);
+        bool successfulDelete = await this._repository.HardDeleteSkillAsync(skillEntity);
         if (!successfulDelete)
             throw new EntityDeleteException();
     }

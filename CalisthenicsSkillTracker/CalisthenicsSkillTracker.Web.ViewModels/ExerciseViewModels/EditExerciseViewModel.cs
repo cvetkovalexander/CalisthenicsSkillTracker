@@ -11,6 +11,8 @@ public class EditExerciseViewModel : IExerciseViewModel
 {
     public Guid Id { get; set; }
 
+    public string? SkillId { get; set; }
+
     [Required]
     [MinLength(NameMinLength)]
     [MaxLength(NameMaxLength)]
@@ -42,5 +44,8 @@ public class EditExerciseViewModel : IExerciseViewModel
     [Required]
     public Category Category { get; set; }
     public List<SelectListItem> CategoryOptions { get; set; }
+        = new List<SelectListItem>();
+
+    public List<SelectListItem> AvailableExercises { get; set; }
         = new List<SelectListItem>();
 }

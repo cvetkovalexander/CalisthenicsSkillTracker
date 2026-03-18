@@ -1,5 +1,6 @@
 ﻿using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
@@ -9,18 +10,17 @@ namespace CalisthenicsSkillTracker.Services.Core.Services;
 
 public class ExerciseOutputService : IExerciseOutputService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IExerciseRepository _repository;
 
-    public ExerciseOutputService(ApplicationDbContext context)
+    public ExerciseOutputService(IExerciseRepository repository)
     {
-        this._context = context;
+        this._repository = repository;
     }
 
     public async Task<IEnumerable<ListTableItemViewModel>> GetAllExercisesAsync(string? filter)
     {
-        IEnumerable<ListTableItemViewModel> exercises = await this._context
-            .Exercises
-            .AsNoTracking()
+        IEnumerable<ListTableItemViewModel> exercises = await this._repository
+            .GetAllExercises()
             .OrderBy(e => e.Name)
             .Select(e => new ListTableItemViewModel
             {
@@ -39,11 +39,8 @@ public class ExerciseOutputService : IExerciseOutputService
 
     public async Task<DetailsExerciseViewModel> GetExerciseDetailsAsync(Guid id)
     {
-        Exercise exercise = await this._context
-            .Exercises
-            .Include(e => e.Skills)
-            .AsNoTracking()
-            .SingleAsync(e => e.Id == id);
+        Exercise exercise = await this._repository
+            .GetExerciseByIdAsync(id);
 
         DetailsExerciseViewModel model = new DetailsExerciseViewModel()
         {
@@ -64,9 +61,5 @@ public class ExerciseOutputService : IExerciseOutputService
     /* Helper methods */
 
     public async Task<bool> ExerciseExistsAsync(Guid id)
-    {
-        return await this._context
-            .Exercises
-            .AnyAsync(e => e.Id == id);
-    }
+        => await this._repository.ExerciseExistsAsync(id);
 }

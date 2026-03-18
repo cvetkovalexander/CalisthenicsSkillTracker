@@ -1,4 +1,4 @@
-﻿using CalisthenicsSkillTracker.Data.Models;
+﻿    using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,7 +32,7 @@ public class SkillRepository : BaseRepository, ISkillRepository
         throw new NotImplementedException();
     }
 
-    public async Task<bool> HardDeleteAsync(Skill skill)
+    public async Task<bool> HardDeleteSkillAsync(Skill skill)
     {
         this.Context.Skills.Remove(skill);
         int resultCount = await this.SaveChangesAsync();

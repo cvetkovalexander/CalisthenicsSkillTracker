@@ -64,6 +64,14 @@
                 <span asp-validation-for="Category" class="validation-text"></span>
             </div>
 
+            <div class="form-group">
+                <label asp-for="SkillId">Select a skill if the exercise is relevant to it.</label>
+                <select asp-for="SkillId" asp-items="Model.AvailableExercises" class="form-select custom-input">
+                    <option value="">Select skill...</option>
+                </select>
+                <span asp-validation-for="SkillId" class="text-danger"></span>
+            </div>
+
             <div class="button-group">
                 <button type="button"
                         class="btn-cancel"

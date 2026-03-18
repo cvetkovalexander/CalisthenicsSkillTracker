@@ -1,6 +1,7 @@
-﻿using CalisthenicsSkillTracker.Data;
-using CalisthenicsSkillTracker.Data.Models;
+﻿using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Models.Enums;
+using CalisthenicsSkillTracker.Data.Repositories.Contracts;
+using CalisthenicsSkillTracker.GCommon.Exceptions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
@@ -19,11 +20,61 @@ public class ExerciseInputService : IExerciseInputService
 
     private const string DifficultyKey = "Difficulty";
 
-    private readonly ApplicationDbContext _context;
+    private readonly IExerciseRepository _repository;
 
-    public ExerciseInputService(ApplicationDbContext context)
+    public ExerciseInputService(IExerciseRepository repository)
     {
-        this._context = context;
+        this._repository = repository;
+    }
+    public async Task CreateExerciseAsync(CreateExerciseViewModel model)    
+    {
+        Exercise exercise = new Exercise()
+        {
+            Name = model.Name,
+            Description = model.Description,
+            MeasurementType = model.Measurement,
+            Category = model.Category,
+            ExerciseType = model.ExerciseType,
+            Difficulty = model.Difficulty,
+            ImageUrl = model.ImageUrl
+        };
+
+        if (model.SkillId is not null) 
+        {
+            Skill skill = await this._repository.GetSkillAsync(Guid.Parse(model.SkillId!));
+            exercise.Skills.Add(skill);
+            skill.Exercises.Add(exercise);
+        }
+
+        bool successfulAdd = await this._repository.AddExerciseAsync(exercise);
+        if (!successfulAdd)
+            throw new EntityCreatePersistException();
+    }
+
+    public async Task EditExerciseDataAsync(EditExerciseViewModel model)
+    {
+        Exercise exercise = await this._repository.GetExerciseByIdAsync(model.Id);
+
+        exercise.Name = model.Name;
+        exercise.Description = model.Description;
+        exercise.ImageUrl = model.ImageUrl;
+        exercise.MeasurementType = model.Measurement;
+        exercise.Category = model.Category;
+        exercise.ExerciseType = model.ExerciseType;
+        exercise.Difficulty = model.Difficulty;
+
+        bool isAdded = false;
+        if (model.SkillId is not null)
+        {
+            Skill skill = await this._repository.GetSkillAsync(Guid.Parse(model.SkillId!));
+            exercise.Skills.Add(skill);
+            skill.Exercises.Add(exercise);
+            isAdded = true;
+        }
+
+        bool successfulEdit = await this._repository.EditExerciseAsync(exercise, isAdded);
+        if (!successfulEdit)
+            throw new EntityEditPersistException();
     }
 
     public async Task<CreateExerciseViewModel> CreateExerciseViewModelWithEnumsAsync()
@@ -36,6 +87,67 @@ public class ExerciseInputService : IExerciseInputService
         return model;
     }
 
+    public void FetchEnums(IExerciseViewModel model)
+    {
+        model.MeasurementOptions = this.FetchSelectedEnum(MeasurementKey);
+        model.CategoryOptions = this.FetchSelectedEnum(CategoryKey);
+        model.ExerciseTypeOptions = this.FetchSelectedEnum(SkillTypeKey);
+        model.DifficultyOptions = this.FetchSelectedEnum(DifficultyKey);
+    }
+
+    public async Task<bool> ExerciseNameExistsAsync(string name)
+        => await this._repository.ExerciseNameExistsAsync(name);
+
+    public async Task<EditExerciseViewModel> CreateEditExerciseViewModelAsync(Guid id)
+    {
+        Exercise exerciseEntity = await this._repository.GetExerciseByIdAsync(id);
+
+        EditExerciseViewModel model = new EditExerciseViewModel()
+        {
+            Id = exerciseEntity.Id,
+            Name = exerciseEntity.Name,
+            Description = exerciseEntity.Description,
+            ImageUrl= exerciseEntity.ImageUrl,
+            Measurement = exerciseEntity.MeasurementType,
+            Category = exerciseEntity.Category,
+            ExerciseType = exerciseEntity.ExerciseType,
+            Difficulty = exerciseEntity.Difficulty,
+            AvailableExercises = await this.GetAvailableSkillsAsync()
+        };
+
+        this.FetchEnums(model);
+
+        return model;
+    }
+
+    public async Task<bool> ExerciseNameExcludingCurrentExistsAsync(Guid id, string name)
+        => await this._repository.ExerciseNameExcludingCurrentExistsAsync(id, name);
+
+    public async Task DeleteExerciseAsync(Guid id)
+    {
+        Exercise exerciseEntity = await this._repository.GetExerciseByIdAsync(id);
+
+        bool successfulDelete = await this._repository.HardDeleteExerciseAsync(exerciseEntity);
+
+        if (!successfulDelete)
+            throw new EntityDeleteException();
+    }
+
+    public async Task<List<SelectListItem>> GetAvailableSkillsAsync()
+    {
+        return await this._repository
+            .GetAllSkills()
+            .Select(s => new SelectListItem
+            {
+                Text = s.Name,
+                Value = s.Id.ToString()
+            })
+            .ToListAsync();
+
+    }
+
+    public async Task<bool> SkillExistsAsync(Guid id)
+        => await this._repository.SkillExistsAsync(id);
     public List<SelectListItem> FetchSelectedEnum(string key)
     {
         Dictionary<string, List<SelectListItem>> enums = new Dictionary<string, List<SelectListItem>>
@@ -82,133 +194,5 @@ public class ExerciseInputService : IExerciseInputService
         };
 
         return enums[key];
-    }
-
-    public void FetchEnums(IExerciseViewModel model)
-    {
-        model.MeasurementOptions = this.FetchSelectedEnum(MeasurementKey);
-        model.CategoryOptions = this.FetchSelectedEnum(CategoryKey);
-        model.ExerciseTypeOptions = this.FetchSelectedEnum(SkillTypeKey);
-        model.DifficultyOptions = this.FetchSelectedEnum(DifficultyKey);
-    }
-
-    public async Task<bool> ExerciseNameExistsAsync(string name)
-        => await this._context.Exercises.AnyAsync(s => s.Name.ToLower() == this.RemoveWhitespaces(name).ToLower());
-
-    public string RemoveWhitespaces(string input)
-        => string.Concat(input.Where(c => !char.IsWhiteSpace(c)));
-
-    public async Task CreateExerciseAsync(CreateExerciseViewModel model)
-    {
-        Exercise exercise = new Exercise()
-        {
-            Name = model.Name,
-            Description = model.Description,
-            MeasurementType = model.Measurement,
-            Category = model.Category,
-            ExerciseType = model.ExerciseType,
-            Difficulty = model.Difficulty,
-            ImageUrl = model.ImageUrl
-        };
-
-        if (model.SkillId is not null) 
-        {
-            Skill skill = await this.GetSkillAsync(Guid.Parse(model.SkillId!));
-            exercise.Skills.Add(skill);
-            skill.Exercises.Add(exercise);
-        }
-
-        await this._context.Exercises.AddAsync(exercise);
-        await this._context.SaveChangesAsync();
-    }
-
-    public async Task<EditExerciseViewModel> CreateEditExerciseViewModelAsync(Guid id)
-    {
-        Exercise exerciseEntity = await this.GetExerciseByIdAsync(id);
-
-        EditExerciseViewModel model = new EditExerciseViewModel()
-        {
-            Id = exerciseEntity.Id,
-            Name = exerciseEntity.Name,
-            Description = exerciseEntity.Description,
-            ImageUrl= exerciseEntity.ImageUrl,
-            Measurement = exerciseEntity.MeasurementType,
-            Category = exerciseEntity.Category,
-            ExerciseType = exerciseEntity.ExerciseType,
-            Difficulty = exerciseEntity.Difficulty
-        };
-
-        this.FetchEnums(model);
-
-        return model;
-    }
-
-    public async Task<Exercise> GetExerciseByIdAsync(Guid id)
-    {
-        return await this._context
-            .Exercises
-            .AsNoTracking()
-            .SingleAsync(e => e.Id == id);
-    }
-
-    public async Task<bool> ExerciseNameExcludingCurrentExistsAsync(Guid id, string name)
-    {
-        return await this._context
-            .Exercises
-            .AsNoTracking()
-            .AnyAsync(e => e.Id != id && e.Name.ToLower() == this.RemoveWhitespaces(name).ToLower());
-    }
-
-    public async Task EditExerciseDataAsync(EditExerciseViewModel model)
-    {
-        Exercise exercise = await this.GetExerciseByIdAsync(model.Id);
-
-        exercise.Name = model.Name;
-        exercise.Description = model.Description;
-        exercise.ImageUrl = model.ImageUrl;
-        exercise.MeasurementType = model.Measurement;
-        exercise.Category = model.Category;
-        exercise.ExerciseType = model.ExerciseType;
-        exercise.Difficulty = model.Difficulty;
-
-        this._context.Exercises.Update(exercise);
-        await this._context.SaveChangesAsync();
-    }
-
-    public async Task DeleteExerciseAsync(Guid id)
-    {
-        Exercise exerciseEntity = await this.GetExerciseByIdAsync(id);
-
-        this._context.Exercises.Remove(exerciseEntity);
-
-        await this._context.SaveChangesAsync();
-    }
-
-    public async Task<List<SelectListItem>> GetAvailableSkillsAsync()
-    {
-        return await this._context
-            .Skills
-            .AsNoTracking()
-            .Select(s => new SelectListItem
-            {
-                Text = s.Name,
-                Value = s.Id.ToString()
-            })
-            .ToListAsync();
-
-    }
-
-    public async Task<Skill> GetSkillAsync(Guid id)
-    {
-        return await this._context
-            .Skills
-            .FirstAsync(s => s.Id == id);
-    }
-
-    public async Task<bool> SkillExistsAsync(Guid id)
-    {
-        return await this._context
-            .Skills
-            .AnyAsync(s => s.Id == id);
     }
 }

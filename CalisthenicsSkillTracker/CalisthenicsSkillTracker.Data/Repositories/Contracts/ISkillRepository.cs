@@ -11,7 +11,7 @@ public interface ISkillRepository
     // TODO: Consider adding isDeleted property to Skill and implementing soft delete instead of hard delete
     Task<bool> SoftDeleteSkillAsync(Skill skill);
 
-    Task<bool> HardDeleteAsync(Skill skill);
+    Task<bool> HardDeleteSkillAsync(Skill skill);
 
     Task<bool> SkillNameExistsAsync(string name);
 

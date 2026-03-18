@@ -7,7 +7,7 @@ public interface IExerciseViewModel
 {
     string Name { get; set; }
     string? Description { get; set; }
-
+    public string? SkillId { get; set; }
     string? ImageUrl { get; set; }
     Measurement Measurement { get; set; }
     List<SelectListItem> MeasurementOptions { get; set; }
@@ -17,4 +17,5 @@ public interface IExerciseViewModel
     List<SelectListItem> ExerciseTypeOptions { get; set; }
     Difficulty Difficulty { get; set; }
     List<SelectListItem> DifficultyOptions { get; set; }
+    public List<SelectListItem> AvailableExercises { get; set; }
 }
