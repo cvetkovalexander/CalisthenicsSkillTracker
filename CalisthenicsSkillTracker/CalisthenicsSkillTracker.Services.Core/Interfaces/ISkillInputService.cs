@@ -16,12 +16,9 @@ public interface ISkillInputService
     Task DeleteSkillAsync(Guid id);
 
     /* Helper methods */
-    Task<Skill> GetSkillByIdAsync(Guid id);
     Task<bool> SkillNameExistsAsync(string name);
     Task<bool> SkillNameExcludingCurrentExistsAsync(Guid id, string name);
     List<SelectListItem> FetchSelectedEnum(string key);
     CreateSkillViewModel CreateSkillViewModelWithEnums();
     void FetchEnums(ISkillViewModel model);
-    string RemoveWhitespaces(string input);
-    Task<List<SelectListItem>> GetAvailableExercisesAsync();
 }

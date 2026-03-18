@@ -7,7 +7,6 @@ using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace CalisthenicsSkillTracker.Services.Core.Services;
 
@@ -21,13 +20,10 @@ public class SkillInputService : ISkillInputService
 
     private const string DifficultyKey = "Difficulty";
 
-    private readonly ApplicationDbContext _context;
-
     private readonly ISkillRepository _repository;
 
-    public SkillInputService(ApplicationDbContext context, ISkillRepository repository)
+    public SkillInputService(ISkillRepository repository)
     {
-        this._context = context;
         this._repository = repository;
     }
 
@@ -51,7 +47,7 @@ public class SkillInputService : ISkillInputService
 
     public async Task<EditSkillViewModel> CreateEditSkillViewModelAsync(Guid id)
     {
-        Skill skillEntity = await this.GetSkillByIdAsync(id);
+        Skill skillEntity = await this._repository.GetSkillByIdAsync(id);
 
         EditSkillViewModel model = new EditSkillViewModel()
         {
@@ -72,7 +68,7 @@ public class SkillInputService : ISkillInputService
 
     public async Task EditSkillDataAsync(EditSkillViewModel model)
     {
-        Skill skill = await this.GetSkillByIdAsync(model.Id);
+        Skill skill = await this._repository.GetSkillByIdAsync(model.Id);
 
         skill.Name = model.Name;
         skill.Description = model.Description;
@@ -87,13 +83,14 @@ public class SkillInputService : ISkillInputService
             throw new EntityEditPersistException();
     }
 
+    // TODO: Implement soft and hard delete.
     public async Task DeleteSkillAsync(Guid id)
     {
-        Skill skillEntity = await this.GetSkillByIdAsync(id);
+        Skill skillEntity = await this._repository.GetSkillByIdAsync(id);
 
-        this._context.Skills.Remove(skillEntity);
-
-        await this._context.SaveChangesAsync();
+        bool successfulDelete = await this._repository.HardDeleteAsync(skillEntity);
+        if (!successfulDelete)
+            throw new EntityDeleteException();
     }
 
     /* Helper methods */
@@ -161,39 +158,9 @@ public class SkillInputService : ISkillInputService
         model.SkillTypeOptions = this.FetchSelectedEnum(SkillTypeKey);
         model.DifficultyOptions = this.FetchSelectedEnum(DifficultyKey);
     }
-
-    public string RemoveWhitespaces(string input)
-        => string.Concat(input.Where(c => !char.IsWhiteSpace(c)));
-
     public async Task<bool> SkillNameExistsAsync(string name)
-        => await this._context.Skills.AnyAsync(s => s.Name.ToLower() == this.RemoveWhitespaces(name).ToLower());
+        => await this._repository.SkillNameExistsAsync(name);
 
     public async Task<bool> SkillNameExcludingCurrentExistsAsync(Guid id, string name)
-    {
-        return await this._context
-            .Skills
-            .AsNoTracking()
-            .AnyAsync(s => s.Id != id && s.Name.ToLower() == this.RemoveWhitespaces(name).ToLower());
-    }
-
-    public async Task<Skill> GetSkillByIdAsync(Guid id)
-    {
-        return await this._context
-            .Skills
-            .AsNoTracking()
-            .SingleAsync(s => s.Id == id);
-    }
-
-    public async Task<List<SelectListItem>> GetAvailableExercisesAsync()
-    {
-        return await this._context
-            .Skills
-            .AsNoTracking()
-            .Select(s => new SelectListItem 
-            {
-                Text = s.Name,
-                Value = s.Id.ToString()
-            })
-            .ToListAsync();
-    }
+        => await this._repository.SkillNameExcludingCurrentExistsAsync(id, name);
 }

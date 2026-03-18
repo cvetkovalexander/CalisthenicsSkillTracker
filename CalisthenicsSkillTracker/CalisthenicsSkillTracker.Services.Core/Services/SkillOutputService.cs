@@ -1,5 +1,6 @@
 ﻿using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
@@ -9,18 +10,17 @@ namespace CalisthenicsSkillTracker.Services.Core.Services;
 
 public class SkillOutputService : ISkillOutputService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ISkillRepository _repository;
 
-    public SkillOutputService(ApplicationDbContext context)
+    public SkillOutputService(ISkillRepository repository)
     {
-        this._context = context;
+        this._repository = repository;
     }
 
     public async Task<IEnumerable<ListTableItemViewModel>> GetAllSkillsAsync(string? filter)
     {
-        IEnumerable<ListTableItemViewModel> skills = await this._context
-            .Skills
-            .AsNoTracking()
+        IEnumerable<ListTableItemViewModel> skills = await this._repository
+            .GetAllSkills()
             .OrderBy(s => s.Name)
             .Select(s => new ListTableItemViewModel
             {
@@ -39,11 +39,8 @@ public class SkillOutputService : ISkillOutputService
 
     public async Task<DetailsSkillViewModel> GetSkillDetailsAsync(Guid id)
     {
-        Skill skill = await this._context
-            .Skills
-            .AsNoTracking()
-            .Include(s => s.Exercises)
-            .SingleAsync(s => s.Id == id);
+        Skill skill = await this._repository
+            .GetSkillWithExercisesByIdAsync(id);
 
         DetailsSkillViewModel model = new DetailsSkillViewModel()
         {
@@ -61,9 +58,5 @@ public class SkillOutputService : ISkillOutputService
     }
 
     public async Task<bool> SkillExistsAsync(Guid id)
-    {
-        return await this._context
-            .Skills
-            .AnyAsync(s => s.Id == id);
-    }
+        => await this._repository.SkillExistsAsync(id);
 }

@@ -156,11 +156,17 @@ public class SkillsController : Controller
         {
             await this._inputService.DeleteSkillAsync(id);
         }
+        catch (EntityDeleteException ede) 
+        {
+            this._logger.LogError(ede, string.Format(EntityDeleteError, nameof(Skill)));
+            ModelState.AddModelError(string.Empty, string.Format(EntityDeleteError, nameof(Skill)));
+            return this.RedirectToAction("Edit");
+        }
         catch (Exception e) 
         {
-            this._logger.LogError(e, "Exception occured while trying to delete a skill from database");
+            this._logger.LogError(e, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, "An error occurred while deleting the skill. Please try again.");
+            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
 
             return this.RedirectToAction("Edit");
         }
