@@ -18,25 +18,25 @@
                 <select asp-for="SkillId" asp-items="Model.Skills" class="custom-select">
                     <option value="">-- Select Skill --</option>
                 </select>
-                <span asp-validation-for="SkillId" class="validation-text"></span>
+                <span asp-validation-for="SkillId" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Repetitions">Repetitions</label>
                 <input asp-for="Repetitions" class="custom-input" />
-                <span asp-validation-for="Repetitions" class="validation-text"></span>
+                <span asp-validation-for="Repetitions" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Duration">Duration (seconds)</label>
                 <input asp-for="Duration" class="custom-input" />
-                <span asp-validation-for="Duration" class="validation-text"></span>
+                <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Notes">Notes</label>
                 <input asp-for="Notes" class="custom-input" />
-                <span asp-validation-for="Notes" class="validation-text"></span>
+                <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -44,12 +44,14 @@
                 <select asp-for="Progression" asp-items="Model.Progressions" class="custom-select">
                     <option value="">-- Select Progression --</option>
                 </select>
-                <span asp-validation-for="Progression" class="validation-text"></span>
+                <span asp-validation-for="Progression" class="text-danger"></span>
             </div>
 
             <div class="button-group">
                 <button type="submit" class="btn-create">Save</button>
-                <a asp-action="Index" class="btn-cancel">Cancel</a>
+                <button type="button" class="btn-cancel" onclick="location.href='@Url.Action("Index")'">
+                    Cancel
+                </button>
             </div>
         </form>
     </div>

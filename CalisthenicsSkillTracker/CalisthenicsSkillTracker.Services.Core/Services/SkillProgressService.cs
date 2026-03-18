@@ -1,6 +1,8 @@
 ﻿using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Models.Enums;
+using CalisthenicsSkillTracker.Data.Repositories.Contracts;
+using CalisthenicsSkillTracker.GCommon.Exceptions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.SkillProgressViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,11 +12,12 @@ namespace CalisthenicsSkillTracker.Services.Core.Services;
 
 public class SkillProgressService : ISkillProgressService
 {
-    private readonly ApplicationDbContext _context;
 
-    public SkillProgressService(ApplicationDbContext context)
+    private readonly ISkillProgressRepository _repository;
+
+    public SkillProgressService(ISkillProgressRepository repository)
     {
-        this._context = context;
+        this._repository = repository;
     }
 
     public async Task CreateSkillProgress(CreateSkillProgressViewModel model)
@@ -31,8 +34,9 @@ public class SkillProgressService : ISkillProgressService
             Notes = model.Notes
         };
 
-        await this._context.SkillProgressRecords.AddAsync(record);
-        await this._context.SaveChangesAsync();
+        bool successfulAdd = await this._repository.AddSkillProgressAsync(record);
+        if (!successfulAdd)
+            throw new EntityCreatePersistException();
     }
 
     public CreateSkillProgressViewModel CreateSkillProgressViewModel(string userId)
@@ -48,18 +52,19 @@ public class SkillProgressService : ISkillProgressService
 
     public async Task DeleteSkillRecordAsync(Guid id)
     {
-        SkillProgress skillProgress = await this._context.SkillProgressRecords.FirstAsync(sp => sp.Id == id);
+        SkillProgress skillProgress = await this._repository
+            .GetSkillRecord(id);
 
-        this._context.SkillProgressRecords.Remove(skillProgress);
+        bool successfulDelete = await this._repository.HardDeleteSkillProgressAsync(skillProgress);
 
-        await this._context.SaveChangesAsync();
+        if (!successfulDelete)
+            throw new EntityDeleteException();
     }
 
     public async Task<IEnumerable<ListRecordViewModel>> GetRecordsAsync(string userId)
     {
-        return await this._context
-            .SkillProgressRecords
-            .Where(sp => sp.UserId == userId)
+        return await this._repository
+            .GetUserSkillProgressRecords(userId)
             .Include(sp => sp.Skill)
             .OrderByDescending(sp => sp.Date)
             .Select(sp => new ListRecordViewModel
@@ -79,8 +84,8 @@ public class SkillProgressService : ISkillProgressService
 
     public void PopulateSelectListItems(CreateSkillProgressViewModel model)
     {
-        model.Skills = this._context
-            .Skills
+        model.Skills = this._repository
+            .GetAllSkills()
             .Select(s => new SelectListItem
             {
                 Value = s.Id.ToString(),
@@ -97,16 +102,10 @@ public class SkillProgressService : ISkillProgressService
     }
 
     public async Task<bool> SkillExistsAsync(Guid id)
-    {
-        return await this._context
-            .Skills
-            .AnyAsync(s => s.Id == id);
-    }
+        => await this._repository
+            .SkillExistsAsync(id);
 
     public async Task<bool> SkillRecordExistsAsync(Guid id)
-    {
-        return await this._context
-            .SkillProgressRecords
-            .AnyAsync(sp => sp.Id == id);
-    }
+        => await this._repository
+            .SkillRecordExistsAsync(id);
 }
