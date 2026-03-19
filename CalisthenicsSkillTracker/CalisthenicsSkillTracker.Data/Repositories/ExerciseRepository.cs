@@ -11,10 +11,13 @@ public class ExerciseRepository : BaseRepository, IExerciseRepository
     {
     }
 
-    public async Task<bool> AddExerciseAsync(Exercise exercise)
+    public async Task<bool> AddExerciseAsync(Exercise exercise, bool isAdded)
     {
         await this.Context.Exercises.AddAsync(exercise);
         int resultCount = await this.SaveChangesAsync();
+
+        if (isAdded)
+            return resultCount == 2;
 
         return resultCount == 1;
     }

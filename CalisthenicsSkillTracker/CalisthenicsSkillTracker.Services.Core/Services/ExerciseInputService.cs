@@ -39,14 +39,16 @@ public class ExerciseInputService : IExerciseInputService
             ImageUrl = model.ImageUrl
         };
 
+        bool isAdded = false;
         if (model.SkillId is not null) 
         {
             Skill skill = await this._repository.GetSkillAsync(Guid.Parse(model.SkillId!));
             exercise.Skills.Add(skill);
             skill.Exercises.Add(exercise);
+            isAdded = true;
         }
 
-        bool successfulAdd = await this._repository.AddExerciseAsync(exercise);
+        bool successfulAdd = await this._repository.AddExerciseAsync(exercise, isAdded);
         if (!successfulAdd)
             throw new EntityCreatePersistException();
     }

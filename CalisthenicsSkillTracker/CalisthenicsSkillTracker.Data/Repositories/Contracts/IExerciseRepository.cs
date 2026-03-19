@@ -4,7 +4,7 @@ namespace CalisthenicsSkillTracker.Data.Repositories.Contracts;
 
 public interface IExerciseRepository
 {
-    Task<bool> AddExerciseAsync(Exercise exercise);
+    Task<bool> AddExerciseAsync(Exercise exercise, bool isAdded);
 
     Task<bool> EditExerciseAsync(Exercise exercise, bool isAdded);
 

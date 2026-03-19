@@ -40,7 +40,7 @@ public class ExerciseOutputService : IExerciseOutputService
     public async Task<DetailsExerciseViewModel> GetExerciseDetailsAsync(Guid id)
     {
         Exercise exercise = await this._repository
-            .GetExerciseByIdAsync(id);
+            .GetExerciseWithSkillsAsync(id);
 
         DetailsExerciseViewModel model = new DetailsExerciseViewModel()
         {
