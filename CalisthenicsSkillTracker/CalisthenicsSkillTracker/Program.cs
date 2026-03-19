@@ -56,6 +56,8 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
+        app.UseStatusCodePagesWithRedirects("/Home/Error/{0}");
+
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");

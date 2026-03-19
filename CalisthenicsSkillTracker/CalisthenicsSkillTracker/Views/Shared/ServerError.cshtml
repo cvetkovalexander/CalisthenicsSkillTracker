@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "500 Internal Server Error";
+}
+
+<div class="error-page-wrapper">
+    <div class="error-page-card">
+        <i class="bi bi-x-circle-fill error-icon"></i>
+        <h1>500</h1>
+        <h2>Something went wrong</h2>
+        <p>We encountered an unexpected error on the server. Please try again later or go back home.</p>
+        <form method="get" asp-action="Index">
+            <button type="submit" class="btn-home bi bi-house-door"> Go Back Home</button>
+        </form>
+    </div>
+</div>

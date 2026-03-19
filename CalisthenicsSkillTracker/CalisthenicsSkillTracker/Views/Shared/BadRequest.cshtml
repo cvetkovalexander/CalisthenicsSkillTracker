@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "400 Bad Request";
+}
+
+<div class="error-page-wrapper">
+    <div class="error-page-card">
+        <i class="bi bi-slash-circle-fill error-icon"></i>
+        <h1>400</h1>
+        <h2>Bad Request</h2>
+        <p>The request cannot be processed due to invalid syntax. Please check the URL or try again.</p>
+        <form method="get" asp-action="Index">
+            <button type="submit" class="btn-home bi bi-house-door"> Go Back Home</button>
+        </form>
+    </div>
+</div>
