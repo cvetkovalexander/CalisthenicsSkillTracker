@@ -12,13 +12,6 @@
             Choose an exercise to add to the current workout. After selecting an exercise, you can log sets on the next screen.
         </small>
 
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="validation-text">
-                @TempData["SuccessMessage"]
-            </div>
-        }
-
         <form asp-action="AddExercises" method="post">
 			@Html.AntiForgeryToken()
 

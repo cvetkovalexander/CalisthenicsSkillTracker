@@ -1,0 +1,27 @@
+﻿@using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
+
+<script>
+    toastr.options = {
+        "positionClass": "toast-center",
+        "timeOut": "3000",
+        "closeButton": true,
+        "progressBar": true
+    };
+
+    @if (TempData[ErrorTempDataKey] != null)
+    {
+        <text>toastr.error("@TempData[ErrorTempDataKey]");</text>
+    }
+    else if (TempData[SuccessTempDataKey] != null)
+    {
+        <text>toastr.success("@TempData[SuccessTempDataKey]");</text>
+    }
+    else if (TempData[WarningTempDataKey] != null)
+    {
+        <text>toastr.warning("@TempData[WarningTempDataKey]");</text>
+    }
+    else if (TempData[InfoTempDataKey] != null)
+    {
+        <text>toastr.info("@TempData[InfoTempDataKey]");</text>
+    }
+</script>

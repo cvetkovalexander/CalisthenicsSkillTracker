@@ -4,7 +4,7 @@ using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
 using static CalisthenicsSkillTracker.GCommon.OutputMessages;
-using static CalisthenicsSkillTracker.GCommon.EntityConstants;
+using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -76,7 +76,7 @@ public class SkillsController : Controller
         {
             this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(Skill)));
 
-            ModelState.AddModelError(string.Empty, string.Format(EntitySaveError, nameof(Skill)));
+            TempData[ErrorTempDataKey] = string.Format(EntitySaveError, nameof(Skill));
 
             return this.View(model);
         }
@@ -84,10 +84,12 @@ public class SkillsController : Controller
         {
             this._logger.LogError(ex, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
 
             return this.View(model);
         }
+
+        TempData[SuccessTempDataKey] = string.Format(EntitySuccessfullyCreated, nameof(Skill));
 
         return RedirectToAction(nameof(Index));
     }
@@ -129,7 +131,7 @@ public class SkillsController : Controller
         {
             this._logger.LogError(eepe, string.Format(EntityEditError, nameof(Skill)));
 
-            ModelState.AddModelError(string.Empty, string.Format(EntityEditError, nameof(Skill)));
+            TempData[ErrorTempDataKey] = string.Format(EntityEditError, nameof(Skill));
 
             return this.View(model);
         }
@@ -137,10 +139,12 @@ public class SkillsController : Controller
         {
             this._logger.LogError(ex, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
 
             return this.View(model);
         }
+
+        TempData[SuccessTempDataKey] = string.Format(EntitySuccessfullyEdited, nameof(Skill));
 
         return RedirectToAction(nameof(Index));
     }
@@ -159,17 +163,21 @@ public class SkillsController : Controller
         catch (EntityDeleteException ede) 
         {
             this._logger.LogError(ede, string.Format(EntityDeleteError, nameof(Skill)));
-            ModelState.AddModelError(string.Empty, string.Format(EntityDeleteError, nameof(Skill)));
+
+            TempData[ErrorTempDataKey] = string.Format(EntityDeleteError, nameof(Skill));
+
             return this.RedirectToAction("Edit");
         }
         catch (Exception e) 
         {
             this._logger.LogError(e, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
 
             return this.RedirectToAction("Edit");
         }
+
+        TempData[SuccessTempDataKey] = string.Format(EntitySuccessfullyDeleted, nameof(Skill));
 
         return RedirectToAction(nameof(Index));
     }

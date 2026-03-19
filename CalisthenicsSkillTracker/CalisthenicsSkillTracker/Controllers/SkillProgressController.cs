@@ -2,7 +2,7 @@
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.SkillProgressViewModels;
 using static CalisthenicsSkillTracker.GCommon.OutputMessages;
-using static CalisthenicsSkillTracker.GCommon.EntityConstants;
+using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
 
 using Microsoft.AspNetCore.Mvc;
 using CalisthenicsSkillTracker.Data.Models;
@@ -63,17 +63,21 @@ public class SkillProgressController : ControllerBase
         catch (EntityCreatePersistException ecpe)
         {
             this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(SkillProgress)));
-            ModelState.AddModelError(string.Empty, string.Format(EntitySaveError, nameof(SkillProgress)));
+
+            TempData[ErrorTempDataKey] = string.Format(EntitySaveError, nameof(SkillProgress));
+
             return this.RedirectToAction(nameof(Index));
         }
         catch (Exception e)
         {
             this._logger.LogError(e, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
 
             return this.RedirectToAction(nameof(Index));
         }
+
+        TempData[SuccessTempDataKey] = string.Format(EntitySuccessfullyCreated, "Skill record");
 
         return RedirectToAction(nameof(Index));
     }
@@ -92,17 +96,21 @@ public class SkillProgressController : ControllerBase
         catch (EntityDeleteException ede)
         {
             this._logger.LogError(ede, string.Format(EntityDeleteError, nameof(SkillProgress)));
-            ModelState.AddModelError(string.Empty, string.Format(EntityDeleteError, nameof(SkillProgress)));
+
+            TempData[ErrorTempDataKey] = string.Format(EntityDeleteError, nameof(SkillProgress));
+
             return this.RedirectToAction(nameof(Index));
         }
         catch (Exception e)
         {
             this._logger.LogError(e, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
 
             return this.RedirectToAction(nameof(Index));
         }
+
+        TempData[SuccessTempDataKey] = string.Format(EntitySuccessfullyDeleted, "Skill record");
 
         return RedirectToAction(nameof(Index));
     }

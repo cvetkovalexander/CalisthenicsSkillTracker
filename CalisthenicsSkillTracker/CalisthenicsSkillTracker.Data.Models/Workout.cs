@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CalisthenicsSkillTracker.Data.Models;
 
-using static GCommon.EntityConstants;
+using static GCommon.ApplicationConstants;
 using static GCommon.EntityValidation.Workout;
 
 public class Workout
