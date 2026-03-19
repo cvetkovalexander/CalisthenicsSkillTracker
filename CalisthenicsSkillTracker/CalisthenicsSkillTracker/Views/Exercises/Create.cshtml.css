@@ -49,17 +49,6 @@
         box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
     }
 
-.validation-text {
-    font-size: 0.85rem;
-    color: red;
-    margin-top: 4px;
-}
-
-.validation-summary {
-    color: #ff6b6b;
-    margin-bottom: 15px;
-}
-
 .button-group {
     display: flex;
     justify-content: space-between;

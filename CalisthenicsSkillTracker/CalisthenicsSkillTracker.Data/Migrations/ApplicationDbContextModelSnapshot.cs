@@ -455,7 +455,7 @@ namespace CalisthenicsSkillTracker.Data.Migrations
             modelBuilder.Entity("CalisthenicsSkillTracker.Data.Models.Workout", b =>
                 {
                     b.HasOne("CalisthenicsSkillTracker.Data.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Workouts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -562,6 +562,8 @@ namespace CalisthenicsSkillTracker.Data.Migrations
             modelBuilder.Entity("CalisthenicsSkillTracker.Data.Models.ApplicationUser", b =>
                 {
                     b.Navigation("SkillProgressRecords");
+
+                    b.Navigation("Workouts");
                 });
 
             modelBuilder.Entity("CalisthenicsSkillTracker.Data.Models.Skill", b =>

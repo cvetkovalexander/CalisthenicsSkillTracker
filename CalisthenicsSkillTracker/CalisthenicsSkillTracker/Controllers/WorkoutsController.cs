@@ -1,10 +1,11 @@
 ﻿using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.GCommon.Exceptions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
+using static CalisthenicsSkillTracker.GCommon.OutputMessages;
+using static CalisthenicsSkillTracker.GCommon.EntityConstants;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using NuGet.Packaging.Signing;
-using System.Threading.Tasks;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
@@ -32,18 +33,19 @@ public class WorkoutsController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Log(CreateWorkoutViewModel model)
     {
         if (string.IsNullOrEmpty(model.UserId))
             ModelState.AddModelError(string.Empty, "User ID is missing.");
 
-        if (!await this._workoutService.UserExistsAsync(model.UserId))
+        if (!await this._workoutService.EntityExistsAsync<ApplicationUser>(u => u.Id == model.UserId))
             ModelState.AddModelError(string.Empty, "User is not found.");
 
-        if (!this._workoutService.isTimeValid(model.Start, out TimeSpan start))
+        if (!this._workoutService.IsTimeValid(model.Start, out TimeSpan start))
             ModelState.AddModelError(nameof(model.Start), "Use time format {HH:mm} for start");
 
-        if (!this._workoutService.isTimeValid(model.End, out TimeSpan end))
+        if (!this._workoutService.IsTimeValid(model.End, out TimeSpan end))
             ModelState.AddModelError(nameof(model.End), "Use time format {HH:mm} for end");
 
         if (!ModelState.IsValid)
@@ -52,15 +54,23 @@ public class WorkoutsController : ControllerBase
         }
 
         Workout workout = null!;
-        try 
+        try
         {
             workout = await this._workoutService.CreateWorkoutAsync(model, start, end);
         }
-        catch (Exception e) 
+        catch (EntityCreatePersistException ecpe)
         {
-            this._logger.LogError(e, "Exception occured while trying to save a workout in database");
+            this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(Workout)));
 
-            ModelState.AddModelError(string.Empty, "An error occurred while creating the workout. Please try again.");
+            ModelState.AddModelError(string.Empty, string.Format(EntitySaveError, nameof(Workout)));
+
+            return this.View(model);
+        }
+        catch (Exception ex) 
+        {
+            this._logger.LogError(ex, UnexpectedErrorMessage);
+
+            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
 
             return this.View(model);
         }
@@ -71,7 +81,7 @@ public class WorkoutsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> AddExercises(Guid workoutId)
     {
-        if (!await this._workoutService.WorkoutExistsAsync(workoutId))
+        if (!await this._workoutService.EntityExistsAsync<Workout>(w => w.Id == workoutId))
             return this.NotFound();
 
         AddWorkoutExerciseViewModel model = await this._workoutService
@@ -81,10 +91,11 @@ public class WorkoutsController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddExercises(AddWorkoutExerciseViewModel model)
     {
-        model.AvailabeExercises = await this._workoutService.FetchExercisesAsync();
-        if (!await this._workoutService.WorkoutExistsAsync(model.WorkoutId))
+        model.AvailableExercises = await this._workoutService.FetchExercisesAsync();
+        if (!await this._workoutService.EntityExistsAsync<Workout>(w => w.Id == model.WorkoutId))
         {
             ModelState.AddModelError(string.Empty, "Invalid workout id!");
 
@@ -101,9 +112,9 @@ public class WorkoutsController : ControllerBase
             return this.View(model);
         }
 
-        if (!await this._workoutService.ExerciseExistsAsync(model.ExerciseId)) 
+        if (!await this._workoutService.EntityExistsAsync<Exercise>(e => e.Id == model.ExerciseId)) 
         {
-            ModelState.AddModelError(string.Empty, "Invalid exercise id!");
+            ModelState.AddModelError(nameof(model.ExerciseId), "Invalid exercise id!");
 
             return this.View(model);
         }
@@ -111,7 +122,7 @@ public class WorkoutsController : ControllerBase
 
         if (await this._workoutService.ExerciseAlreadyAddedAsync(model.WorkoutId, model.ExerciseId)) 
         {
-            ModelState.AddModelError(string.Empty, "Exercise already added, please select another one.");
+            ModelState.AddModelError(nameof(model.ExerciseId), "Exercise already added, please select another one.");
 
             return this.View(model);
         }
@@ -120,11 +131,20 @@ public class WorkoutsController : ControllerBase
         {
             await this._workoutService.CreateWorkoutExerciseAsync(model);
         }
-        catch (Exception e) 
+        catch (EntityCreatePersistException ecpe)
         {
-            this._logger.LogError(e, "Exception occured while trying to save a workout exercise in database");
+            this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(WorkoutExercise)));
 
-            ModelState.AddModelError(string.Empty, "An error occurred while adding the exercise to the workout. Please try again.");
+            ModelState.AddModelError(string.Empty, string.Format(EntitySaveError, nameof(WorkoutExercise)));
+
+            return this.View(model);
+        }
+        catch (Exception ex)
+        {
+            this._logger.LogError(ex, UnexpectedErrorMessage);
+
+            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+
             return this.View(model);
         }
 
@@ -136,26 +156,31 @@ public class WorkoutsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> AddSets(Guid workoutId)
     {
-        if (!await this._workoutService.WorkoutExistsAsync(workoutId))
+        if (!await this._workoutService.EntityExistsAsync<Workout>(w => w.Id == workoutId))
             return this.NotFound();
 
         Workout workout = await this._workoutService.GetWorkoutWithExercisesAsync(workoutId);
 
-        AddWorkoutSetViewModel model = this._workoutService.AddWorkoutSetViewModel(workout);
+        AddWorkoutSetViewModel model = this._workoutService.CreateAddWorkoutSetViewModel(workout);
 
         return this.View(model);
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddSets(AddWorkoutSetViewModel model)
     {
+        if (!await this._workoutService.EntityExistsAsync<Workout>(w => w.Id == model.WorkoutId))
+            return this.NotFound();
+
         model.Exercises = await this._workoutService.GetWorkoutExercisesAsync(model.WorkoutId);
 
         if (!await this._workoutService.WorkoutExerciseExistsAsync(model.WorkoutId, model.WorkoutExerciseId)) 
-            ModelState.AddModelError(string.Empty, "Invalid workout exercise id!");
+            ModelState.AddModelError(nameof(model.WorkoutExerciseId), "Invalid workout exercise id!");
 
         if (!ModelState.IsValid) 
             return this.View(model);
+
 
         WorkoutExercise workoutExercise = await this._workoutService.GetWorkoutExerciseAsync(model.WorkoutId, model.WorkoutExerciseId);
 
@@ -163,11 +188,19 @@ public class WorkoutsController : ControllerBase
         {
             await this._workoutService.CreateWorkoutSetAsync(model);
         }
-        catch (Exception e) 
+        catch (EntityCreatePersistException ecpe)
         {
-            this._logger.LogError(e, "Exception occured while trying to save a workout set in database");
+            this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(WorkoutSet)));
 
-            ModelState.AddModelError(string.Empty, "An error occurred while adding the set to the workout. Please try again.");
+            ModelState.AddModelError(string.Empty, string.Format(EntitySaveError, nameof(WorkoutSet)));
+
+            return this.View(model);
+        }
+        catch (Exception ex)
+        {
+            this._logger.LogError(ex, UnexpectedErrorMessage);
+
+            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
 
             return this.View(model);
         }
@@ -196,7 +229,7 @@ public class WorkoutsController : ControllerBase
         if (userId is null)
             return this.Unauthorized();
 
-        if (!await this._workoutService.WorkoutExistsAsync(id))
+        if (!await this._workoutService.EntityExistsAsync<Workout>(w => w.Id == id))
             return this.NotFound();
 
         Workout workout = await this._workoutService.GetWorkoutWithExercisesAndSetsAsync(id, userId);

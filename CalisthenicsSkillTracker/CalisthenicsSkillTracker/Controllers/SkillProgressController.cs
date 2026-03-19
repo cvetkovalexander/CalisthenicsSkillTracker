@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CalisthenicsSkillTracker.ViewModels.SkillProgressViewModels;
+﻿using CalisthenicsSkillTracker.GCommon.Exceptions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
+using CalisthenicsSkillTracker.ViewModels.SkillProgressViewModels;
+using static CalisthenicsSkillTracker.GCommon.OutputMessages;
+using static CalisthenicsSkillTracker.GCommon.EntityConstants;
+
+using Microsoft.AspNetCore.Mvc;
+using CalisthenicsSkillTracker.Data.Models;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
@@ -40,6 +45,7 @@ public class SkillProgressController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateSkillProgressViewModel model)
     {
         this._skillProgressService.PopulateSelectListItems(model);
@@ -54,19 +60,26 @@ public class SkillProgressController : ControllerBase
         {
             await this._skillProgressService.CreateSkillProgress(model);
         }
+        catch (EntityCreatePersistException ecpe)
+        {
+            this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(SkillProgress)));
+            ModelState.AddModelError(string.Empty, string.Format(EntitySaveError, nameof(SkillProgress)));
+            return this.RedirectToAction(nameof(Index));
+        }
         catch (Exception e)
         {
-            this._logger.LogError(e, "Exception occured while trying to add a skill progress to database");
+            this._logger.LogError(e, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, "An error occurred while logging the skill progress. Please try again.");
+            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
 
-            return this.View(model);
+            return this.RedirectToAction(nameof(Index));
         }
 
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id) 
     {
         if (!await this._skillProgressService.SkillRecordExistsAsync(id))
@@ -76,11 +89,19 @@ public class SkillProgressController : ControllerBase
         {
             await this._skillProgressService.DeleteSkillRecordAsync(id);
         }
+        catch (EntityDeleteException ede)
+        {
+            this._logger.LogError(ede, string.Format(EntityDeleteError, nameof(SkillProgress)));
+            ModelState.AddModelError(string.Empty, string.Format(EntityDeleteError, nameof(SkillProgress)));
+            return this.RedirectToAction(nameof(Index));
+        }
         catch (Exception e)
         {
-            this._logger.LogError(e, "Exception occured while trying to delete a skill record from database");
+            this._logger.LogError(e, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, "An error occurred while deleting the skill record. Please try again.");
+            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+
+            return this.RedirectToAction(nameof(Index));
         }
 
         return RedirectToAction(nameof(Index));

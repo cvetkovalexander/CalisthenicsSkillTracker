@@ -20,7 +20,6 @@
 
         <form asp-action="AddSets" method="post" novalidate>
             @Html.AntiForgeryToken()
-            <div class="validation-summary" asp-validation-summary="ModelOnly"></div>
             <input asp-for="WorkoutId" type="hidden" />
 
             <div class="form-group">
@@ -35,7 +34,7 @@
                 {
                     <input class="custom-input" disabled value="No exercises available" />
                 }
-                <span asp-validation-for="WorkoutExerciseId" class="validation-text"></span>
+                <span asp-validation-for="WorkoutExerciseId" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -45,13 +44,13 @@
                     <input asp-for="SetNumber" type="number" class="custom-input text-center" value="1" />
                     <button type="button" class="btn btn-outline-secondary" id="incSet">+</button>
                 </div>
-                <span asp-validation-for="SetNumber" class="validation-text"></span>
+                <span asp-validation-for="SetNumber" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Repetitions" class="form-label">Repetitions</label>
                 <input asp-for="Repetitions" type="number" class="custom-input" placeholder="e.g. 8" />
-                <span asp-validation-for="Repetitions" class="validation-text"></span>
+                <span asp-validation-for="Repetitions" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -60,7 +59,7 @@
                     <input asp-for="Duration" type="number" class="custom-input" placeholder="seconds" />
                     <span class="input-group-text">s</span>
                 </div>
-                <span asp-validation-for="Duration" class="validation-text"></span>
+                <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -68,13 +67,13 @@
                 <select asp-for="Progression" asp-items="@Model.Progressions" class="custom-input">
                     <option value="">(none)</option>
                 </select>
-                <span asp-validation-for="Progression" class="validation-text"></span>
+                <span asp-validation-for="Progression" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Notes" class="form-label">Notes</label>
                 <textarea asp-for="Notes" class="custom-textarea" rows="3" placeholder="Optional notes (tempo, cues, fatigue)"></textarea>
-                <span asp-validation-for="Notes" class="validation-text"></span>
+                <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
 
             <div class="button-group">

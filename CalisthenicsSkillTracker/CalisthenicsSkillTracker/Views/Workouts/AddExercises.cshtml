@@ -20,14 +20,18 @@
         }
 
         <form asp-action="AddExercises" method="post">
-            <div class="validation-summary" asp-validation-summary="ModelOnly"></div>
+			@Html.AntiForgeryToken()
+
             <input asp-for="WorkoutId" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
                 <label asp-for="ExerciseId">Exercise</label>
-                <select asp-for="ExerciseId" asp-items="Model.AvailabeExercises" class="custom-input">
+                <select asp-for="ExerciseId" asp-items="Model.AvailableExercises" class="custom-input">
                     <option value="">Select an exercise...</option>
                 </select>
+                <span asp-validation-for="ExerciseId" class="text-danger"></span>
             </div>
 
             <div class="button-group">
@@ -56,9 +60,6 @@
     </div>
 </div>
 
-
-
-
 <style>
     /* View-scoped helpers */
     .needs-validation .form-select:invalid { border-color: #dc3545; }
@@ -66,7 +67,5 @@
 </style>
 
 @section Scripts {
-    <script>
-        
-    </script>
+    <partial name="_ValidationScriptsPartial" />
 }

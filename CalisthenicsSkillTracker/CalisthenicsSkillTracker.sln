@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36603.0
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11605.240 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalisthenicsSkillTracker", "CalisthenicsSkillTracker\CalisthenicsSkillTracker.csproj", "{7BD7CCEC-BB0C-4EFC-80E4-E642EF5BAFAF}"
 EndProject
@@ -20,6 +20,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{A614E5DB-A806-46E9-849D-E3DF2C9C6013}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalisthenicsSkillTracker.Services.Core", "CalisthenicsSkillTracker.Services.Core\CalisthenicsSkillTracker.Services.Core.csproj", "{CD62441A-B13B-4B4F-9612-3EFEE5989385}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalisthenicsSkillTracker.Services.Common", "CalisthenicsSkillTracker.Services.Common\CalisthenicsSkillTracker.Services.Common.csproj", "{109721D4-48B0-4F93-95A0-CBC110B77265}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalisthenicsSkillTracker.Infrastructure", "CalisthenicsSkillTracker.Infrastructure\CalisthenicsSkillTracker.Infrastructure.csproj", "{C6E85093-5B6A-479D-8A89-B5B8861D79B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,14 @@ Global
 		{CD62441A-B13B-4B4F-9612-3EFEE5989385}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD62441A-B13B-4B4F-9612-3EFEE5989385}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD62441A-B13B-4B4F-9612-3EFEE5989385}.Release|Any CPU.Build.0 = Release|Any CPU
+		{109721D4-48B0-4F93-95A0-CBC110B77265}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{109721D4-48B0-4F93-95A0-CBC110B77265}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{109721D4-48B0-4F93-95A0-CBC110B77265}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{109721D4-48B0-4F93-95A0-CBC110B77265}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6E85093-5B6A-479D-8A89-B5B8861D79B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6E85093-5B6A-479D-8A89-B5B8861D79B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6E85093-5B6A-479D-8A89-B5B8861D79B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6E85093-5B6A-479D-8A89-B5B8861D79B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +73,8 @@ Global
 		{D0432D8A-0E56-4084-9982-5DE2476E4157} = {ADDE6F87-F441-4201-A00B-BDA00B311052}
 		{04701FF6-EFF8-4516-8196-6C63E3007F75} = {ADDE6F87-F441-4201-A00B-BDA00B311052}
 		{CD62441A-B13B-4B4F-9612-3EFEE5989385} = {A614E5DB-A806-46E9-849D-E3DF2C9C6013}
+		{109721D4-48B0-4F93-95A0-CBC110B77265} = {A614E5DB-A806-46E9-849D-E3DF2C9C6013}
+		{C6E85093-5B6A-479D-8A89-B5B8861D79B6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {682AF79F-6796-49C3-9ACA-201DA7BACBE6}

@@ -10,26 +10,25 @@
 
         <h2 class="create-title">Insert New Exercise</h2>
 
-        <form asp-action="Create" method="post" novalidate>
-
-            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+        <form asp-action="Create" method="post">
+			@Html.AntiForgeryToken()
 
             <div class="form-group">
                 <label asp-for="Name"></label>
                 <input asp-for="Name" class="form-control custom-input" />
-                <span asp-validation-for="Name" class="validation-text"></span>
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Description"></label>
                 <textarea asp-for="Description" rows="3" class="form-control custom-input"></textarea>
-                <span asp-validation-for="Description" class="validation-text"></span>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="ImageUrl"></label>
                 <input asp-for="ImageUrl" placeholder="https://example.com/image.jpg" class="form-control custom-input" />
-                <span asp-validation-for="ImageUrl" class="validation-text"></span>
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -37,7 +36,7 @@
                 <select asp-for="Measurement" asp-items="Model.MeasurementOptions" class="form-select custom-input">
                     <option value="">Select measurement...</option>
                 </select>
-                <span asp-validation-for="Measurement" class="validation-text"></span>
+                <span asp-validation-for="Measurement" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -45,7 +44,7 @@
                 <select asp-for="ExerciseType" asp-items="Model.ExerciseTypeOptions" class="form-select custom-input">
                     <option value="">Select type...</option>
                 </select>
-                <span asp-validation-for="ExerciseType" class="validation-text"></span>
+                <span asp-validation-for="ExerciseType" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -53,7 +52,7 @@
                 <select asp-for="Difficulty" asp-items="Model.DifficultyOptions" class="form-select custom-input">
                     <option value="">Select difficulty...</option>
                 </select>
-                <span asp-validation-for="Difficulty" class="validation-text"></span>
+                <span asp-validation-for="Difficulty" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -61,7 +60,7 @@
                 <select asp-for="Category" asp-items="Model.CategoryOptions" class="form-select custom-input">
                     <option value="">Select category...</option>
                 </select>
-                <span asp-validation-for="Category" class="validation-text"></span>
+                <span asp-validation-for="Category" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -69,7 +68,7 @@
                 <select asp-for="SkillId" asp-items="Model.AvailableExercises" class="form-select custom-input">
                     <option value="">Select skill...</option>
                 </select>
-                <span asp-validation-for="SkillId" class="validation-text"></span>
+                <span asp-validation-for="SkillId" class="text-danger"></span>
             </div>
 
             <div class="button-group">
