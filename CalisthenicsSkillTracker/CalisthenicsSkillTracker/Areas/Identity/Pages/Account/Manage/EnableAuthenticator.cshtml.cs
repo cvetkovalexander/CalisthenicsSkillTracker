@@ -177,7 +177,7 @@ namespace CalisthenicsSkillTracker.Areas.Identity.Pages.Account.Manage
             return string.Format(
                 CultureInfo.InvariantCulture,
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("Microsoft.AspNetCore.Identity.UI"),
+                _urlEncoder.Encode("Calisthenics Skill Tracker"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }
