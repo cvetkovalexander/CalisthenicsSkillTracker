@@ -10,27 +10,39 @@
             <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
 
             <div class="form-group">
+                <label asp-for="Input.FullName" class="form-label"></label>
+                <input asp-for="Input.FullName" class="form-control" placeholder="Please enter your full name." />
+                <span asp-validation-for="Input.FullName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
                 <label asp-for="Input.UserName" class="form-label"></label>
-                <input asp-for="Input.UserName" class="form-control" />
+                <input asp-for="Input.UserName" class="form-control" placeholder="Please enter your username." />
                 <span asp-validation-for="Input.UserName" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <input asp-for="Input.Email" class="custom-input" autocomplete="username" placeholder="name@example.com" />
+                <label asp-for="Input.DateOfBirth">Date of Birth</label>
+                <input asp-for="Input.DateOfBirth" class="custom-input" placeholder="Please enter your date of birth." />
+                <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
                 <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="validation-text"></span>
+                <input asp-for="Input.Email" class="custom-input" autocomplete="username" placeholder="name@example.com" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <input asp-for="Input.Password" class="custom-input" autocomplete="new-password" placeholder="Password" />
                 <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="validation-text"></span>
+                <input asp-for="Input.Password" class="custom-input" autocomplete="new-password" placeholder="Password" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <input asp-for="Input.ConfirmPassword" class="custom-input" autocomplete="new-password" placeholder="Confirm Password" />
                 <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="validation-text"></span>
+                <input asp-for="Input.ConfirmPassword" class="custom-input" autocomplete="new-password" placeholder="Confirm Password" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
 
             <button id="registerSubmit" type="submit" class="btn-register-submit">Register</button>
