@@ -24,14 +24,20 @@ public class SkillsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string? filter)
+    public async Task<IActionResult> Index()
     {
         IEnumerable<ListTableItemViewModel> allSkills 
-            = await this._outputService.GetAllSkillsAsync(filter);
-
-        ViewData["Filter"] = filter;
+            = await this._outputService.GetAllSkillsAsync(null);
 
         return this.View(allSkills);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Search(string? filter)
+    {
+        IEnumerable<ListTableItemViewModel> filteredSkills = await this._outputService.GetAllSkillsAsync(filter);
+
+        return PartialView("_TablePartial", filteredSkills);
     }
 
     [HttpGet]

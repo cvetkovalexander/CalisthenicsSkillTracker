@@ -19,10 +19,15 @@ public class ExerciseOutputService : IExerciseOutputService
 
     public async Task<IEnumerable<ListTableItemViewModel>> GetAllExercisesAsync(string? filter)
     {
-        IEnumerable<ListTableItemViewModel> exercises = await this._repository
+        IQueryable<Exercise> exercisesQuery = this._repository
             .GetAllExercises()
-            .OrderBy(e => e.Name)
-            .Select(e => new ListTableItemViewModel
+            .OrderBy(e => e.Name);
+
+        if (filter is not null)
+            exercisesQuery = exercisesQuery.Where(e => EF.Functions.Like(e.Name, $"%{filter}%"));
+
+        IEnumerable<ListTableItemViewModel> exercises = await exercisesQuery
+            .Select(e => new ListTableItemViewModel()
             {
                 Id = e.Id,
                 Name = e.Name,
@@ -30,9 +35,6 @@ public class ExerciseOutputService : IExerciseOutputService
                 Difficulty = e.Difficulty
             })
             .ToArrayAsync();
-
-        if (filter is not null)
-            exercises = exercises.Where(s => s.Name.ToLower().Contains(filter.ToLower()));
 
         return exercises;
     }

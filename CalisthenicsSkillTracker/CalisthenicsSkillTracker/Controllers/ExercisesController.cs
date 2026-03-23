@@ -24,11 +24,17 @@ public class ExercisesController : Controller
     }
     public async Task<IActionResult> Index(string? filter)
     {
-        IEnumerable<ListTableItemViewModel> exercises = await this._outputService.GetAllExercisesAsync(filter);
+        IEnumerable<ListTableItemViewModel> allExercises = await this._outputService.GetAllExercisesAsync(null);
 
-        ViewData["Filter"] = filter;
+        return this.View(allExercises);
+    }
 
-        return this.View(exercises);
+    [HttpGet]
+    public async Task<IActionResult> Search(string? filter)
+    {
+        IEnumerable<ListTableItemViewModel> filteredExercises = await this._outputService.GetAllExercisesAsync(filter);
+
+        return PartialView("_TablePartial", filteredExercises);
     }
 
     [HttpGet]

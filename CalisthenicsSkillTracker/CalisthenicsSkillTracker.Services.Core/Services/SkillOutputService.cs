@@ -19,10 +19,15 @@ public class SkillOutputService : ISkillOutputService
 
     public async Task<IEnumerable<ListTableItemViewModel>> GetAllSkillsAsync(string? filter)
     {
-        IEnumerable<ListTableItemViewModel> skills = await this._repository
+        IQueryable<Skill> skillsQuery = this._repository
             .GetAllSkills()
-            .OrderBy(s => s.Name)
-            .Select(s => new ListTableItemViewModel
+            .OrderBy(s => s.Name);
+
+        if (filter is not null)
+            skillsQuery = skillsQuery.Where(s => EF.Functions.Like(s.Name, $"%{filter}%"));
+
+        IEnumerable<ListTableItemViewModel> skills = await skillsQuery
+            .Select(s => new ListTableItemViewModel()
             {
                 Id = s.Id,
                 Name = s.Name,
@@ -30,9 +35,6 @@ public class SkillOutputService : ISkillOutputService
                 Difficulty = s.Difficulty
             })
             .ToArrayAsync();
-
-        if (filter is not null)
-            skills = skills.Where(s => s.Name.ToLower().Contains(filter.ToLower()));
 
         return skills;
     }
