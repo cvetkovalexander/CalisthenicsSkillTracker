@@ -1,0 +1,60 @@
+﻿.error-page-wrapper {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1e1e2f 0%, #3a3a5a 100%);
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.error-page-card {
+    background: rgba(42, 42, 61, 0.9);
+    padding: 60px 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    max-width: 450px;
+    width: 100%;
+}
+
+.error-page-card h1 {
+    font-size: 7rem;
+    margin: 0;
+    color: #ff6b6b;
+}
+
+.error-page-card h2 {
+    font-size: 1.8rem;
+    margin: 10px 0 20px;
+}
+
+.error-page-card p {
+    font-size: 1rem;
+    margin-bottom: 30px;
+    color: #ccc;
+}
+
+.btn-home {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #ff6b6b;
+    color: #fff;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-home:hover {
+    background-color: #ff4757;
+}
+
+.error-icon {
+    font-size: 6rem;
+    margin-bottom: 20px;
+    color: #ff6b6b;
+}

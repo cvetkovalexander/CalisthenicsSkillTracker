@@ -11,13 +11,6 @@
             Add a set for the selected exercise in your workout.
         </small>
 
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="validation-text">
-                @TempData["SuccessMessage"]
-            </div>
-        }
-
         <form asp-action="AddSets" method="post" novalidate>
             @Html.AntiForgeryToken()
             <input asp-for="WorkoutId" type="hidden" />

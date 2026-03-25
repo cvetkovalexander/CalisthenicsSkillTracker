@@ -48,8 +48,22 @@ namespace CalisthenicsSkillTracker.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [MinLength(3)]
+            [MaxLength(20)]
             [Display(Name = "Username")]
             public string UserName { get; set; }
+
+            [Required]
+            [MinLength(2)]
+            [MaxLength(50)]
+            [DataType(DataType.Text)]
+            [Display(Name = "Full Name")]
+            public string FullName { get; set; }
+
+            [Required]
+            [DataType(DataType.Date)]
+            [Display(Name = "Date of Birth")]
+            public DateTime DateOfBirth { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -92,6 +106,9 @@ namespace CalisthenicsSkillTracker.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+
+                user.FullName = Input.FullName;
+                user.DateOfBirth = Input.DateOfBirth;
 
                 await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

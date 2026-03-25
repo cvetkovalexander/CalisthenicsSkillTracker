@@ -4,7 +4,7 @@ using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
 using static CalisthenicsSkillTracker.GCommon.OutputMessages;
-using static CalisthenicsSkillTracker.GCommon.EntityConstants;
+using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,11 +24,17 @@ public class ExercisesController : Controller
     }
     public async Task<IActionResult> Index(string? filter)
     {
-        IEnumerable<ListTableItemViewModel> exercises = await this._outputService.GetAllExercisesAsync(filter);
+        IEnumerable<ListTableItemViewModel> allExercises = await this._outputService.GetAllExercisesAsync(null);
 
-        ViewData["Filter"] = filter;
+        return this.View(allExercises);
+    }
 
-        return this.View(exercises);
+    [HttpGet]
+    public async Task<IActionResult> Search(string? filter)
+    {
+        IEnumerable<ListTableItemViewModel> filteredExercises = await this._outputService.GetAllExercisesAsync(filter);
+
+        return PartialView("_TablePartial", filteredExercises);
     }
 
     [HttpGet]
@@ -78,7 +84,7 @@ public class ExercisesController : Controller
         {
             this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(Exercise)));
 
-            ModelState.AddModelError(string.Empty, string.Format(EntitySaveError, nameof(Exercise)));
+            TempData[ErrorTempDataKey] = string.Format(EntitySaveError, nameof(Exercise));
 
             return this.View(model);
         }
@@ -86,10 +92,12 @@ public class ExercisesController : Controller
         {
             this._logger.LogError(ex, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
 
             return this.View(model);
         }
+
+        TempData[SuccessTempDataKey] = string.Format(EntitySuccessfullyCreated, nameof(Exercise));
 
         return RedirectToAction(nameof(Index));
     }
@@ -136,7 +144,7 @@ public class ExercisesController : Controller
         {
             this._logger.LogError(eepe, string.Format(EntityEditError, nameof(Exercise)));
 
-            ModelState.AddModelError(string.Empty, string.Format(EntityEditError, nameof(Exercise)));
+            TempData[ErrorTempDataKey] = string.Format(EntityEditError, nameof(Exercise));
 
             return this.View(model);
         }
@@ -144,10 +152,12 @@ public class ExercisesController : Controller
         {
             this._logger.LogError(ex, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
 
             return this.View(model);
         }
+
+        TempData[SuccessTempDataKey] = string.Format(EntitySuccessfullyEdited, nameof(Exercise));
 
         return RedirectToAction(nameof(Index));
     }
@@ -166,17 +176,21 @@ public class ExercisesController : Controller
         catch (EntityDeleteException ede)
         {
             this._logger.LogError(ede, string.Format(EntityDeleteError, nameof(Exercise)));
-            ModelState.AddModelError(string.Empty, string.Format(EntityDeleteError, nameof(Exercise)));
+
+            TempData[ErrorTempDataKey] = string.Format(EntityDeleteError, nameof(Exercise));
+
             return this.RedirectToAction("Edit");
         }
         catch (Exception e)
         {
             this._logger.LogError(e, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
 
             return this.RedirectToAction("Edit");
         }
+
+        TempData[SuccessTempDataKey] = string.Format(EntitySuccessfullyDeleted, nameof(Exercise));
 
         return RedirectToAction(nameof(Index));
     }

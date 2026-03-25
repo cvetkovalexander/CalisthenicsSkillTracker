@@ -8,16 +8,13 @@
 
 <h1 class="text-center fw-bold">Available skills for your workouts:</h1>
 
-<div style="display:flex; align-items:center; width: 100%; margin-bottom: 1em;">
-    <p style="margin: 0">
-        <a asp-action="Create" class="btn btn-primary">Insert new skill</a>
-    </p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a asp-action="Create" class="btn btn-primary">Insert new skill</a>
 
-    <form method="get" asp-controller="Skills" asp-action="Index" style="margin-left: auto; display: flex; gap: 5px;">
-        <input type="text" name="filter" placeholder="Search skills..." value="@ViewData["Filter"]" />
-        <button type="submit">Search</button>
-    </form>
-</div> 
+    <input type="text" id="searchBox" class="form-control w-25" placeholder="Search skills..." />
+</div>
+
+
 
 @if (Model == null || !Model.Any())
 {
@@ -25,5 +22,15 @@
 }
 else
 {
-    <partial name="_TablePartial" model="@Model"/>
+    <div id="skillsContainer">
+        <partial name="_TablePartial" model="@Model" />
+    </div>
+}
+
+@section Scripts {
+    <script type="module">
+        import { initTableSearch } from '/js/search.js';
+
+        initTableSearch('searchBox', 'skillsContainer', '/Skills/Search');
+    </script>
 }

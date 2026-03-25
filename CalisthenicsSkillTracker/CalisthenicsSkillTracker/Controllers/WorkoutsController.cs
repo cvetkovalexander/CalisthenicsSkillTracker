@@ -3,7 +3,7 @@ using CalisthenicsSkillTracker.GCommon.Exceptions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.WorkoutViewModels;
 using static CalisthenicsSkillTracker.GCommon.OutputMessages;
-using static CalisthenicsSkillTracker.GCommon.EntityConstants;
+using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,7 +62,7 @@ public class WorkoutsController : ControllerBase
         {
             this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(Workout)));
 
-            ModelState.AddModelError(string.Empty, string.Format(EntitySaveError, nameof(Workout)));
+            TempData[ErrorTempDataKey] = string.Format(EntitySaveError, nameof(Workout));
 
             return this.View(model);
         }
@@ -70,7 +70,7 @@ public class WorkoutsController : ControllerBase
         {
             this._logger.LogError(ex, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
 
             return this.View(model);
         }
@@ -105,24 +105,24 @@ public class WorkoutsController : ControllerBase
         Workout workout = await this._workoutService.GetWorkoutWithExercisesAsync(model.WorkoutId);
         model.HasExercises = workout.WorkoutExercises.Any();
 
-        if (!ModelState.IsValid)
-        {
-            ModelState.AddModelError(string.Empty, "Please select exercise!");
 
-            return this.View(model);
-        }
-
-        if (!await this._workoutService.EntityExistsAsync<Exercise>(e => e.Id == model.ExerciseId)) 
+        if (!await this._workoutService.EntityExistsAsync<Exercise>(e => e.Id == model.ExerciseId))
         {
             ModelState.AddModelError(nameof(model.ExerciseId), "Invalid exercise id!");
 
             return this.View(model);
         }
 
-
         if (await this._workoutService.ExerciseAlreadyAddedAsync(model.WorkoutId, model.ExerciseId)) 
         {
             ModelState.AddModelError(nameof(model.ExerciseId), "Exercise already added, please select another one.");
+
+            return this.View(model);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            ModelState.AddModelError(string.Empty, "Please select exercise!");
 
             return this.View(model);
         }
@@ -135,7 +135,7 @@ public class WorkoutsController : ControllerBase
         {
             this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(WorkoutExercise)));
 
-            ModelState.AddModelError(string.Empty, string.Format(EntitySaveError, nameof(WorkoutExercise)));
+            TempData[ErrorTempDataKey] = string.Format(EntitySaveError, nameof(WorkoutExercise));
 
             return this.View(model);
         }
@@ -143,12 +143,12 @@ public class WorkoutsController : ControllerBase
         {
             this._logger.LogError(ex, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
 
             return this.View(model);
         }
 
-        TempData["SuccessMessage"] = "Exercise added successfully! You can add more exercises or proceed to add sets.";
+        TempData[SuccessTempDataKey] = ExerciseSuccessfullyLogged;
 
         return this.RedirectToAction("AddExercises", new { workoutId = model.WorkoutId });
     }
@@ -192,7 +192,7 @@ public class WorkoutsController : ControllerBase
         {
             this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(WorkoutSet)));
 
-            ModelState.AddModelError(string.Empty, string.Format(EntitySaveError, nameof(WorkoutSet)));
+            TempData[ErrorTempDataKey] = string.Format(EntitySaveError, nameof(WorkoutSet));
 
             return this.View(model);
         }
@@ -200,12 +200,12 @@ public class WorkoutsController : ControllerBase
         {
             this._logger.LogError(ex, UnexpectedErrorMessage);
 
-            ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
 
             return this.View(model);
         }
 
-        TempData["SuccessMessage"] = "Exercise set added successfully!";
+        TempData[SuccessTempDataKey] = SetSuccessfullyLogged;
 
         return this.RedirectToAction("AddSets", new { workoutId = model.WorkoutId });
     }
