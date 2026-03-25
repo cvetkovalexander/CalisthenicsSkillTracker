@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace CalisthenicsSkillTracker.Data.Models;
 
-public class ApplicationUser : IdentityUser
+public class ApplicationUser : IdentityUser<Guid>
 {
     public virtual ICollection<SkillProgress> SkillProgressRecords { get; set; }
         = new List<SkillProgress>();

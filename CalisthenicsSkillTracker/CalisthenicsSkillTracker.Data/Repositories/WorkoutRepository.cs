@@ -17,7 +17,7 @@ public class WorkoutRepository : BaseRepository, IWorkoutRepository
         IQueryable<Workout> fetchQuery = this.Context
             .Workouts
             .AsNoTracking()
-            .Where(w => w.UserId == userId);
+            .Where(w => w.UserId.ToString() == userId);
 
         if (projectFunc is not null) 
         {
@@ -74,7 +74,7 @@ public class WorkoutRepository : BaseRepository, IWorkoutRepository
     {
         return await this.Context
             .Workouts
-            .Where(w => w.UserId == userId && w.Id == id)
+            .Where(w => w.UserId.ToString() == userId && w.Id == id)
             .Include(w => w.WorkoutExercises)
             .ThenInclude(we => we.Sets)
             .Include(w => w.WorkoutExercises)

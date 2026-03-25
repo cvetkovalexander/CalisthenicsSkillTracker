@@ -28,7 +28,7 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
             Workout workout = new Workout()
             {
                 Date = model.Date,
-                UserId = model.UserId,
+                UserId = Guid.Parse(model.UserId),
                 Notes = model.Notes,
                 Start = start,
                 End = end

@@ -27,7 +27,7 @@ public class Workout
 
     [Required]
     [ForeignKey(nameof(User))]
-    public string UserId { get; set; } = null!;
+    public Guid UserId { get; set; }
 
     [Required]
     public virtual ApplicationUser User { get; set; } = null!;

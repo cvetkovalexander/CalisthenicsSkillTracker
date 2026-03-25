@@ -25,7 +25,7 @@ public class SkillProgressService : ISkillProgressService
         SkillProgress record = new SkillProgress
         {
             Id = Guid.NewGuid(),
-            UserId = model.UserId,
+            UserId = Guid.Parse(model.UserId),
             SkillId = model.SkillId,
             Date = DateTime.UtcNow,
             Progression = model.Progression,

@@ -28,9 +28,10 @@ public class Program
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
-        {
-            ConfigureIdentity(options, builder.Configuration);
-        })
+            {
+                ConfigureIdentity(options, builder.Configuration);
+            })
+            .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddControllersWithViews();
 

@@ -14,7 +14,7 @@ public class SkillProgress
 
     [Required]
     [ForeignKey(nameof(PerformedBy))]
-    public string UserId { get; set; } = null!;
+    public Guid UserId { get; set; }
 
     [Required]
     public virtual ApplicationUser PerformedBy { get; set; } = null!;

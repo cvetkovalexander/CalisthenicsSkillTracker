@@ -39,7 +39,7 @@ public class WorkoutsController : ControllerBase
         if (string.IsNullOrEmpty(model.UserId))
             ModelState.AddModelError(string.Empty, "User ID is missing.");
 
-        if (!await this._workoutService.EntityExistsAsync<ApplicationUser>(u => u.Id == model.UserId))
+        if (!await this._workoutService.EntityExistsAsync<ApplicationUser>(u => u.Id.ToString() == model.UserId))
             ModelState.AddModelError(string.Empty, "User is not found.");
 
         if (!this._workoutService.IsTimeValid(model.Start, out TimeSpan start))

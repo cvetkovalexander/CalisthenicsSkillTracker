@@ -35,7 +35,7 @@ public class SkillProgressRepository : BaseRepository, ISkillProgressRepository
     public IQueryable<SkillProgress> GetUserSkillProgressRecords(string userId)
         => this.Context
             .SkillProgressRecords
-            .Where(sp => sp.UserId == userId);
+            .Where(sp => sp.UserId.ToString() == userId);
 
     public IQueryable<Skill> GetAllSkills()
         => this.Context
