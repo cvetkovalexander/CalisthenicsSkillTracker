@@ -3,7 +3,7 @@ using CalisthenicsSkillTracker.GCommon.Exceptions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
-using static CalisthenicsSkillTracker.GCommon.OutputMessages;
+using static CalisthenicsSkillTracker.GCommon.OutputMessages.EntityMessages;
 using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
 
 using Microsoft.AspNetCore.Mvc;

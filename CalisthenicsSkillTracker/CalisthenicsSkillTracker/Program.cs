@@ -2,6 +2,8 @@ using CalisthenicsSkillTracker.Data;
 using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Repositories;
 using CalisthenicsSkillTracker.Data.Repositories.Contracts;
+using CalisthenicsSkillTracker.Data.Seeding;
+using CalisthenicsSkillTracker.Data.Seeding.Contracts;
 using CalisthenicsSkillTracker.Infrastructure.Extensions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.Services.Core.Services;
@@ -24,6 +26,8 @@ public class Program
 
         builder.Services.RegisterRepositories(typeof(WorkoutRepository));
         builder.Services.RegisterServices(typeof(WorkoutService));
+
+        builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -56,6 +60,9 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseRolesSeeder();
+        app.UseAdminUserSeeder();
 
         app.UseStatusCodePagesWithRedirects("/Home/Error/{0}");
 
