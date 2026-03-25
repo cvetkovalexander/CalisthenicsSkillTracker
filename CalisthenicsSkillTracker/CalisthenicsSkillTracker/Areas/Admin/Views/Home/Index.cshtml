@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="admin-dashboard">
+    <h1 class="admin-title">Welcome to the Admin Dashboard</h1>
+
+    <div class="admin-action-box">
+        <div class="admin-action-content">
+            <i class="bi bi-people-fill admin-icon"></i>
+
+            <h3>Manage Users</h3>
+            <p>View, edit and control user roles and permissions.</p>
+
+            <form asp-area="Admin" asp-controller="User" asp-action="Manage" method="get">
+                <button type="submit" class="admin-btn">
+                    Go to User Management
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
