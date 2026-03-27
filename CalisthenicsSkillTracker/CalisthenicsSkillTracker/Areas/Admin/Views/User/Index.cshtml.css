@@ -1,0 +1,108 @@
+﻿.users-dashboard {
+    padding: 40px;
+    min-height: 80vh;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    max-width: 1000px;
+    margin: 40px auto;
+    color: #ffffff;
+}
+
+.users-title {
+    font-size: 36px;
+    color: #38bdf8;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.users-table th, .users-table td {
+    padding: 12px 15px;
+}
+
+.users-table thead {
+    background-color: rgba(56, 189, 248, 0.2);
+}
+
+.users-table tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.users-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.edit-btn {
+    background: linear-gradient(135deg, #facc15, #eab308);
+}
+
+.edit-btn:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #eab308, #ca8a04);
+}
+
+.roles-btn {
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+}
+
+.roles-btn:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+}
+
+.remove-btn {
+    background: linear-gradient(135deg, #f87171, #ef4444);
+}
+
+.remove-btn:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+}
+
+.delete-btn {
+    background: linear-gradient(135deg, #f43f5e, #e11d48);
+}
+
+.delete-btn:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #e11d48, #9f1239);
+}
+
+.role-select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+/*    background-color: rgba(255,255,255,0.1);
+    color: #ffffff;*/
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.role-select:hover, .role-select:focus {
+    background-color: rgba(255,255,255,0.2);
+    outline: none;
+}
+
+.role-select .option {
+    background-color: rgba(255,255,255,0.1);
+    color: #ffffff;
+}

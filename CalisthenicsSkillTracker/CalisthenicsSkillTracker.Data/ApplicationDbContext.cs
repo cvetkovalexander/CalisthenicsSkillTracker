@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CalisthenicsSkillTracker.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid, IdentityUserClaim<Guid>, ApplicationUserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -40,33 +40,6 @@ namespace CalisthenicsSkillTracker.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<Exercise>()
-                .HasMany(e => e.Skills)
-                .WithMany(s => s.Exercises)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ExerciseSkills",
-                    j => j.HasOne<Skill>()
-                          .WithMany()
-                          .HasForeignKey("SkillId")
-                          .OnDelete(DeleteBehavior.Cascade),
-                    j => j.HasOne<Exercise>()
-                          .WithMany()
-                          .HasForeignKey("ExerciseId")
-                          .OnDelete(DeleteBehavior.Cascade)
-            );
-
-            builder.Entity<SkillProgress>()
-                .HasOne(sp => sp.PerformedBy)
-                .WithMany(u => u.SkillProgressRecords)
-                .HasForeignKey(sp => sp.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<SkillProgress>()
-                .HasOne(sp => sp.Skill)
-                .WithMany(s => s.SkillProgressRecords)
-                .HasForeignKey(sp => sp.SkillId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             builder
                 .ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

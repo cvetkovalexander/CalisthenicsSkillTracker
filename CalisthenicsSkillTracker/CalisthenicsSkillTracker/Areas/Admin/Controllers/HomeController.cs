@@ -2,7 +2,7 @@
 
 namespace CalisthenicsSkillTracker.Areas.Admin.Controllers;
 
-public class HomeController : BaseController
+public class HomeController : AdminControllerBase
 {
     public IActionResult Index()
     {
