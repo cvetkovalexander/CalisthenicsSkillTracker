@@ -128,7 +128,7 @@ namespace CalisthenicsSkillTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Exercises");
+                    b.ToTable("Exercises", (string)null);
                 });
 
             modelBuilder.Entity("CalisthenicsSkillTracker.Data.Models.Skill", b =>
@@ -163,7 +163,7 @@ namespace CalisthenicsSkillTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Skills");
+                    b.ToTable("Skills", (string)null);
                 });
 
             modelBuilder.Entity("CalisthenicsSkillTracker.Data.Models.SkillProgress", b =>
@@ -200,7 +200,7 @@ namespace CalisthenicsSkillTracker.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SkillProgressRecords");
+                    b.ToTable("SkillProgressRecords", (string)null);
                 });
 
             modelBuilder.Entity("CalisthenicsSkillTracker.Data.Models.Workout", b =>
@@ -232,7 +232,7 @@ namespace CalisthenicsSkillTracker.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Workouts");
+                    b.ToTable("Workouts", (string)null);
                 });
 
             modelBuilder.Entity("CalisthenicsSkillTracker.Data.Models.WorkoutExercise", b =>
@@ -253,7 +253,7 @@ namespace CalisthenicsSkillTracker.Data.Migrations
 
                     b.HasIndex("WorkoutId");
 
-                    b.ToTable("WorkoutExercises");
+                    b.ToTable("WorkoutExercises", (string)null);
                 });
 
             modelBuilder.Entity("CalisthenicsSkillTracker.Data.Models.WorkoutSet", b =>
@@ -285,7 +285,7 @@ namespace CalisthenicsSkillTracker.Data.Migrations
 
                     b.HasIndex("WorkoutExerciseId");
 
-                    b.ToTable("WorkoutSets");
+                    b.ToTable("WorkoutSets", (string)null);
                 });
 
             modelBuilder.Entity("ExerciseSkills", b =>
@@ -300,7 +300,7 @@ namespace CalisthenicsSkillTracker.Data.Migrations
 
                     b.HasIndex("SkillId");
 
-                    b.ToTable("ExerciseSkills");
+                    b.ToTable("ExerciseSkills", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
