@@ -67,8 +67,6 @@ public class Program
         app.UseStatusCodePagesWithRedirects("/Home/Error/{0}");
 
         app.MapControllerRoute(
-<<<<<<< Updated upstream
-=======
             name: "adminArea",
             pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
@@ -77,7 +75,6 @@ public class Program
             pattern: "{controller=Home}/{action=Index}/{id:required}/{slug:required}");
 
         app.MapControllerRoute(
->>>>>>> Stashed changes
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         app.MapRazorPages();
