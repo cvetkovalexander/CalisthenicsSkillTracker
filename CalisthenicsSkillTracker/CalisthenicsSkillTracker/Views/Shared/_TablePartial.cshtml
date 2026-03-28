@@ -1,4 +1,7 @@
-﻿@model IEnumerable<ListTableItemViewModel>
+﻿@using CalisthenicsSkillTracker.Infrastructure.Utilities.Contracts
+
+@model IEnumerable<ListTableItemViewModel>
+@inject ISlugGenerator slugGenerator
 
 <div class="rounded-3 overflow-hidden border shadow-sm">
     <table class="table table-bordered mb-0 text-white" style="background-color: gray;">
@@ -14,15 +17,17 @@
             @foreach (var skill in Model)
             {
                 <tr>
-                    <td>@(skill.Name ?? "—")</td>
-                    <td>@(skill.Description ?? "—")</td>
-                    <td>@(skill.Difficulty.ToString() ?? "-")</td>
+                    <td>@(skill.Name)</td>
+                    <td>@(skill.Description)</td>
+                    <td>@(skill.Difficulty.ToString())</td>
                     <td>
-                        <a class="btn" style="background-color: lawngreen;" asp-action="Details" asp-route-id="@(skill?.Id)">
+                        <a class="btn" style="background-color: lawngreen;" asp-action="Details" asp-route-id="@(skill.Id)"
+                            asp-route-slug="@slugGenerator.GenerateSlug(skill.Name)">
                             <img src="~/details.png" style="width: 25px; height: auto;" alt="Alternate Text" />
                         </a>
                         |
-                        <a class="btn" style="background-color: deepskyblue;" asp-action="Edit" asp-route-id="@(skill?.Id)">
+                        <a class="btn" style="background-color: deepskyblue;" asp-action="Edit" asp-route-id="@(skill.Id)"
+                            asp-route-slug="@slugGenerator.GenerateSlug(skill.Name)">
                             <img src="~/edit.png" style="width: 25px; height: auto;" alt="Alternate Text" />
                         </a>
                     </td>

@@ -3,6 +3,8 @@ using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Repositories;
 using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using CalisthenicsSkillTracker.Infrastructure.Extensions;
+using CalisthenicsSkillTracker.Infrastructure.Utilities;
+using CalisthenicsSkillTracker.Infrastructure.Utilities.Contracts;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.Services.Core.Services;
 using Microsoft.AspNetCore.Identity;
@@ -25,6 +27,12 @@ public class Program
         builder.Services.RegisterRepositories(typeof(WorkoutRepository));
         builder.Services.RegisterServices(typeof(WorkoutService));
 
+<<<<<<< Updated upstream
+=======
+        builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
+        builder.Services.AddSingleton<ISlugGenerator, SlugGenerator>();
+
+>>>>>>> Stashed changes
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
@@ -59,6 +67,17 @@ public class Program
         app.UseStatusCodePagesWithRedirects("/Home/Error/{0}");
 
         app.MapControllerRoute(
+<<<<<<< Updated upstream
+=======
+            name: "adminArea",
+            pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+        app.MapControllerRoute(
+            name: "slugRoute",
+            pattern: "{controller=Home}/{action=Index}/{id:required}/{slug:required}");
+
+        app.MapControllerRoute(
+>>>>>>> Stashed changes
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         app.MapRazorPages();
