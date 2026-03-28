@@ -3,15 +3,25 @@ using CalisthenicsSkillTracker.Data.Repositories.Contracts.Admin;
 using CalisthenicsSkillTracker.Services.Core.Interfaces.Admin;
 using CalisthenicsSkillTracker.ViewModels.Admin.User;
 
+using Microsoft.AspNetCore.Identity;
+
+using System.Data;
+
 namespace CalisthenicsSkillTracker.Services.Core.Services.Admin;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _repository;
 
-    public UserService(IUserRepository repository)
+    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public UserService(IUserRepository repository, RoleManager<IdentityRole<Guid>> roleManager, UserManager<ApplicationUser> userManager)
     {
         this._repository = repository;
+        this._roleManager = roleManager;
+        this._userManager = userManager;
     }
 
     public async Task<IEnumerable<ManageUserViewModel>> GetAllManageableUsersAsync(string adminUserId)
@@ -32,5 +42,30 @@ public class UserService : IUserService
             .ToList();
 
         return models;
+    }
+
+    /* ALWAYS verify that the user id is valid before using the method! */
+    public async Task<ApplicationUser> GetUserByIdAsync(string userId)
+#pragma warning disable CS8603 // Possible null reference return.
+        => await this._userManager.FindByIdAsync(userId);
+#pragma warning restore CS8603 // Possible null reference return.
+
+    public async Task<bool> RoleAddedSuccessfullyAsync(ApplicationUser user, string role)
+    {
+        IdentityResult result = await this._userManager.AddToRoleAsync(user, role);
+
+        return result.Succeeded;
+    }
+
+    public async Task<bool> RoleAlreadyAssignedAsync(ApplicationUser user, string role)
+        => await this._userManager.IsInRoleAsync(user, role);
+
+    public async Task<bool> RoleExistsAsync(string role)
+        => await this._roleManager.RoleExistsAsync(role);
+
+    public async Task<bool> UserExistsAsync(string userId)
+    {
+        ApplicationUser? user = await this._userManager.FindByIdAsync(userId);
+        return user is not null;
     }
 }

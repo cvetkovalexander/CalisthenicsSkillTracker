@@ -32,5 +32,19 @@ public static class OutputMessages
         public const string AdminUserSeedingExceptionMessage = "An error occurred while seeding the admin user. Please try again in a few minutes.";
 
         public const string AdminUserRoleSeedingExceptionMessage = "An error occurred while adding the admin user to the {0} role. Please try again in a few minutes.";
+
+        public const string InvalidRoleAssignmentMessage = "Invalid role assignment request. Please try again.";
+
+        public const string UserNotFoundMessage = "User not found. Please try again.";
+
+        public const string RoleNotFoundMessage = "Role not found. Please try again.";
+
+        public const string RoleAlreadyAssignedMessage = "The user already has the {0} role assigned.";
+
+        public const string RoleAssignmentFailedMessage = "An error occurred while assigning the {0} role to the user. Please try again in a few minutes.";
+
+        public const string RoleSuccessfullyAssignedMessage = "The {0} role was successfully assigned to the user.";
+
+        public const string RoleSuccessfullyRemovedMessage = "The {0} role was successfully removed from the user.";
     }
 }
