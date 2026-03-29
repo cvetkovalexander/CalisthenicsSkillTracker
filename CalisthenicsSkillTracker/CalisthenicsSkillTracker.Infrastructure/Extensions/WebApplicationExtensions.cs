@@ -1,4 +1,6 @@
 ﻿using CalisthenicsSkillTracker.Data.Seeding.Contracts;
+using CalisthenicsSkillTracker.Infrastructure.Middlewares;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -41,4 +43,7 @@ public static class WebApplicationExtensions
 
         return builder;
     }
+
+    public static IApplicationBuilder UseAdminRedirect(this IApplicationBuilder builder)
+        => builder.UseMiddleware<AdminRedirectMiddleware>();
 }

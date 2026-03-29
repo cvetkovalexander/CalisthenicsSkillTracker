@@ -63,6 +63,7 @@ public class Program
 
         app.UseRolesSeeder();
         app.UseAdminUserSeeder();
+        app.UseAdminRedirect();
 
         app.UseStatusCodePagesWithRedirects("/Home/Error/{0}");
 
