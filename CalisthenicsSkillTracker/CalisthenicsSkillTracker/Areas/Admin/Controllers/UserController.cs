@@ -6,6 +6,7 @@ using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
 using static CalisthenicsSkillTracker.GCommon.OutputMessages.IdentityMessages;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 
 namespace CalisthenicsSkillTracker.Areas.Admin.Controllers;
 
@@ -77,7 +78,52 @@ public class UserController : AdminControllerBase
         return this.SuccessRedirectToIndex(string.Format(RoleSuccessfullyRemovedMessage, model.Role));
     }
 
+    [HttpGet]
+    public async Task<IActionResult> EditUsername(string userId) 
+    {
+        ApplicationUser? user = await this._userService.GetUserByIdAsync(userId);
+        if (user is null)
+            return this.ErrorRedirectToIndex(UserNotFoundMessage);
 
+        EditUsernameViewModel model = this._userService
+            .CreateEditUsernameViewModel(userId, user!.UserName!);
+
+        return this.View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditUsername(EditUsernameViewModel model) 
+    {
+        if (!ModelState.IsValid)
+            return this.ErrorRedirectToIndex(string.Format(InvalidOperationMessage, "edit username"));
+
+        ApplicationUser? user = await this._userService.GetUserByIdAsync(model.UserId);
+        if (user is null) 
+            return this.ErrorRedirectToIndex(UserNotFoundMessage);
+
+        if (!await this._userService.EditUserUsernameAsync(user, model.UserName))
+            return this.ErrorRedirectToIndex(UsernameEditFailedMessage);
+
+        return this.SuccessRedirectToIndex(UsernameEditSuccessMessage);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteUser(DeleteUserViewModel model) 
+    {
+        if (!ModelState.IsValid)
+            return this.ErrorRedirectToIndex(string.Format(InvalidOperationMessage, "delete user"));
+
+        ApplicationUser? user = await this._userService.GetUserByIdAsync(model.UserId);
+        if (user is null)
+            return this.ErrorRedirectToIndex(UserNotFoundMessage);
+
+        if (!await this._userService.DeleteUserAsync(user))
+            return this.ErrorRedirectToIndex(UserDeleteFailedMessage);
+
+        return this.SuccessRedirectToIndex(string.Format(UserDeleteSuccessMessage, model.UserName));
+    }
 
     private IActionResult SuccessRedirectToIndex(string message) 
     {

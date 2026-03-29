@@ -1,0 +1,34 @@
+﻿@model EditUsernameViewModel
+
+@{
+    ViewData["Title"] = "Edit Username";
+}
+
+<div class="edit-user-wrapper">
+    <div class="edit-user-card">
+        <h1 class="edit-user-title">Edit Username</h1>
+
+        <form asp-area="Admin" asp-controller="User" asp-action="EditUsername" method="post">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <input asp-for="UserId" type="hidden" />
+
+            <div class="edit-user-form-group">
+                <label asp-for="UserName" class="edit-user-label text-white">Enter username:</label>
+                <input asp-for="UserName" class="edit-user-input" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="edit-user-actions">
+                <a asp-area="Admin" asp-controller="User" asp-action="Index" class="btn btn-danger cancel-link">Cancel</a>
+                <button type="submit" class="save-btn">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

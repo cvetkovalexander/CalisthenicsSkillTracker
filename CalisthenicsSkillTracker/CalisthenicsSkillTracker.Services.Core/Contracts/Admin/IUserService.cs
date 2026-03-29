@@ -19,4 +19,12 @@ public interface IUserService
     Task<bool> RoleAddedSuccessfullyAsync(ApplicationUser user, string role);
 
     Task<bool> RoleRemovedSuccessfullyAsync(ApplicationUser user, string role);
+
+    Task<bool> EditUserUsernameAsync(ApplicationUser user, string newUsername);
+
+    Task<bool> DeleteUserAsync(ApplicationUser user);
+
+    EditUsernameViewModel CreateEditUsernameViewModel(string userId, string username);
+
+    DeleteUserViewModel CreateDeleteUserViewModel(string userId, string username);
 }

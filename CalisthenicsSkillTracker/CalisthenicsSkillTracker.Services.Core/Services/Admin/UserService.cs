@@ -24,6 +24,23 @@ public class UserService : IUserService
         this._userManager = userManager;
     }
 
+    public async Task<bool> EditUserUsernameAsync(ApplicationUser user, string newUsername)
+    {
+        user.UserName = newUsername;
+        user.NormalizedUserName = newUsername.ToUpper();
+
+        IdentityResult result = await this._userManager.UpdateAsync(user);
+
+        return result.Succeeded;
+    }
+
+    public async Task<bool> DeleteUserAsync(ApplicationUser user)
+    {
+        IdentityResult result = await this._userManager.DeleteAsync(user);
+
+        return result.Succeeded;
+    }
+
     public async Task<IEnumerable<ManageUserViewModel>> GetAllManageableUsersAsync(string adminUserId)
     {
         Guid adminGuidId = Guid.Parse(adminUserId);
@@ -72,4 +89,18 @@ public class UserService : IUserService
         ApplicationUser? user = await this._userManager.FindByIdAsync(userId);
         return user is not null;
     }
+
+    public EditUsernameViewModel CreateEditUsernameViewModel(string userId, string username)
+        => new EditUsernameViewModel
+        {
+            UserId = userId,
+            UserName = username
+        };
+
+    public DeleteUserViewModel CreateDeleteUserViewModel(string userId, string username)
+        => new DeleteUserViewModel
+        {
+            UserId = userId,
+            UserName = username
+        };
 }

@@ -52,5 +52,13 @@ public static class OutputMessages
         public const string RoleSuccessfullyAssignedMessage = "The {0} role was successfully assigned to the user.";
 
         public const string RoleSuccessfullyRemovedMessage = "The {0} role was successfully removed from the user.";
+
+        public const string UsernameEditFailedMessage = "An error occurred while editing the user's username. Please try again in a few minutes.";
+
+        public const string UsernameEditSuccessMessage = "The user's username was successfully edited.";
+
+        public const string UserDeleteFailedMessage = "An error occurred while deleting the user. Please try again in a few minutes.";
+
+        public const string UserDeleteSuccessMessage = "The user {0} was successfully deleted.";
     }
 }

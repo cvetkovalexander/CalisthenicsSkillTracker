@@ -6,6 +6,8 @@ public static class ApplicationConstants
 
     public const string UnexpectedErrorMessage = "An unexpected error occurred. Please contact support!";
 
+    public const string InvalidOperationMessage = "An unexpected error occurred while trying to execute the {0} operation. Please try again later!";
+
     public const string ErrorTempDataKey = "ErrorMessage";
     public const string WarningTempDataKey = "WarningMessage";
     public const string InfoTempDataKey = "InfoMessage";

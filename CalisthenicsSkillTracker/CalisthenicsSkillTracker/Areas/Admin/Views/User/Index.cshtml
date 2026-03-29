@@ -55,16 +55,40 @@
                             </button>
                         </form>
 
-                        <button class="action-btn remove-btn">Remove Role</button>
-                        <button class="action-btn edit-btn">Edit Username</button>
-                        <button class="action-btn delete-btn">Delete User</button>
+                        <form asp-area="Admin" asp-controller="User" asp-action="RemoveRole" method="post" class="inline-form remove-role-form">
+							@Html.AntiForgeryToken()
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <input type="hidden" name="role" class="selected-role-input" />
+                            <button type="submit" class="action-btn remove-btn remove-role-btn" data-username="@user.UserName">
+                                Remove Role
+                            </button>
+                        </form>
+
+                        <form asp-area="Admin" asp-controller="User" asp-action="EditUsername" method="get" class="inline-form">
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <button type="submit" class="action-btn edit-btn">Edit Username</button>
+                        </form>
+
+                        <form asp-area="Admin" asp-controller="User" asp-action="DeleteUser" method="post" class="inline-form delete-user-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="UserId" value="@user.Id" />
+                            <input type="hidden" name="UserName" value="@user.UserName" />
+                            <button type="submit"
+                                    class="action-btn delete-btn delete-user-btn"
+                                    data-username="@user.UserName"
+                                    onclick="return confirm('Are you sure you want to delete user @user.UserName?');">
+                                Delete User
+                            </button>
+                        </form>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+     <div id="modal-host"></div>
 </div>
 
 @section Scripts {
     <script src="~/js/admin-user-roles.js"></script>
+    <script src="~/js/admin-actions.js"></script>
 }
