@@ -35,13 +35,19 @@ public static class OutputMessages
 
         public const string InvalidRoleAssignmentMessage = "Invalid role assignment request. Please try again.";
 
+        public const string InvalidRoleRemovalMessage = "Invalid role removal request. Please try again.";
+
         public const string UserNotFoundMessage = "User not found. Please try again.";
 
         public const string RoleNotFoundMessage = "Role not found. Please try again.";
 
         public const string RoleAlreadyAssignedMessage = "The user already has the {0} role assigned.";
 
+        public const string RoleNotAssignedMessage = "The user does not have the {0} role assigned.";
+
         public const string RoleAssignmentFailedMessage = "An error occurred while assigning the {0} role to the user. Please try again in a few minutes.";
+
+        public const string RoleRemovalFailedMessage = "An error occurred while removing the {0} role from the user. Please try again in a few minutes.";
 
         public const string RoleSuccessfullyAssignedMessage = "The {0} role was successfully assigned to the user.";
 

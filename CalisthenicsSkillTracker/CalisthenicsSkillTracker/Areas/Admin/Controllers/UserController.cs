@@ -38,53 +38,59 @@ public class UserController : AdminControllerBase
     public async Task<IActionResult> AssignRole(ManageUserRoleViewModel model) 
     {
         if (!ModelState.IsValid) 
-        {
-            TempData[ErrorTempDataKey] = InvalidRoleAssignmentMessage;
+            return this.ErrorRedirectToIndex(InvalidRoleAssignmentMessage);
 
-            this._logger.LogError(InvalidRoleAssignmentMessage);
-
-            return this.RedirectToAction(nameof(Index));
-        }
-
-        if (!await this._userService.UserExistsAsync(model.UserId)) 
-        {
-            TempData[ErrorTempDataKey] = UserNotFoundMessage;
-
-            this._logger.LogError(UserNotFoundMessage);
-
-            return this.RedirectToAction(nameof(Index));
-        }
-
-        ApplicationUser user = await this._userService.GetUserByIdAsync(model.UserId);
+        ApplicationUser? user = await this._userService.GetUserByIdAsync(model.UserId);
+        if (user is null) 
+            return this.ErrorRedirectToIndex(UserNotFoundMessage);
 
         if (!await this._userService.RoleExistsAsync(model.Role)) 
-        {
-            TempData[ErrorTempDataKey] = RoleNotFoundMessage;
-
-            this._logger.LogError(RoleNotFoundMessage);
-
-            return this.RedirectToAction(nameof(Index));
-        }
+            return this.ErrorRedirectToIndex(RoleNotFoundMessage);
 
         if (await this._userService.RoleAlreadyAssignedAsync(user, model.Role))
-        {
-            TempData[ErrorTempDataKey] = string.Format(RoleAlreadyAssignedMessage,model.Role);
-
-            this._logger.LogError(string.Format(RoleAlreadyAssignedMessage, model.Role));
-
-            return this.RedirectToAction(nameof(Index));
-        }
+            return this.ErrorRedirectToIndex(string.Format(RoleAlreadyAssignedMessage, model.Role));
 
         if (!await this._userService.RoleAddedSuccessfullyAsync(user, model.Role))
-        {
-            TempData[ErrorTempDataKey] = string.Format(RoleAssignmentFailedMessage, model.Role);
+            return this.ErrorRedirectToIndex(string.Format(RoleAssignmentFailedMessage, model.Role));
 
-            this._logger.LogError(string.Format(RoleAssignmentFailedMessage, model.Role));
+        return this.SuccessRedirectToIndex(string.Format(RoleSuccessfullyAssignedMessage, model.Role));
+    }
 
-            return this.RedirectToAction(nameof(Index));
-        }
+    public async Task<IActionResult> RemoveRole(ManageUserRoleViewModel model) 
+    {
+        if (!ModelState.IsValid) 
+            return this.ErrorRedirectToIndex(InvalidRoleRemovalMessage);
 
-        TempData[SuccessTempDataKey] = string.Format(RoleSuccessfullyAssignedMessage, model.Role);
+        ApplicationUser? user = await this._userService.GetUserByIdAsync(model.UserId);
+        if (user is null)
+            return this.ErrorRedirectToIndex(UserNotFoundMessage);
+
+        if (!await this._userService.RoleExistsAsync(model.Role))
+            return this.ErrorRedirectToIndex(RoleNotFoundMessage);
+
+        if (!await this._userService.RoleAlreadyAssignedAsync(user, model.Role))
+            return this.ErrorRedirectToIndex(string.Format(RoleNotAssignedMessage, model.Role));
+
+        if (!await this._userService.RoleRemovedSuccessfullyAsync(user, model.Role))
+            return this.ErrorRedirectToIndex(string.Format(RoleRemovalFailedMessage, model.Role));
+
+        return this.SuccessRedirectToIndex(string.Format(RoleSuccessfullyRemovedMessage, model.Role));
+    }
+
+
+
+    private IActionResult SuccessRedirectToIndex(string message) 
+    {
+        TempData[SuccessTempDataKey] = message;
+
+        return this.RedirectToAction(nameof(Index));
+    }
+
+    private IActionResult ErrorRedirectToIndex(string message) 
+    {
+        TempData[ErrorTempDataKey] = message;
+
+        this._logger.LogError(message);
 
         return this.RedirectToAction(nameof(Index));
     }

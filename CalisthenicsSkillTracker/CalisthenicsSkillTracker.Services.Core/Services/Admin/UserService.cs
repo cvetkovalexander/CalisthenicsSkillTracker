@@ -44,11 +44,8 @@ public class UserService : IUserService
         return models;
     }
 
-    /* ALWAYS verify that the user id is valid before using the method! */
-    public async Task<ApplicationUser> GetUserByIdAsync(string userId)
-#pragma warning disable CS8603 // Possible null reference return.
+    public async Task<ApplicationUser?> GetUserByIdAsync(string userId)
         => await this._userManager.FindByIdAsync(userId);
-#pragma warning restore CS8603 // Possible null reference return.
 
     public async Task<bool> RoleAddedSuccessfullyAsync(ApplicationUser user, string role)
     {
@@ -62,6 +59,13 @@ public class UserService : IUserService
 
     public async Task<bool> RoleExistsAsync(string role)
         => await this._roleManager.RoleExistsAsync(role);
+
+    public async Task<bool> RoleRemovedSuccessfullyAsync(ApplicationUser user, string role)
+    {
+        IdentityResult result = await this._userManager.RemoveFromRoleAsync(user, role);
+
+        return result.Succeeded;
+    }
 
     public async Task<bool> UserExistsAsync(string userId)
     {
