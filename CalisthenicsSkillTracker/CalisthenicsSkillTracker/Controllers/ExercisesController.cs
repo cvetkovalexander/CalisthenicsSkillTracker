@@ -7,6 +7,7 @@ using static CalisthenicsSkillTracker.GCommon.OutputMessages.EntityMessages;
 using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
@@ -49,6 +50,7 @@ public class ExercisesController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin, Moderator")]
     public async Task<IActionResult> Create() 
     {
         CreateExerciseViewModel model = await this._inputService.CreateExerciseViewModelWithEnumsAsync();
@@ -60,6 +62,7 @@ public class ExercisesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin, Moderator")]
     public async Task<IActionResult> Create(CreateExerciseViewModel model) 
     {
         this._inputService.FetchEnums(model);
@@ -103,6 +106,7 @@ public class ExercisesController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin, Moderator")]
     public async Task<IActionResult> Edit(Guid id)
     {
         if (!await this._outputService.ExerciseExistsAsync(id))
@@ -117,6 +121,7 @@ public class ExercisesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin, Moderator")]
     public async Task<IActionResult> Edit(EditExerciseViewModel model)
     {
         this._inputService.FetchEnums(model);
@@ -164,6 +169,7 @@ public class ExercisesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin, Moderator")]
     public async Task<IActionResult> Delete(Guid id)
     {
         if (!await this._outputService.ExerciseExistsAsync(id))

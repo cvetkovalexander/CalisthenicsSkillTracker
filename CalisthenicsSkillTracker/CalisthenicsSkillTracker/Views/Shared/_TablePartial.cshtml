@@ -21,10 +21,14 @@
                         <a class="btn" style="background-color: lawngreen;" asp-action="Details" asp-route-id="@(skill?.Id)">
                             <img src="~/details.png" style="width: 25px; height: auto;" alt="Alternate Text" />
                         </a>
-                        |
-                        <a class="btn" style="background-color: deepskyblue;" asp-action="Edit" asp-route-id="@(skill?.Id)">
-                            <img src="~/edit.png" style="width: 25px; height: auto;" alt="Alternate Text" />
-                        </a>
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated &&
+                             (User.IsInRole("Admin") || User.IsInRole("Moderator")))
+                        {
+                            <a class="btn" style="background-color: deepskyblue;" asp-action="Edit" asp-route-id="@(skill?.Id)">
+                                <img src="~/edit.png" style="width: 25px; height: auto;" alt="Alternate Text" />
+                            </a>
+                        }
                     </td>
                 </tr>
             }

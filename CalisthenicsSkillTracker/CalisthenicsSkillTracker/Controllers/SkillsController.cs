@@ -3,10 +3,10 @@ using CalisthenicsSkillTracker.GCommon.Exceptions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
-using static CalisthenicsSkillTracker.GCommon.OutputMessages.EntityMessages;
-using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
+using static CalisthenicsSkillTracker.GCommon.OutputMessages.EntityMessages;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
@@ -52,6 +52,7 @@ public class SkillsController : Controller
     }   
 
     [HttpGet]
+    [Authorize(Roles = "Admin, Moderator")]
     public IActionResult Create()
     {
         CreateSkillViewModel model = this._inputService.CreateSkillViewModelWithEnums();
@@ -63,6 +64,7 @@ public class SkillsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin, Moderator")]
     public async Task<IActionResult> Create(CreateSkillViewModel model) 
     {
         this._inputService.FetchEnums(model);
@@ -101,6 +103,7 @@ public class SkillsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin, Moderator")]
     public async Task<IActionResult> Edit(Guid id) 
     {
         if (!await this._outputService.SkillExistsAsync(id))
@@ -115,6 +118,7 @@ public class SkillsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin, Moderator")]
     public async Task<IActionResult> Edit(EditSkillViewModel model) 
     {
         this._inputService.FetchEnums(model);
@@ -157,6 +161,7 @@ public class SkillsController : Controller
 
     [HttpPost] 
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin, Moderator")]
     public async Task<IActionResult> Delete(Guid id) 
     {
         if (!await this._outputService.SkillExistsAsync(id))
