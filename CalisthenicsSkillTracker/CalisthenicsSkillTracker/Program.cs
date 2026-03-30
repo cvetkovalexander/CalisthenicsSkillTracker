@@ -5,6 +5,8 @@ using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using CalisthenicsSkillTracker.Data.Seeding;
 using CalisthenicsSkillTracker.Data.Seeding.Contracts;
 using CalisthenicsSkillTracker.Infrastructure.Extensions;
+using CalisthenicsSkillTracker.Infrastructure.Utilities;
+using CalisthenicsSkillTracker.Infrastructure.Utilities.Contracts;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.Services.Core.Services;
 using Microsoft.AspNetCore.Identity;
@@ -28,6 +30,7 @@ public class Program
         builder.Services.RegisterServices(typeof(WorkoutService));
 
         builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
+        builder.Services.AddSingleton<ISlugGenerator, SlugGenerator>();
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -70,6 +73,10 @@ public class Program
         app.MapControllerRoute(
             name: "adminArea",
             pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+        app.MapControllerRoute(
+            name: "slugRoute",
+            pattern: "{controller=Home}/{action=Index}/{id:required}/{slug:required}");
 
         app.MapControllerRoute(
             name: "default",
