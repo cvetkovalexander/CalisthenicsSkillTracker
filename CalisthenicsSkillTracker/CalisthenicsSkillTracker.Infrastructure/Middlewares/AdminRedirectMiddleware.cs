@@ -18,7 +18,7 @@ namespace CalisthenicsSkillTracker.Infrastructure.Middlewares
                 bool isAdmin = context.User.IsInRole("Admin");
                 string path = context.Request.Path.Value ?? string.Empty;
 
-                if (isAdmin && path == "/")
+                if (isAdmin && path == "/" && HttpMethods.IsGet(context.Request.Method))
                 {
                     context.Response.Redirect("/Admin/Home/Index");
                     return;

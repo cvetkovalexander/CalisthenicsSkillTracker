@@ -26,14 +26,14 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                            <a class="nav-link fw-bold" href="/Home/Index">
                                 <i class="bi bi-house"></i> Home
                             </a>
                         </li>
                         @if (User.Identity != null && User.Identity.IsAuthenticated == true)
                         {
                             <li class="nav-item">
-                                <a class="nav-link fw-bold" asp-controller="Workouts" asp-action="MyWorkouts">
+                                <a class="nav-link fw-bold" asp-area="" asp-controller="Workouts" asp-action="MyWorkouts">
                                     <i class="bi bi-journal-text me-1"></i> My Workouts
                                 </a>
                             </li>
@@ -41,12 +41,20 @@
                         @if (User.Identity != null && User.Identity.IsAuthenticated == true)
                         {
                             <li class="nav-item">
-                                <a class="nav-link fw-bold" asp-controller="SkillProgress" asp-action="Index">
+                                <a class="nav-link fw-bold" asp-area="" asp-controller="SkillProgress" asp-action="Index">
                                     <i class="bi bi-clipboard-data me-1"></i> My skill records
                                 </a>
                             </li>
                         }
-                    </ul>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link fw-bold" asp-area="Admin" asp-controller="Home" asp-action="Index">
+                                    <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                                </a>
+                            </li>
+                        }
+                        </ul>
                     <partial name="_LoginPartial" />
                 </div>
             </div>

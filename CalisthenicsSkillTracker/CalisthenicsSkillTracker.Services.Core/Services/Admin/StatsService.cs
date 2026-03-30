@@ -32,7 +32,17 @@ public class StatsService : IStatsService
     public async Task<IEnumerable<SkillRecordViewModel>> CreateSkillRecordViewModelsAsync()
     {
         IEnumerable<SkillProgress> records = await this._repository
-            .GetAllSkillRecordsAsync();
+            .GetAllSkillRecordsAsync(filterQuery: null,
+            projectionQuery: sp => new SkillProgress 
+            {
+                PerformedBy = sp.PerformedBy,
+                Skill = sp.Skill,
+                Date = sp.Date,
+                Progression = sp.Progression,
+                Duration = sp.Duration,
+                Repetitions = sp.Repetitions,
+                Notes = sp.Notes,
+            });
         
         IEnumerable<SkillRecordViewModel> models = records
             .Select(r => new SkillRecordViewModel
@@ -40,7 +50,8 @@ public class StatsService : IStatsService
                 UserName = r.PerformedBy.UserName!,
                 SkillName = r.Skill.Name,
                 SubmittedOn = r.Date,
-                Progression = ProgressDisplayName(r)
+                Progression = ProgressDisplayName(r),
+                Notes = r.Notes,
             })
             .ToArray();
 
@@ -50,7 +61,17 @@ public class StatsService : IStatsService
     public async Task<IEnumerable<WorkoutViewModel>> CreateWorkoutViewModelsAsync()
     {
         IEnumerable<Workout> workouts = await this._repository
-            .GetAllWorkoutsAsync();
+            .GetAllWorkoutsAsync(filterQuery: null,
+            projectionQuery: w => new Workout 
+            {
+                User = w.User,
+                Date = w.Date,
+                Notes = w.Notes,
+                WorkoutExercises = w.WorkoutExercises.Select(we => new WorkoutExercise 
+                {
+                    Exercise = we.Exercise
+                }).ToArray()
+            });
 
         IEnumerable<WorkoutViewModel> models = workouts
             .Select(w => new WorkoutViewModel

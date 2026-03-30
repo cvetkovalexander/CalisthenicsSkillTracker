@@ -9,4 +9,6 @@ public class SkillRecordViewModel
     public DateTime SubmittedOn { get; set; }
 
     public string Progression { get; set; } = null!;
+
+    public string? Notes { get; set; }
 }

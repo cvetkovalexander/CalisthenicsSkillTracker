@@ -107,6 +107,7 @@
                             <th>Skill</th>
                             <th>Progression</th>
                             <th>Submitted On</th>
+                            <th>Notes</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -119,6 +120,7 @@
                                     <td>@skillRecord.SkillName</td>
                                     <td>@skillRecord.Progression</td>
                                     <td>@skillRecord.SubmittedOn.ToString("dd MMM yyyy")</td>
+                                    <td>@(string.IsNullOrWhiteSpace(skillRecord.Notes) ? "No notes" : skillRecord.Notes)</td>
                                 </tr>
                             }
                         }
