@@ -6,7 +6,6 @@ using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
 using static CalisthenicsSkillTracker.GCommon.OutputMessages.IdentityMessages;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 
 namespace CalisthenicsSkillTracker.Areas.Admin.Controllers;
 
@@ -14,12 +13,10 @@ public class UserController : AdminControllerBase
 {
     private readonly IUserService _userService;
 
-    private ILogger<UserController> _logger;
-
     public UserController(IUserService userService, ILogger<UserController> logger)
+        : base(logger)
     {
         this._userService = userService;
-        this._logger = logger;
     }
 
     public async Task<IActionResult> Index()
@@ -123,21 +120,5 @@ public class UserController : AdminControllerBase
             return this.ErrorRedirectToIndex(UserDeleteFailedMessage);
 
         return this.SuccessRedirectToIndex(string.Format(UserDeleteSuccessMessage, model.UserName));
-    }
-
-    private IActionResult SuccessRedirectToIndex(string message) 
-    {
-        TempData[SuccessTempDataKey] = message;
-
-        return this.RedirectToAction(nameof(Index));
-    }
-
-    private IActionResult ErrorRedirectToIndex(string message) 
-    {
-        TempData[ErrorTempDataKey] = message;
-
-        this._logger.LogError(message);
-
-        return this.RedirectToAction(nameof(Index));
     }
 }

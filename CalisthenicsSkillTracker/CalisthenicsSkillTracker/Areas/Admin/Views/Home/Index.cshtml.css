@@ -5,7 +5,7 @@
     justify-content: center;
     padding: 40px;
     min-height: 70vh;
-    max-width: 900px;
+    max-width: 1100px;
     margin: 40px auto;
     background: linear-gradient(135deg, #0f172a, #1e293b);
     border-radius: 20px;
@@ -20,12 +20,22 @@
     text-align: center;
 }
 
+.admin-actions-row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 30px;
+    flex-wrap: nowrap;
+}
+
 .admin-action-box {
+    flex: 1;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     padding: 30px;
-    width: 280px;
     text-align: center;
     backdrop-filter: blur(10px);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -40,6 +50,7 @@
     color: #ffffff;
     margin-top: 15px;
     margin-bottom: 10px;
+    font-size: 42px;
 }
 
 .admin-action-content p {
@@ -67,4 +78,27 @@
 .admin-btn:hover {
     background: linear-gradient(135deg, #0ea5e9, #0284c7);
     transform: scale(1.05);
+}
+
+.stats-box {
+    background: linear-gradient(135deg, #1e1b4b, #020617);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+.stats-icon {
+    color: #a78bfa;
+}
+
+.stats-btn {
+    background: linear-gradient(135deg, #8b5cf6, #6366f1);
+}
+
+.stats-btn:hover {
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+}
+
+@media (max-width: 900px) {
+    .admin-actions-row {
+        flex-wrap: wrap;
+    }
 }

@@ -5,18 +5,35 @@
 <div class="admin-dashboard">
     <h1 class="admin-title">Welcome to the Admin Dashboard</h1>
 
-    <div class="admin-action-box">
-        <div class="admin-action-content">
-            <i class="bi bi-people-fill admin-icon"></i>
+    <div class="admin-actions-row">
+        <div class="admin-action-box">
+            <div class="admin-action-content">
+                <i class="bi bi-people-fill admin-icon"></i>
 
-            <h3>Manage Users</h3>
-            <p>View, edit and control user roles and permissions.</p>
+                <h3>Manage Users</h3>
+                <p>View, edit and control user roles and permissions.</p>
 
-            <form asp-area="Admin" asp-controller="User" asp-action="Index" method="get">
-                <button type="submit" class="admin-btn">
-                    Go to User Management
-                </button>
-            </form>
+                <form asp-area="Admin" asp-controller="User" asp-action="Index" method="get">
+                    <button type="submit" class="admin-btn">
+                        Go to User Management
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="admin-action-box stats-box">
+            <div class="admin-action-content">
+                <i class="bi bi-bar-chart-line-fill admin-icon stats-icon"></i>
+
+                <h3>Stats Dashboard</h3>
+                <p>View statistics for exercises, skills, workouts and user activity.</p>
+
+                <form asp-area="Admin" asp-controller="Stats" asp-action="Index" method="get">
+                    <button type="submit" class="admin-btn stats-btn">
+                        Go to Stats Dashboard
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

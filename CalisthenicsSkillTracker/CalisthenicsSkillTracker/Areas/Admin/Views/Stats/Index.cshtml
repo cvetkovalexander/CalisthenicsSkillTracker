@@ -1,0 +1,136 @@
+﻿@model OverviewViewModel
+
+@{
+    ViewData["Title"] = "Stats Dashboard";
+}
+
+<div class="stats-dashboard-wrapper">
+    <div class="stats-dashboard-header">
+        <h1 class="stats-dashboard-title">Stats Dashboard</h1>
+        <p class="stats-dashboard-subtitle">Overview of platform activity, user workouts and skill records.</p>
+    </div>
+
+    <div class="stats-summary-grid">
+        <div class="stats-card">
+            <div class="stats-card-icon exercises-icon">
+                <i class="bi bi-lightning-charge-fill"></i>
+            </div>
+            <div class="stats-card-content">
+                <h3>Total Exercises</h3>
+                <span class="stats-card-value">@Model.TotalExercises</span>
+            </div>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-card-icon skills-icon">
+                <i class="bi bi-bullseye"></i>
+            </div>
+            <div class="stats-card-content">
+                <h3>Total Skills</h3>
+                <span class="stats-card-value">@Model.TotalSkills</span>
+            </div>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-card-icon workouts-icon">
+                <i class="bi bi-journal-check"></i>
+            </div>
+            <div class="stats-card-content">
+                <h3>Total Workouts Logged</h3>
+                <span class="stats-card-value">@Model.TotalWorkouts</span>
+            </div>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-card-icon records-icon">
+                <i class="bi bi-trophy-fill"></i>
+            </div>
+            <div class="stats-card-content">
+                <h3>Total Skill Records</h3>
+                <span class="stats-card-value">@Model.TotalSkillRecords</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-sections-grid">
+        <section class="stats-section">
+            <div class="stats-section-header">
+                <h2>Logged Workouts</h2>
+                <p>Recent workout entries and the users who logged them.</p>
+            </div>
+
+            <div class="stats-table-wrapper">
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Exercises</th>
+                            <th>Date Logged</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Workouts.Any())
+                        {
+                            @foreach (var workout in Model.Workouts)
+                            {
+                                <tr>
+                                    <td>@workout.UserName</td>
+                                    <td>@string.Join(", ", workout.Exercises)</td>
+                                    <td>@workout.SubmittedOn.ToString("dd MMM yyyy")</td>
+                                    <td>@(string.IsNullOrWhiteSpace(workout.Notes) ? "No notes" : workout.Notes)</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="stats-empty-message">No workouts logged yet.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="stats-section">
+            <div class="stats-section-header">
+                <h2>Skill Records</h2>
+                <p>Tracked user progress and the skills connected to each record.</p>
+            </div>
+
+            <div class="stats-table-wrapper">
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Skill</th>
+                            <th>Progression</th>
+                            <th>Submitted On</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.SkillRecords.Any())
+                        {
+                            @foreach (var skillRecord in Model.SkillRecords)
+                            {
+                                <tr>
+                                    <td>@skillRecord.UserName</td>
+                                    <td>@skillRecord.SkillName</td>
+                                    <td>@skillRecord.Progression</td>
+                                    <td>@skillRecord.SubmittedOn.ToString("dd MMM yyyy")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="stats-empty-message">No skill records found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
