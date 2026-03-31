@@ -4,6 +4,8 @@ public static class ApplicationConstants
 {
     public const string DateTimeColumnType = "datetime2";
 
+    public const int DefaultPageSize = 5;
+
     public const string UnexpectedErrorMessage = "An unexpected error occurred. Please contact support!";
 
     public const string InvalidOperationMessage = "An unexpected error occurred while trying to execute the {0} operation. Please try again later!";

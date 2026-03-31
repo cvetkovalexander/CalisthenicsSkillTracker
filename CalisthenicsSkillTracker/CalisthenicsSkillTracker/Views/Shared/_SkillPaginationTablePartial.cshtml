@@ -1,0 +1,25 @@
+﻿@model PaginationResultViewModel<ListTableItemViewModel>
+
+@if (Model == null || !Model.Items.Any())
+{
+    <div class="alert alert-info">No skills found.</div>
+}
+else
+{
+    <partial name="_TablePartial" model="Model" />
+
+    <div class="d-flex justify-content-end mt-3">
+        @if (Model.HasNextPage)
+        {
+            <button type="button"
+                    class="btn btn-outline-primary"
+                    data-role="next-page"
+                    data-filter="@Model.Filter"
+                    data-last-name="@Model.NextIndexName"
+                    data-last-id="@Model.NextIndexId"
+                    data-page-size="@Model.PageSize">
+                Next
+            </button>
+        }
+    </div>
+}

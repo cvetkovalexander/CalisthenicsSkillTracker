@@ -1,6 +1,6 @@
 ﻿@using CalisthenicsSkillTracker.Infrastructure.Utilities.Contracts
 
-@model IEnumerable<ListTableItemViewModel>
+@model PaginationResultViewModel<ListTableItemViewModel>
 @inject ISlugGenerator slugGenerator
 
 <div class="rounded-3 overflow-hidden border shadow-sm">
@@ -14,7 +14,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var skill in Model)
+            @foreach (var skill in Model.Items)
             {
                 <tr>
                     <td>@(skill.Name)</td>
