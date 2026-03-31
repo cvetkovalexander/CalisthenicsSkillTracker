@@ -24,19 +24,19 @@ public class SkillsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string? lastName, Guid? lastId)
+    public async Task<IActionResult> Index()
     {
         PaginationResultViewModel<ListTableItemViewModel> model = await this._outputService
-            .GetAllSkillsAsync(lastName, lastId);
+            .GetAllSkillsAsync(null, null, false);
 
         return this.View(model);
     }
 
     [HttpGet]
-    public async Task<IActionResult> Search(string? filter, string? lastName, Guid? lastId)
+    public async Task<IActionResult> Search(string? filter, string? indexName, Guid? indexId, bool isPreviousPage = false)
     {
         PaginationResultViewModel<ListTableItemViewModel> filteredModel = await this._outputService
-             .GetAllSkillsAsync(lastName, lastId, filter);
+             .GetAllSkillsAsync(indexName, indexId, isPreviousPage, filter);
 
         return PartialView("_SkillPaginationTablePartial", filteredModel);
     }

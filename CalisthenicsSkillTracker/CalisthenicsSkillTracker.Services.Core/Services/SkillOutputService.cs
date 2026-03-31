@@ -3,9 +3,10 @@ using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
-using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
 
 using Microsoft.EntityFrameworkCore;
+
+using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
 
 namespace CalisthenicsSkillTracker.Services.Core.Services;
 
@@ -18,52 +19,19 @@ public class SkillOutputService : ISkillOutputService
         this._repository = repository;
     }
 
-    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllSkillsAsync(string? lastName, Guid? lastId, string? filter = null, int pageSize = DefaultPageSize)
+    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllSkillsAsync(string? indexName, Guid? indexId, bool isPreviousPage, string? filter = null, int pageSize = DefaultPageSize)
     {
-        IQueryable<Skill> skillsQuery = this._repository
-            .GetAllSkills()
-            .OrderBy(s => s.Name)
-            .ThenBy(s => s.Id);
+        IQueryable<Skill> query = this._repository.GetAllSkills();
 
-        if (filter is not null)
-            skillsQuery = skillsQuery.Where(s => EF.Functions.Like(s.Name, $"%{filter}%"));
+        query = ApplyFiltering(query, filter);
+        query = ApplyOrdering(query, isPreviousPage);
+        query = ApplyPagination(query, indexName, indexId, isPreviousPage);
 
-        if (!string.IsNullOrWhiteSpace(lastName) && lastId.HasValue) 
-        {
-            skillsQuery = skillsQuery
-                .Where(s => string.Compare(s.Name, lastName) > 0 
-                || (s.Name == lastName && s.Id > lastId.Value));
-        }
+        IQueryable<ListTableItemViewModel> projectedQuery = ProjectSkills(query);
 
-        IEnumerable<ListTableItemViewModel> skills = await skillsQuery
-            .Select(s => new ListTableItemViewModel()
-            {
-                Id = s.Id,
-                Name = s.Name,
-                Description = s.Description,
-                Difficulty = s.Difficulty
-            })
-            .Take(pageSize + 1)
-            .ToArrayAsync();
+        List<ListTableItemViewModel> items = await GetPagedSkillsAsync(projectedQuery, pageSize, isPreviousPage);
 
-        bool hasNextPage = skills.Count() > pageSize;
-
-        if (hasNextPage)
-            skills = skills.Take(pageSize).ToArray();
-
-        ListTableItemViewModel? lastSkill = skills.LastOrDefault();
-
-        PaginationResultViewModel<ListTableItemViewModel> model = new PaginationResultViewModel<ListTableItemViewModel>
-        {
-            Items = skills,
-            Filter = filter,
-            PageSize = pageSize,
-            HasNextPage = hasNextPage,
-            NextIndexName = hasNextPage ? lastSkill?.Name : null,
-            NextIndexId = hasNextPage ? lastSkill?.Id : null
-        };
-
-        return model;
+        return CreatePaginationViewModel(items, filter, pageSize, indexName, indexId, isPreviousPage);
     }
 
     public async Task<DetailsSkillViewModel> GetSkillDetailsAsync(Guid id)
@@ -88,4 +56,92 @@ public class SkillOutputService : ISkillOutputService
 
     public async Task<bool> SkillExistsAsync(Guid id)
         => await this._repository.SkillExistsAsync(id);
+
+    private static IQueryable<Skill> ApplyFiltering(IQueryable<Skill> query, string? filter)
+    {
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            query = query.Where(s => EF.Functions.Like(s.Name, $"%{filter}%"));
+        }
+        return query;
+    }
+
+    private static IQueryable<Skill> ApplyOrdering(IQueryable<Skill> query, bool isPreviousPage) 
+    {
+        if (isPreviousPage)
+            query = query.OrderByDescending(s => s.Name).ThenByDescending(s => s.Id);
+        else
+            query = query.OrderBy(s => s.Name).ThenBy(s => s.Id);
+
+        return query;
+    }
+
+    private static IQueryable<Skill> ApplyPagination(IQueryable<Skill> query, string? indexName, Guid? indexId, bool isPreviousPage) 
+    {
+        if (string.IsNullOrWhiteSpace(indexName) || !indexId.HasValue)
+            return query;
+
+        if (isPreviousPage)
+            query = query.Where(s =>
+                string.Compare(s.Name, indexName) < 0 ||
+                (s.Name == indexName && s.Id.CompareTo(indexId.Value) < 0));
+        else
+            query = query.Where(s =>
+                string.Compare(s.Name, indexName) > 0 ||
+                (s.Name == indexName && s.Id.CompareTo(indexId.Value) > 0));
+
+        return query;
+    }
+
+    private static IQueryable<ListTableItemViewModel> ProjectSkills(IQueryable<Skill> query) 
+    {
+        return query.Select(s => new ListTableItemViewModel
+        {
+            Id = s.Id,
+            Name = s.Name,
+            Description = s.Description,
+            Difficulty = s.Difficulty
+        });
+    }
+
+    private async Task<List<ListTableItemViewModel>> GetPagedSkillsAsync(IQueryable<ListTableItemViewModel> query, int pageSize, bool isPreviousPage) 
+    {
+        List<ListTableItemViewModel> skills = await query
+            .Take(pageSize + 1)
+            .ToListAsync();
+
+        if (isPreviousPage)
+            skills = skills
+                .OrderBy(s => s.Name)
+                .ThenBy(s => s.Id)
+                .ToList();
+
+        return skills;
+    }
+
+    private static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage) 
+    {
+        bool hasMoreItems = items.Count > pageSize;
+
+        if (hasMoreItems)
+            items = items.Take(pageSize).ToList();
+
+        ListTableItemViewModel? firstItem = items.FirstOrDefault();
+        ListTableItemViewModel? lastItem = items.LastOrDefault();
+
+        bool hasIndex = !string.IsNullOrWhiteSpace(indexName) && indexId.HasValue;
+
+        return new PaginationResultViewModel<ListTableItemViewModel>
+        {
+            Items = items,
+            Filter = filter,
+            PageSize = pageSize,
+            HasNextPage = hasMoreItems && !isPreviousPage,
+            HasPreviousPage = isPreviousPage ? hasMoreItems : hasIndex,
+            NextIndexName = !isPreviousPage && hasMoreItems ? lastItem?.Name : null,
+            NextIndexId = !isPreviousPage && hasMoreItems ? lastItem?.Id : null,
+            PreviousIndexName = firstItem?.Name,
+            PreviousIndexId = firstItem?.Id
+        };
+    }
 }

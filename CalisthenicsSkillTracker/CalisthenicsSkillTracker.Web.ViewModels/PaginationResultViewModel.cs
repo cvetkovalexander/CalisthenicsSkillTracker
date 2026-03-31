@@ -11,7 +11,13 @@ public class PaginationResultViewModel<T> where T : class
 
     public bool HasNextPage { get; set; }
 
+    public bool HasPreviousPage { get; set; }
+
+    public string ? PreviousIndexName { get; set; }
+
     public string? NextIndexName { get; set; }
+
+    public Guid? PreviousIndexId { get; set; }
 
     public Guid? NextIndexId { get; set; }
 }

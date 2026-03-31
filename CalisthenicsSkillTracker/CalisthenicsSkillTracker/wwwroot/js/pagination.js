@@ -14,22 +14,23 @@
 
     let timeoutId;
 
-    async function loadPage(filter = '', lastName = '', lastId = '', currentPageSize = pageSize) {
+    async function loadPage(filter = '', indexName = '', indexId = '', currentPageSize = pageSize, isPreviousPage = false) {
         const params = new URLSearchParams();
 
         if (filter) {
             params.append('filter', filter);
         }
 
-        if (lastName) {
-            params.append('lastName', lastName);
+        if (indexName) {
+            params.append('indexName', indexName);
         }
 
-        if (lastId) {
-            params.append('lastId', lastId);
+        if (indexId) {
+            params.append('indexId', indexId);
         }
 
         params.append('pageSize', currentPageSize);
+        params.append('isPreviousPage', isPreviousPage);
 
         const response = await fetch(`${endpoint}?${params.toString()}`);
 
@@ -46,23 +47,24 @@
             clearTimeout(timeoutId);
 
             timeoutId = setTimeout(() => {
-                loadPage(searchBox.value.trim());
+                loadPage(searchBox.value.trim(), '', '', pageSize, false);
             }, debounceDelay);
         });
     }
 
     document.addEventListener('click', (event) => {
-        const nextButton = event.target.closest('[data-role="next-page"]');
+        const button = event.target.closest('[data-role="next-page"], [data-role="previous-page"]');
 
-        if (!nextButton || !container.contains(nextButton)) {
+        if (!button || !container.contains(button)) {
             return;
         }
 
-        const filter = nextButton.dataset.filter || '';
-        const lastName = nextButton.dataset.lastName || '';
-        const lastId = nextButton.dataset.lastId || '';
-        const buttonPageSize = Number(nextButton.dataset.pageSize) || pageSize;
+        const filter = button.dataset.filter || '';
+        const indexName = button.dataset.indexName || '';
+        const indexId = button.dataset.indexId || '';
+        const buttonPageSize = Number(button.dataset.pageSize) || pageSize;
+        const isPreviousPage = button.dataset.isPreviousPage === 'true';
 
-        loadPage(filter, lastName, lastId, buttonPageSize);
+        loadPage(filter, indexName, indexId, buttonPageSize, isPreviousPage);
     });
 }

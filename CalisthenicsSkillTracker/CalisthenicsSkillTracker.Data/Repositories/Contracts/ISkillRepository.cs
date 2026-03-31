@@ -1,4 +1,5 @@
 ﻿using CalisthenicsSkillTracker.Data.Models;
+using System.Linq.Expressions;
 
 namespace CalisthenicsSkillTracker.Data.Repositories.Contracts;
 
@@ -21,7 +22,7 @@ public interface ISkillRepository
 
     public string RemoveWhitespaces(string input);
 
-    IQueryable<Skill> GetAllSkills();
+    IQueryable<Skill> GetAllSkills(Expression<Func<Skill, bool>>? filterQuery = null, Expression<Func<Skill, Skill>>? projectionQuery = null);
 
     Task<Skill> GetSkillWithExercisesByIdAsync(Guid id);
 

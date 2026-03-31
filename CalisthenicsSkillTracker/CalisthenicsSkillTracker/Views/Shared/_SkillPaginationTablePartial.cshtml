@@ -9,15 +9,32 @@ else
     <partial name="_TablePartial" model="Model" />
 
     <div class="d-flex justify-content-end mt-3">
+        <div>
+            @if (Model.HasPreviousPage)
+            {
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-role="previous-page"
+                        data-filter="@Model.Filter"
+                        data-index-name="@Model.PreviousIndexName"
+                        data-index-id="@Model.PreviousIndexId"
+                        data-page-size="@Model.PageSize"
+                        data-is-previous-page="true">
+                    Previous
+                </button>
+            }
+        </div>
+        
         @if (Model.HasNextPage)
         {
             <button type="button"
                     class="btn btn-outline-primary"
                     data-role="next-page"
                     data-filter="@Model.Filter"
-                    data-last-name="@Model.NextIndexName"
-                    data-last-id="@Model.NextIndexId"
-                    data-page-size="@Model.PageSize">
+                    data-index-name="@Model.NextIndexName"
+                    data-index-id="@Model.NextIndexId"
+                    data-page-size="@Model.PageSize"
+                    data-is-previous-page="false">
                 Next
             </button>
         }
