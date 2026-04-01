@@ -100,7 +100,8 @@ public class SkillOutputService : ISkillOutputService
             Id = s.Id,
             Name = s.Name,
             Description = s.Description,
-            Difficulty = s.Difficulty
+            Difficulty = s.Difficulty,
+            ImageUrl = s.ImageUrl,
         });
     }
 

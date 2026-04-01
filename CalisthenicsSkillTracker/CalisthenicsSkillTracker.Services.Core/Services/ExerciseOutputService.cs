@@ -101,7 +101,8 @@ public class ExerciseOutputService : IExerciseOutputService
             Id = e.Id,
             Name = e.Name,
             Description = e.Description,
-            Difficulty = e.Difficulty
+            Difficulty = e.Difficulty,
+            ImageUrl = e.ImageUrl
         });
     }
 

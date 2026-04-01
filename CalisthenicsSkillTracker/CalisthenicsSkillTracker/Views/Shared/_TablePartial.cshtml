@@ -3,38 +3,123 @@
 @model PaginationResultViewModel<ListTableItemViewModel>
 @inject ISlugGenerator slugGenerator
 
-<div class="rounded-3 overflow-hidden border shadow-sm">
-    <table class="table table-bordered mb-0 text-white" style="background-color: gray;">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Difficulty</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var skill in Model.Items)
-            {
+<div class="skills-table-wrapper">
+    <div class="table-responsive">
+        <table class="table skills-table mb-0">
+            <thead>
                 <tr>
-                    <td>@(skill.Name)</td>
-                    <td>@(skill.Description)</td>
-                    <td>@(skill.Difficulty.ToString())</td>
-                    <td>
-                        <a class="btn" style="background-color: lawngreen;" asp-action="Details" asp-route-id="@(skill.Id)"
-                            asp-route-slug="@slugGenerator.GenerateSlug(skill.Name)">
-                            <img src="~/details.png" style="width: 25px; height: auto;" alt="Alternate Text" />
-                        </a>
-                        
-                        @if (User.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Moderator")))
-                        {
-                            <a class="btn" style="background-color: deepskyblue;" asp-action="Edit" asp-route-id="@(skill?.Id)">
-                                <img src="~/edit.png" style="width: 25px; height: auto;" alt="Alternate Text" />
-                            </a>
-                        }                     
-                    </td>
+                    <th class="photo-column">Photo</th>
+                    <th class="name-column">Name</th>
+                    <th>Description</th>
+                    <th class="difficulty-column">Difficulty</th>
+                    <th class="actions-column">Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var skill in Model.Items)
+                {
+                    <tr>
+                        <td class="photo-cell">
+                            @if (!string.IsNullOrWhiteSpace(skill.ImageUrl))
+                            {
+                                <img src="@skill.ImageUrl" alt="@skill.Name" class="skill-photo" />
+                            }
+                            else
+                            {
+                                <div class="skill-photo-placeholder">No image</div>
+                            }
+                        </td>
+
+                        <td class="name-cell">
+                            <span class="skill-name">@skill.Name</span>
+                        </td>
+
+                        <td class="description-cell">
+                            @skill.Description
+                        </td>
+
+                        <td class="difficulty-cell">
+                            <span class="difficulty-badge difficulty-@skill.Difficulty.ToString().ToLower()">
+                                @skill.Difficulty
+                            </span>
+                        </td>
+
+                        <td class="actions-cell">
+                            <div class="action-buttons">
+                                <a class="table-action-btn details-btn"
+                                       asp-action="Details"
+                                       asp-route-id="@skill.Id"
+                                       asp-route-slug="@slugGenerator.GenerateSlug(skill.Name)"
+                                       title="Details">
+                                    <i class="bi bi-search"></i>
+                                </a>
+
+                                @if (User.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Moderator")))
+                                {
+                                    <a class="table-action-btn edit-btn"
+                                           asp-action="Edit"
+                                           asp-route-id="@skill.Id"
+                                           title="Edit">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<style>
+        .action-buttons {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .action-buttons .table-action-btn {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        min-height: 50px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: 12px;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
+        transition: all 0.2s ease;
+    }
+
+    .action-buttons .table-action-btn i {
+        font-size: 1.35rem;
+        color: #ffffff;
+        line-height: 1;
+    }
+
+    .action-buttons .details-btn {
+        background-color: #22c55e;
+    }
+
+    .action-buttons .edit-btn {
+        background-color: #0ea5e9;
+    }
+
+    .action-buttons .table-action-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .action-buttons .details-btn:hover {
+        background-color: #16a34a;
+        box-shadow: 0 8px 18px rgba(34, 197, 94, 0.35);
+    }
+
+    .action-buttons .edit-btn:hover {
+        background-color: #0284c7;
+        box-shadow: 0 8px 18px rgba(14, 165, 233, 0.35);
+    }
+</style>
