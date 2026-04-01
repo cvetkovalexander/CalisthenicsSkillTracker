@@ -23,19 +23,20 @@ public class ExercisesController : Controller
         this._outputService = outputService;
         this._logger = logger;
     }
-    public async Task<IActionResult> Index(string? filter)
+    [HttpGet]
+    public async Task<IActionResult> Index()
     {
-        IEnumerable<ListTableItemViewModel> allExercises = await this._outputService.GetAllExercisesAsync(null);
+        PaginationResultViewModel<ListTableItemViewModel> allExercises = await this._outputService.GetAllExercisesAsync(null, null, false);
 
         return this.View(allExercises);
     }
 
     [HttpGet]
-    public async Task<IActionResult> Search(string? filter)
+    public async Task<IActionResult> Search(string? filter, string? indexName, Guid? indexId, bool isPreviousPage = false)
     {
-        IEnumerable<ListTableItemViewModel> filteredExercises = await this._outputService.GetAllExercisesAsync(filter);
+        PaginationResultViewModel<ListTableItemViewModel> filteredExercises = await this._outputService.GetAllExercisesAsync(indexName, indexId, isPreviousPage, filter);
 
-        return PartialView("_TablePartial", filteredExercises);
+        return PartialView("_ExercisePaginationTablePartial", filteredExercises);
     }
 
     [HttpGet]

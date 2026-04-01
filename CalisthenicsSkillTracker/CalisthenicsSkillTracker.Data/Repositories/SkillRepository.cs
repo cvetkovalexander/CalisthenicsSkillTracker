@@ -1,6 +1,7 @@
 ﻿    using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CalisthenicsSkillTracker.Data.Repositories;
 
@@ -55,10 +56,20 @@ public class SkillRepository : BaseRepository, ISkillRepository
             .AsNoTracking()
             .SingleAsync(s => s.Id == id);
 
-    public IQueryable<Skill> GetAllSkills()
-        =>  this.Context
+    public IQueryable<Skill> GetAllSkills(Expression<Func<Skill, bool>>? filterQuery = null, Expression<Func<Skill, Skill>>? projectionQuery = null) 
+    {
+        IQueryable<Skill> query = this.Context
             .Skills
             .AsNoTracking();
+
+        if (filterQuery is not null)
+            query = query.Where(filterQuery);
+
+        if (projectionQuery is not null)
+            query = query.Select(projectionQuery);
+
+        return query;
+    }
 
     public async Task<Skill> GetSkillWithExercisesByIdAsync(Guid id)
         => await this.Context

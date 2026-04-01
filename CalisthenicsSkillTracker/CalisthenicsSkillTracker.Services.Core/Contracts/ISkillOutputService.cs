@@ -1,11 +1,12 @@
 ﻿using CalisthenicsSkillTracker.ViewModels;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
+using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
 
 namespace CalisthenicsSkillTracker.Services.Core.Interfaces;
 
 public interface ISkillOutputService
 {
-    Task<IEnumerable<ListTableItemViewModel>> GetAllSkillsAsync(string? filter);
+    Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllSkillsAsync(string? indexName, Guid? indexId, bool isPreviousPage, string? filter = null, int pageSize = DefaultPageSize);
 
     Task<DetailsSkillViewModel> GetSkillDetailsAsync(Guid id);
 

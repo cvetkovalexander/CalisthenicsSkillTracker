@@ -1,0 +1,126 @@
+﻿.skills-table-wrapper {
+    background-color: #24344d;
+    border: 1px solid #31445f;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.skills-table {
+    width: 100%;
+    margin-bottom: 0;
+    color: #ffffff;
+    background-color: #24344d;
+    border-collapse: collapse;
+}
+
+.skills-table thead th {
+    background-color: #0f172a;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 1rem;
+    border: 1px solid #31445f;
+    vertical-align: middle;
+}
+
+.skills-table tbody td {
+    padding: 1rem;
+    border: 1px solid #31445f;
+    vertical-align: middle;
+    background-color: #24344d;
+}
+
+.skills-table tbody tr:hover td {
+    background-color: #2a3b57;
+}
+
+.photo-column {
+    width: 120px;
+}
+
+.name-column {
+    width: 180px;
+}
+
+.difficulty-column {
+    width: 170px;
+}
+
+.actions-column {
+    width: 150px;
+}
+
+.skill-photo {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #475569;
+    display: block;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.skill-photo-placeholder {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+    border: 1px dashed #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #cbd5e1;
+    font-size: 0.75rem;
+    text-align: center;
+    background-color: #334155;
+}
+
+.skill-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.description-cell {
+    color: #e2e8f0;
+    line-height: 1.7;
+    min-width: 320px;
+}
+
+.difficulty-badge {
+    display: inline-block;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.difficulty-badge.difficulty-beginner {
+    background-color: rgba(34, 197, 94, 0.18);
+    color: #86efac;
+}
+
+.difficulty-badge.difficulty-intermediate {
+    background-color: rgba(59, 130, 246, 0.18);
+    color: #93c5fd;
+}
+
+.difficulty-badge.difficulty-advanced {
+    background-color: rgba(249, 115, 22, 0.18);
+    color: #fdba74;
+}
+
+.difficulty-badge.difficulty-expert {
+    background-color: rgba(239, 68, 68, 0.18);
+    color: #fca5a5;
+}
+
+@media (max-width: 991px) {
+    .skills-table thead th,
+    .skills-table tbody td {
+        padding: 0.85rem;
+    }
+
+    .description-cell {
+        min-width: 260px;
+    }
+}

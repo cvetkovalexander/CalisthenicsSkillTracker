@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CalisthenicsSkillTracker.ViewModels.ListTableItemViewModel>
+﻿@model PaginationResultViewModel<ListTableItemViewModel>
 
 <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css"/>
 
@@ -16,21 +16,26 @@
     <input type="text" id="searchBox" class="form-control w-25" placeholder="Search skills..." />
 </div>
 
-@if (Model == null || !Model.Any())
+@if (Model == null || !Model.Items.Any())
 {
     <div class="alert alert-info">No skills found.</div>
 }
 else
 {
     <div id="skillsContainer">
-        <partial name="_TablePartial" model="@Model" />
+        <partial name="_SkillPaginationTablePartial" model="Model" />
     </div>
 }
 
 @section Scripts {
     <script type="module">
-        import { initTableSearch } from '/js/search.js';
+        import { initKeysetPagination } from '/js/pagination.js';
 
-        initTableSearch('searchBox', 'skillsContainer', '/Skills/Search');
+        initKeysetPagination({
+            searchBoxId: 'searchBox',
+            containerId: 'skillsContainer',
+            endpoint: '/Skills/Search',
+            pageSize: 5
+        });
     </script>
 }

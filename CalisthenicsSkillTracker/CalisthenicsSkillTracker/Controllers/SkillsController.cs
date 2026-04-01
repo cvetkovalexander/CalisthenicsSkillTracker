@@ -26,18 +26,19 @@ public class SkillsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        IEnumerable<ListTableItemViewModel> allSkills 
-            = await this._outputService.GetAllSkillsAsync(null);
+        PaginationResultViewModel<ListTableItemViewModel> model = await this._outputService
+            .GetAllSkillsAsync(null, null, false);
 
-        return this.View(allSkills);
+        return this.View(model);
     }
 
     [HttpGet]
-    public async Task<IActionResult> Search(string? filter)
+    public async Task<IActionResult> Search(string? filter, string? indexName, Guid? indexId, bool isPreviousPage = false)
     {
-        IEnumerable<ListTableItemViewModel> filteredSkills = await this._outputService.GetAllSkillsAsync(filter);
+        PaginationResultViewModel<ListTableItemViewModel> filteredModel = await this._outputService
+             .GetAllSkillsAsync(indexName, indexId, isPreviousPage, filter);
 
-        return PartialView("_TablePartial", filteredSkills);
+        return PartialView("_SkillPaginationTablePartial", filteredModel);
     }
 
     [HttpGet]

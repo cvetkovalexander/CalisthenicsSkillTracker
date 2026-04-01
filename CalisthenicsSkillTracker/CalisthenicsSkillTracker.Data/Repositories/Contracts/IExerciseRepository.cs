@@ -1,4 +1,5 @@
 ﻿using CalisthenicsSkillTracker.Data.Models;
+using System.Linq.Expressions;
 
 namespace CalisthenicsSkillTracker.Data.Repositories.Contracts;
 
@@ -23,7 +24,7 @@ public interface IExerciseRepository
 
     IQueryable<Skill> GetAllSkills();
 
-    IQueryable<Exercise> GetAllExercises();
+    IQueryable<Exercise> GetAllExercises(Expression<Func<Exercise, bool>>? filterQuery = null, Expression<Func<Exercise, Exercise>>? projectionQuery = null);
 
     Task<Skill> GetSkillAsync(Guid id);
 
