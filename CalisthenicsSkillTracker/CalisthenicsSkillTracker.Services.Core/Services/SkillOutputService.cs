@@ -131,17 +131,20 @@ public class SkillOutputService : ISkillOutputService
 
         bool hasIndex = !string.IsNullOrWhiteSpace(indexName) && indexId.HasValue;
 
+        bool hasPreviousPage = isPreviousPage ? hasMoreItems : hasIndex;
+        bool hasNextPage = isPreviousPage ? hasIndex : hasMoreItems;
+
         return new PaginationResultViewModel<ListTableItemViewModel>
         {
             Items = items,
             Filter = filter,
             PageSize = pageSize,
-            HasNextPage = hasMoreItems && !isPreviousPage,
-            HasPreviousPage = isPreviousPage ? hasMoreItems : hasIndex,
-            NextIndexName = !isPreviousPage && hasMoreItems ? lastItem?.Name : null,
-            NextIndexId = !isPreviousPage && hasMoreItems ? lastItem?.Id : null,
-            PreviousIndexName = firstItem?.Name,
-            PreviousIndexId = firstItem?.Id
+            HasNextPage = hasNextPage,
+            HasPreviousPage = hasPreviousPage,
+            NextIndexName = hasNextPage ? lastItem?.Name : null,
+            NextIndexId = hasNextPage ? lastItem?.Id : null,
+            PreviousIndexName = hasPreviousPage ? firstItem?.Name : null,
+            PreviousIndexId = hasPreviousPage ? firstItem?.Id : null
         };
     }
 }
