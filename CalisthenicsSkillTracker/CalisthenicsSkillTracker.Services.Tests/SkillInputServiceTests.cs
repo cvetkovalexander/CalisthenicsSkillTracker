@@ -5,10 +5,8 @@ using CalisthenicsSkillTracker.GCommon.Exceptions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.Services.Core.Services;
 using CalisthenicsSkillTracker.ViewModels.SkillViewModels;
-using Microsoft.AspNetCore.Mvc.Rendering;
+
 using Moq;
-using Newtonsoft.Json.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CalisthenicsSkillTracker.Services.Tests;
 
@@ -28,7 +26,7 @@ public class SkillInputServiceTests
     }
 
     [Test]
-    public async Task CreateSkillProgressAsync_EntityIsSuccessfullyPersisted_DoesNotThrowException()
+    public async Task CreateSkillAsync_EntityIsSuccessfullyPersisted_DoesNotThrowException()
     {
         CreateSkillViewModel model = new CreateSkillViewModel
         {
