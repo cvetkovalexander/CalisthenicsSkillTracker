@@ -18,7 +18,7 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
     {
         private readonly IWorkoutRepository _repository;
 
-        public WorkoutService(IWorkoutRepository repository, ApplicationDbContext context)
+        public WorkoutService(IWorkoutRepository repository)
         {
             this._repository = repository;
         }
