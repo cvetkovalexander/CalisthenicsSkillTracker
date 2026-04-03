@@ -6,7 +6,7 @@ public interface ISkillProgressService
 {
     CreateSkillProgressViewModel CreateSkillProgressViewModel(string userId);
     Task<IEnumerable<ListRecordViewModel>> GetRecordsAsync(string userId);
-    Task CreateSkillProgress(CreateSkillProgressViewModel model);
+    Task CreateSkillProgressAsync(CreateSkillProgressViewModel model);
     Task DeleteSkillRecordAsync(Guid id);
 
     /* Helper methods */

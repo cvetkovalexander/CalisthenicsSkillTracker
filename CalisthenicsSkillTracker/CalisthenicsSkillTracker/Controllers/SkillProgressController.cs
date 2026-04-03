@@ -58,7 +58,7 @@ public class SkillProgressController : ControllerBase
 
         try
         {
-            await this._skillProgressService.CreateSkillProgress(model);
+            await this._skillProgressService.CreateSkillProgressAsync(model);
         }
         catch (EntityCreatePersistException ecpe)
         {
