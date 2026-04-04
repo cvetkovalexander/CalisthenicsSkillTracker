@@ -163,6 +163,8 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 Exercises = workout.WorkoutExercises.Select(we => new WorkoutExerciseDetailsViewModel
                 {
                     Id = we.Id,
+                    WorkoutId = we.WorkoutId,
+                    ExerciseId = we.ExerciseId,
                     ExerciseName = we.Exercise.Name,
                     Sets = we.Sets.Select(ws => new WorkoutSetDetailsViewModel
                     {
