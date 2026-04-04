@@ -3,7 +3,6 @@ using CalisthenicsSkillTracker.Data.Repositories.Contracts.Admin;
 using CalisthenicsSkillTracker.Services.Core.Interfaces.Admin;
 using CalisthenicsSkillTracker.ViewModels.Admin.User;
 
-using Microsoft.AspNetCore.Identity;
 
 using System.Data;
 
@@ -13,15 +12,9 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _repository;
 
-    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-
-    private readonly UserManager<ApplicationUser> _userManager;
-
-    public UserService(IUserRepository repository, RoleManager<IdentityRole<Guid>> roleManager, UserManager<ApplicationUser> userManager)
+    public UserService(IUserRepository repository)
     {
         this._repository = repository;
-        this._roleManager = roleManager;
-        this._userManager = userManager;
     }
 
     public async Task<bool> EditUserUsernameAsync(ApplicationUser user, string newUsername)
@@ -29,16 +22,16 @@ public class UserService : IUserService
         user.UserName = newUsername;
         user.NormalizedUserName = newUsername.ToUpper();
 
-        IdentityResult result = await this._userManager.UpdateAsync(user);
+        bool result = await this._repository.UpdateApplicationUserAsync(user);
 
-        return result.Succeeded;
+        return result;
     }
 
     public async Task<bool> DeleteUserAsync(ApplicationUser user)
     {
-        IdentityResult result = await this._userManager.DeleteAsync(user);
+        bool result = await this._repository.DeleteApplicationUserAsync(user);
 
-        return result.Succeeded;
+        return result;
     }
 
     public async Task<IEnumerable<ManageUserViewModel>> GetAllManageableUsersAsync(string adminUserId)
@@ -62,33 +55,30 @@ public class UserService : IUserService
     }
 
     public async Task<ApplicationUser?> GetUserByIdAsync(string userId)
-        => await this._userManager.FindByIdAsync(userId);
+        => await this._repository.GetApplicationUserAsync(userId);
 
     public async Task<bool> RoleAddedSuccessfullyAsync(ApplicationUser user, string role)
     {
-        IdentityResult result = await this._userManager.AddToRoleAsync(user, role);
+        bool result = await this._repository.AddRoleToUserAsync(user, role);
 
-        return result.Succeeded;
+        return result;
     }
 
     public async Task<bool> RoleAlreadyAssignedAsync(ApplicationUser user, string role)
-        => await this._userManager.IsInRoleAsync(user, role);
+        => await this._repository.RoleAlreadyAssignedAsync(user, role);
 
     public async Task<bool> RoleExistsAsync(string role)
-        => await this._roleManager.RoleExistsAsync(role);
+        => await this._repository   .RoleExistsAsync(role);
 
     public async Task<bool> RoleRemovedSuccessfullyAsync(ApplicationUser user, string role)
     {
-        IdentityResult result = await this._userManager.RemoveFromRoleAsync(user, role);
+        bool result = await this._repository.RemoveRoleFromUserAsync(user, role);
 
-        return result.Succeeded;
+        return result;
     }
 
     public async Task<bool> UserExistsAsync(string userId)
-    {
-        ApplicationUser? user = await this._userManager.FindByIdAsync(userId);
-        return user is not null;
-    }
+        => await this._repository.UserExistsAsync(userId);
 
     public EditUsernameViewModel CreateEditUsernameViewModel(string userId, string username)
         => new EditUsernameViewModel
