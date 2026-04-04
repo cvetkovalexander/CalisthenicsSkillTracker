@@ -14,4 +14,12 @@ public static class ApplicationConstants
     public const string WarningTempDataKey = "WarningMessage";
     public const string InfoTempDataKey = "InfoMessage";
     public const string SuccessTempDataKey = "SuccessMessage";
+
+    public static class EnumKeys
+    {
+        public const string MeasurementKey = "Measurement";
+        public const string DifficultyKey = "Difficulty";
+        public const string SkillTypeKey = "SkillType";
+        public const string CategoryKey = "Category";
+    }
 }
