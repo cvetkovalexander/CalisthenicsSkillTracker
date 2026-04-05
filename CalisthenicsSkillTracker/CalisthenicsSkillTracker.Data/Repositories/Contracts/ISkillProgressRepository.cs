@@ -19,5 +19,5 @@ public interface ISkillProgressRepository
 
     Task<bool> SkillExistsAsync(Guid id);
 
-    Task<SkillProgress> GetSkillRecord(Guid id);
+    Task<SkillProgress> GetSkillRecordAsync(Guid id);
 }

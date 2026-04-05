@@ -1,5 +1,4 @@
-﻿using CalisthenicsSkillTracker.Data;
-using CalisthenicsSkillTracker.Data.Models;
+﻿using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Models.Enums;
 using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using CalisthenicsSkillTracker.GCommon.Exceptions;
@@ -20,7 +19,7 @@ public class SkillProgressService : ISkillProgressService
         this._repository = repository;
     }
 
-    public async Task CreateSkillProgress(CreateSkillProgressViewModel model)
+    public async Task CreateSkillProgressAsync(CreateSkillProgressViewModel model)
     {
         SkillProgress record = new SkillProgress
         {
@@ -53,7 +52,7 @@ public class SkillProgressService : ISkillProgressService
     public async Task DeleteSkillRecordAsync(Guid id)
     {
         SkillProgress skillProgress = await this._repository
-            .GetSkillRecord(id);
+            .GetSkillRecordAsync(id);
 
         bool successfulDelete = await this._repository.HardDeleteSkillProgressAsync(skillProgress);
 

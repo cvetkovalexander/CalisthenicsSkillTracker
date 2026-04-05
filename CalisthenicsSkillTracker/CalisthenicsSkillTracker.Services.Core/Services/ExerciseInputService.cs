@@ -5,6 +5,8 @@ using CalisthenicsSkillTracker.GCommon.Exceptions;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels.ExerciseViewModels;
 using CalisthenicsSkillTracker.ViewModels.Interfaces;
+using static CalisthenicsSkillTracker.GCommon.ApplicationConstants.EnumKeys;
+
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,14 +14,6 @@ namespace CalisthenicsSkillTracker.Services.Core.Services;
 
 public class ExerciseInputService : IExerciseInputService
 {
-    private const string MeasurementKey = "Measurement";
-
-    private const string CategoryKey = "Category";
-
-    private const string SkillTypeKey = "SkillType";
-
-    private const string DifficultyKey = "Difficulty";
-
     private readonly IExerciseRepository _repository;
 
     public ExerciseInputService(IExerciseRepository repository)

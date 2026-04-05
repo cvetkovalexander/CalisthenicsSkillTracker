@@ -35,6 +35,7 @@ public class SkillProgressRepository : BaseRepository, ISkillProgressRepository
     public IQueryable<SkillProgress> GetUserSkillProgressRecords(string userId)
         => this.Context
             .SkillProgressRecords
+            .AsNoTracking()
             .Where(sp => sp.UserId.ToString() == userId);
 
     public IQueryable<Skill> GetAllSkills()
@@ -52,8 +53,8 @@ public class SkillProgressRepository : BaseRepository, ISkillProgressRepository
             .Skills
             .AnyAsync(s => s.Id == id);
 
-    public Task<SkillProgress> GetSkillRecord(Guid id)
-        => this.Context
+    public async Task<SkillProgress> GetSkillRecordAsync(Guid id)
+        => await this.Context
             .SkillProgressRecords
             .AsNoTracking()
             .SingleAsync(sp => sp.Id == id);
