@@ -14,11 +14,21 @@ public interface IExerciseRepository
 
     Task<bool> HardDeleteExerciseAsync(Exercise exercise);
 
+    Task<ApplicationUser> GetUserWithFavoriteExercisesAsync(Guid userId);
+
+    Task<HashSet<Guid>> GetUserFavoriteExercises(Guid userId);
+
+    Task<bool> RemoveExerciseFromFavorites(Exercise exercise, ApplicationUser user);
+
+    Task<bool> AddExerciseToFavorites(Exercise exercise, ApplicationUser user);
+
     Task<bool> ExerciseNameExistsAsync(string name);
 
     string RemoveWhitespaces(string input);
 
     Task<Exercise> GetExerciseByIdAsync(Guid id);
+
+    Task<Exercise> GetTrackedExerciseByIdAsync(Guid id);
 
     Task<bool> ExerciseNameExcludingCurrentExistsAsync(Guid id, string name);
 

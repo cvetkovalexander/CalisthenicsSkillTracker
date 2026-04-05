@@ -38,7 +38,6 @@ public class ExerciseInputService : IExerciseInputService
         {
             Skill skill = await this._repository.GetSkillAsync(Guid.Parse(model.SkillId!));
             exercise.Skills.Add(skill);
-            skill.Exercises.Add(exercise);
             isAdded = true;
         }
 
@@ -81,6 +80,30 @@ public class ExerciseInputService : IExerciseInputService
         this.FetchEnums(model);
 
         return model;
+    }
+
+    public async Task<bool> ToggleFavoriteAsync(Guid exerciseId, Guid userId)
+    {
+        ApplicationUser user = await this._repository.GetUserWithFavoriteExercisesAsync(userId);
+        Exercise exercise = await this._repository.GetTrackedExerciseByIdAsync(exerciseId);
+
+        Exercise? existingFavorite = user.FavoriteExercises
+            .FirstOrDefault(e => e.Id == exerciseId);
+
+        if (existingFavorite is not null)
+        {
+            bool removed = await this._repository.RemoveExerciseFromFavorites(exercise, user);
+            if (!removed)
+                throw new EntityFavoritePersistException();
+
+            return false;
+        }
+
+        bool added = await this._repository.AddExerciseToFavorites(exercise, user);
+        if (!added)
+            throw new EntityFavoritePersistException();
+
+        return true;
     }
 
     public void FetchEnums(IExerciseViewModel model)

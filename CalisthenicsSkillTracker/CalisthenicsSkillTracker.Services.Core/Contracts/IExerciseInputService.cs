@@ -12,9 +12,9 @@ public interface IExerciseInputService
     Task<CreateExerciseViewModel> CreateExerciseViewModelWithEnumsAsync();
     Task EditExerciseDataAsync(EditExerciseViewModel model);
     Task DeleteExerciseAsync(Guid id);
+    Task<bool> ToggleFavoriteAsync(Guid exerciseId, Guid userId);
 
     /* Helper methods */
-
     List<SelectListItem> FetchSelectedEnum(string key);
     Task<bool> ExerciseNameExcludingCurrentExistsAsync(Guid id, string name);
     Task<bool> ExerciseNameExistsAsync(string name);

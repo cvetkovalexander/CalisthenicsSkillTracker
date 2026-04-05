@@ -17,7 +17,7 @@ public class ExerciseOutputService : IExerciseOutputService
         this._repository = repository;
     }
 
-    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllExercisesAsync(string? indexName, Guid? indexId, bool isPreviousPage, string? filter = null, int pageSize = DefaultPageSize)
+    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllExercisesAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, int pageSize = DefaultPageSize)
     {
         IQueryable<Exercise> query = this._repository.GetAllExercises();
 
@@ -28,6 +28,14 @@ public class ExerciseOutputService : IExerciseOutputService
         IQueryable<ListTableItemViewModel> projectedQuery = ProjectExercises(query);
 
         List<ListTableItemViewModel> items = await GetPagedExercisesAsync(projectedQuery, pageSize, isPreviousPage);
+
+        if (userId.HasValue) 
+        {
+            HashSet<Guid> favoritedExerciseIds = await this._repository.GetUserFavoriteExercises(userId.Value);
+
+            foreach (ListTableItemViewModel item in items)
+                item.IsFavorited = favoritedExerciseIds.Contains(item.Id);
+        }
 
         return CreatePaginationViewModel(items, filter, pageSize, indexName, indexId, isPreviousPage);
     }

@@ -3,6 +3,10 @@
 @model PaginationResultViewModel<ListTableItemViewModel>
 @inject ISlugGenerator slugGenerator
 
+@{
+	string? controllerName = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+
 <div class="skills-table-wrapper">
     <div class="table-responsive">
         <table class="table skills-table mb-0">
@@ -16,13 +20,13 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var skill in Model.Items)
+                @foreach (var item in Model.Items)
                 {
                     <tr>
                         <td class="photo-cell">
-                            @if (!string.IsNullOrWhiteSpace(skill.ImageUrl))
+                            @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
                             {
-                                <img src="@skill.ImageUrl" alt="@skill.Name" class="skill-photo" />
+                                <img src="@item.ImageUrl" alt="@item.Name" class="skill-photo" />
                             }
                             else
                             {
@@ -31,16 +35,16 @@
                         </td>
 
                         <td class="name-cell">
-                            <span class="skill-name">@skill.Name</span>
+                            <span class="skill-name">@item.Name</span>
                         </td>
 
                         <td class="description-cell">
-                            @skill.Description
+                            @item.Description
                         </td>
 
                         <td class="difficulty-cell">
-                            <span class="difficulty-badge difficulty-@skill.Difficulty.ToString().ToLower()">
-                                @skill.Difficulty
+                            <span class="difficulty-badge difficulty-@item.Difficulty.ToString().ToLower()">
+                                @item.Difficulty
                             </span>
                         </td>
 
@@ -48,17 +52,28 @@
                             <div class="action-buttons">
                                 <a class="table-action-btn details-btn"
                                        asp-action="Details"
-                                       asp-route-id="@skill.Id"
-                                       asp-route-slug="@slugGenerator.GenerateSlug(skill.Name)"
+                                       asp-route-id="@item.Id"
+                                       asp-route-slug="@slugGenerator.GenerateSlug(item.Name)"
                                        title="Details">
                                     <i class="bi bi-search"></i>
                                 </a>
+
+                                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                {
+                                    <a href="#"
+                                           class="table-action-btn favorite-btn @(item.IsFavorited ? "favorited" : "")"
+                                           data-url="@Url.Action("ToggleFavorite", "Exercises", new { id = item.Id })"
+                                           data-is-favorited="@item.IsFavorited.ToString().ToLower()"
+                                           title="Favorite">
+                                        <i class="bi @(item.IsFavorited ? "bi-star-fill" : "bi-star")"></i>
+                                    </a>
+                                }
 
                                 @if (User.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Moderator")))
                                 {
                                     <a class="table-action-btn edit-btn"
                                            asp-action="Edit"
-                                           asp-route-id="@skill.Id"
+                                           asp-route-id="@item.Id"
                                            title="Edit">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
@@ -73,7 +88,7 @@
 </div>
 
 <style>
-        .action-buttons {
+    .action-buttons {
         display: flex;
         align-items: center;
         gap: 1rem;
@@ -105,12 +120,21 @@
         background-color: #22c55e;
     }
 
+    .action-buttons .favorite-btn i {
+        color: #1f2937;
+    }
+
     .action-buttons .edit-btn {
         background-color: #0ea5e9;
     }
 
     .action-buttons .table-action-btn:hover {
         transform: translateY(-2px);
+    }
+
+    .action-buttons .favorite-btn:hover {
+        background-color: #eab308;
+        box-shadow: 0 8px 18px rgba(250, 204, 21, 0.35);
     }
 
     .action-buttons .details-btn:hover {
@@ -121,5 +145,15 @@
     .action-buttons .edit-btn:hover {
         background-color: #0284c7;
         box-shadow: 0 8px 18px rgba(14, 165, 233, 0.35);
+    }
+
+    .favorite-btn.favorited {
+        background-color: #eab308;
+        box-shadow: 0 8px 18px rgba(250, 204, 21, 0.4);
+    }
+
+    .favorite-btn:not(.favorited) {
+        background-color: #facc15;
+        opacity: 0.85;
     }
 </style>
