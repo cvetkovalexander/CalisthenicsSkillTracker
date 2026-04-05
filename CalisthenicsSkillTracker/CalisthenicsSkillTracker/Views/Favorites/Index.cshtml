@@ -1,0 +1,190 @@
+﻿@using CalisthenicsSkillTracker.Infrastructure.Utilities.Contracts
+@using CalisthenicsSkillTracker.ViewModels.Favorites
+
+@model FavoritesViewModel
+@inject ISlugGenerator slugGenerator
+
+@{
+    ViewData["Title"] = "Favorites";
+}
+
+<div class="favorites-page">
+    <div class="favorites-header">
+        <h1 class="favorites-title">Favorites</h1>
+        <p class="favorites-title">Your saved exercises and skills in one place.</p>
+    </div>
+
+    <section class="favorites-section" data-empty-message="You have no favorite exercises yet.">
+        <div class="section-header">
+            <h2 class="section-title">Favorite Exercises</h2>
+            <span class="section-count">@Model.FavoriteExercises.Count</span>
+        </div>
+
+        @if (!Model.FavoriteExercises.Any())
+        {
+            <div class="empty-state">
+                <p class="empty-state-text">You have no favorite exercises yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="favorites-grid">
+                @foreach (var exercise in Model.FavoriteExercises)
+                {
+                    <div class="favorite-card" data-favorite-item="exercise">
+                        <div class="favorite-card-image-wrapper">
+                            @if (!string.IsNullOrWhiteSpace(exercise.ImageUrl))
+                            {
+                                <img src="@exercise.ImageUrl" alt="@exercise.Name" class="favorite-card-image" />
+                            }
+                            else
+                            {
+                                <div class="favorite-card-placeholder">No image</div>
+                            }
+                        </div>
+
+                        <div class="favorite-card-content">
+                            <h3 class="favorite-card-title">@exercise.Name</h3>
+
+                            <div class="favorite-card-actions">
+                                <a asp-controller="Exercises"
+                                       asp-action="Details"
+                                       asp-route-id="@exercise.Id"
+                                       asp-route-slug="@slugGenerator.GenerateSlug(exercise.Name)"
+                                       class="favorite-action-btn details-btn">
+                                    Details
+                                </a>
+
+                                <a href="#"
+                                       class="favorite-action-btn remove-btn remove-favorite-btn"
+                                       data-url="@Url.Action("ToggleFavorite", "Exercises", new { id = exercise.Id })">
+                                    Remove
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+
+    <section class="favorites-section" data-empty-message="You have no favorite skills yet.">
+        <div class="section-header">
+            <h2 class="section-title">Favorite Skills</h2>
+            <span class="section-count">@Model.FavoriteSkills.Count</span>
+        </div>
+
+        @if (!Model.FavoriteSkills.Any())
+        {
+            <div class="empty-state">
+                <p class="empty-state-text">You have no favorite skills yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="favorites-grid">
+                @foreach (var skill in Model.FavoriteSkills)
+                {
+                    <div class="favorite-card" data-favorite-item="skill">
+                        <div class="favorite-card-image-wrapper">
+                            @if (!string.IsNullOrWhiteSpace(skill.ImageUrl))
+                            {
+                                <img src="@skill.ImageUrl" alt="@skill.Name" class="favorite-card-image" />
+                            }
+                            else
+                            {
+                                <div class="favorite-card-placeholder">No image</div>
+                            }
+                        </div>
+
+                        <div class="favorite-card-content">
+                            <h3 class="favorite-card-title">@skill.Name</h3>
+
+                            <div class="favorite-card-actions">
+                                <a asp-controller="Skills"
+                                       asp-action="Details"
+                                       asp-route-id="@skill.Id"
+                                       asp-route-slug="@slugGenerator.GenerateSlug(skill.Name)"
+                                       class="favorite-action-btn details-btn">
+                                    Details
+                                </a>
+
+                                <a href="#"
+                                       class="favorite-action-btn remove-btn remove-favorite-btn"
+                                       data-url="@Url.Action("ToggleFavorite", "Skills", new { id = skill.Id })">
+                                    Remove
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+</div>
+
+<form id="antiForgeryForm" method="post">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+    <script src="~/js/favorites-delete.js" asp-append-version="true"></script>
+}
+
+<style>
+    .favorite-action-btn {
+        flex: 1 1 0;
+        min-width: 110px;
+        text-align: center;
+        text-decoration: none;
+        padding: 0.7rem 1rem;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .favorite-action-btn:hover {
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .details-btn {
+        background-color: #22c55e;
+        color: #ffffff;
+        box-shadow: 0 8px 18px rgba(34, 197, 94, 0.22);
+    }
+
+    .details-btn:hover {
+        background-color: #16a34a;
+        color: #ffffff;
+        box-shadow: 0 10px 22px rgba(34, 197, 94, 0.3);
+    }
+
+    .remove-btn {
+        background-color: #facc15;
+        color: #1f2937;
+        box-shadow: 0 8px 18px rgba(250, 204, 21, 0.22);
+    }
+
+    .remove-btn:hover {
+        background-color: #eab308;
+        color: #111827;
+        box-shadow: 0 10px 22px rgba(250, 204, 21, 0.3);
+    }
+
+    .empty-state {
+        padding: 2rem;
+        border-radius: 18px;
+        background: rgba(15, 23, 42, 0.72);
+        border: 1px dashed rgba(148, 163, 184, 0.25);
+        text-align: center;
+    }
+
+    .empty-state-text {
+        margin: 0;
+        font-size: 1rem;
+        color: #cbd5e1;
+    }
+</style>
