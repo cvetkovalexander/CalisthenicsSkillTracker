@@ -207,6 +207,7 @@ public class ExercisesController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleFavorite(Guid id) 
     {
         if (!await this._outputService.ExerciseExistsAsync(id))

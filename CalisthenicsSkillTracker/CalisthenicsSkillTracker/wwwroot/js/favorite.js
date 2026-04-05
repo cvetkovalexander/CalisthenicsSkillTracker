@@ -1,17 +1,20 @@
-﻿console.log("favorites.js loaded");
-
-$(document).on("click", ".favorite-btn", function (e) {
+﻿$(document).on("click", ".favorite-btn", function (e) {
     e.preventDefault();
 
     const $btn = $(this);
     const url = $btn.data("url");
+    const token = $("#antiForgeryForm input[name='__RequestVerificationToken']").val();
 
     $.ajax({
         url: url,
         type: "POST",
+        dataType: "json",
+        headers: {
+            "RequestVerificationToken": token
+        },
         success: function (response) {
             if (!response || !response.success) {
-                console.error("Favorite toggle failed");
+                console.error("Favorite toggle failed", response);
                 return;
             }
 
@@ -28,8 +31,10 @@ $(document).on("click", ".favorite-btn", function (e) {
                 $btn.attr("data-is-favorited", "false");
             }
         },
-        error: function () {
-            console.error("Error toggling favorite");
+        error: function (xhr, status, error) {
+            console.error("AJAX error:", status, error);
+            console.error("status code:", xhr.status);
+            console.error("response text:", xhr.responseText);
         }
     });
 });
