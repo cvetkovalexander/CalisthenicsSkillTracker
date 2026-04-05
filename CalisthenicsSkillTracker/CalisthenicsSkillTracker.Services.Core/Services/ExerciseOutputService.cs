@@ -58,16 +58,16 @@ public class ExerciseOutputService : IExerciseOutputService
     public async Task<bool> ExerciseExistsAsync(Guid id)
         => await this._repository.ExerciseExistsAsync(id);
 
-    private static IQueryable<Exercise> ApplyFiltering(IQueryable<Exercise> query, string? filter)
+    public static IQueryable<Exercise> ApplyFiltering(IQueryable<Exercise> query, string? filter)
     {
         if (!string.IsNullOrWhiteSpace(filter))
         {
-            query = query.Where(e => EF.Functions.Like(e.Name, $"%{filter}%"));
+            query = query.Where(e => e.Name.Contains(filter));
         }
         return query;
     }
 
-    private static IQueryable<Exercise> ApplyOrdering(IQueryable<Exercise> query, bool isPreviousPage)
+    public static IQueryable<Exercise> ApplyOrdering(IQueryable<Exercise> query, bool isPreviousPage)
     {
         if (isPreviousPage)
             query = query.OrderByDescending(e => e.Name).ThenByDescending(e => e.Id);
@@ -77,7 +77,7 @@ public class ExerciseOutputService : IExerciseOutputService
         return query;
     }
 
-    private static IQueryable<Exercise> ApplyPagination(IQueryable<Exercise> query, string? indexName, Guid? indexId, bool isPreviousPage)
+    public static IQueryable<Exercise> ApplyPagination(IQueryable<Exercise> query, string? indexName, Guid? indexId, bool isPreviousPage)
     {
         if (string.IsNullOrWhiteSpace(indexName) || !indexId.HasValue)
             return query;
@@ -94,7 +94,7 @@ public class ExerciseOutputService : IExerciseOutputService
         return query;
     }
 
-    private static IQueryable<ListTableItemViewModel> ProjectExercises(IQueryable<Exercise> query)
+    public static IQueryable<ListTableItemViewModel> ProjectExercises(IQueryable<Exercise> query)
     {
         return query.Select(e => new ListTableItemViewModel
         {
@@ -106,7 +106,7 @@ public class ExerciseOutputService : IExerciseOutputService
         });
     }
 
-    private async Task<List<ListTableItemViewModel>> GetPagedExercisesAsync(IQueryable<ListTableItemViewModel> query, int pageSize, bool isPreviousPage)
+    public async Task<List<ListTableItemViewModel>> GetPagedExercisesAsync(IQueryable<ListTableItemViewModel> query, int pageSize, bool isPreviousPage)
     {
         List<ListTableItemViewModel> exercises = await query
             .Take(pageSize + 1)
@@ -121,7 +121,7 @@ public class ExerciseOutputService : IExerciseOutputService
         return exercises;
     }
 
-    private static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage)
+    public static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage)
     {
         bool hasMoreItems = items.Count > pageSize;
 
