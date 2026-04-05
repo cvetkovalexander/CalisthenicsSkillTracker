@@ -128,7 +128,7 @@ public class ExerciseRepository : BaseRepository, IExerciseRepository
         user.FavoriteExercises.Add(exercise);
         int resultCount = await this.SaveChangesAsync();
 
-        return true;
+        return resultCount == 1;
     }
 
     public async Task<HashSet<Guid>> GetUserFavoriteExercises(Guid userId)

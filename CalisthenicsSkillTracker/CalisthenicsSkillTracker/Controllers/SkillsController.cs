@@ -10,7 +10,7 @@ using static CalisthenicsSkillTracker.GCommon.OutputMessages.EntityMessages;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
-public class SkillsController : Controller
+public class SkillsController : ControllerBase
 {
     private readonly ISkillOutputService _outputService;
     private readonly ISkillInputService _inputService;
@@ -26,8 +26,10 @@ public class SkillsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
+        Guid? userId = Guid.TryParse(this.GetUserId(), out Guid parsedUserId) ? parsedUserId : null;
+
         PaginationResultViewModel<ListTableItemViewModel> model = await this._outputService
-            .GetAllSkillsAsync(null, null, false);
+            .GetAllSkillsAsync(null, null, false, userId);
 
         return this.View(model);
     }
@@ -35,8 +37,10 @@ public class SkillsController : Controller
     [HttpGet]
     public async Task<IActionResult> Search(string? filter, string? indexName, Guid? indexId, bool isPreviousPage = false)
     {
+        Guid? userId = Guid.TryParse(this.GetUserId(), out Guid parsedUserId) ? parsedUserId : null;
+
         PaginationResultViewModel<ListTableItemViewModel> filteredModel = await this._outputService
-             .GetAllSkillsAsync(indexName, indexId, isPreviousPage, filter);
+             .GetAllSkillsAsync(indexName, indexId, isPreviousPage, userId, filter);
 
         return PartialView("_SkillPaginationTablePartial", filteredModel);
     }
@@ -192,5 +196,30 @@ public class SkillsController : Controller
         TempData[SuccessTempDataKey] = string.Format(EntitySuccessfullyDeleted, nameof(Skill));
 
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ToggleFavorite(Guid id)
+    {
+        if (!await this._outputService.SkillExistsAsync(id))
+            return this.NotFound();
+
+        if (!Guid.TryParse(this.GetUserId(), out Guid userId))
+            return this.Unauthorized();
+
+        try
+        {
+            bool isFavorited = await this._inputService.ToggleFavoriteAsync(id, userId);
+            return Json(new { success = true, isFavorited = isFavorited });
+        }
+        catch (EntityFavoritePersistException efpe)
+        {
+            this._logger.LogError(efpe, UnexpectedErrorMessage);
+
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+
+            return Json(new { success = false });
+        }
     }
 }

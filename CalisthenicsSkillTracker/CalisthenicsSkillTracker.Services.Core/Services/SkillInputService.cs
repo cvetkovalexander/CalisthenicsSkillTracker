@@ -93,6 +93,30 @@ public class SkillInputService : ISkillInputService
             throw new EntityDeleteException();
     }
 
+    public async Task<bool> ToggleFavoriteAsync(Guid skillId, Guid userId)
+    {
+        ApplicationUser user = await this._repository.GetUserWithFavoriteSkillsAsync(userId);
+        Skill skill = await this._repository.GetTrackedSkillByIdAsync(skillId);
+
+        Skill? existingFavorite = user.FavoriteSkills
+            .FirstOrDefault(s => s.Id == skillId);
+
+        if (existingFavorite is not null)
+        {
+            bool removed = await this._repository.RemoveSkillFromFavorites(skill, user);
+            if (!removed)
+                throw new EntityFavoritePersistException();
+
+            return false;
+        }
+
+        bool added = await this._repository.AddSkillToFavorites(skill, user);
+        if (!added)
+            throw new EntityFavoritePersistException();
+
+        return true;
+    }
+
     /* Helper methods */
     public List<SelectListItem> FetchSelectedEnum(string key)
     {

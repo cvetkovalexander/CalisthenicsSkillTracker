@@ -1,4 +1,4 @@
-﻿    using CalisthenicsSkillTracker.Data.Models;
+﻿using CalisthenicsSkillTracker.Data.Models;
 using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -85,4 +85,43 @@ public class SkillRepository : BaseRepository, ISkillRepository
 
     public string RemoveWhitespaces(string input)
         => string.Concat(input.Where(c => !char.IsWhiteSpace(c)));
+
+    public async Task<bool> RemoveSkillFromFavorites(Skill skill, ApplicationUser user)
+    {
+        user.FavoriteSkills.Remove(skill);
+        int resultCount = await this.SaveChangesAsync();
+
+        return resultCount == 1;
+    }
+
+    public async Task<bool> AddSkillToFavorites(Skill skill, ApplicationUser user)
+    {
+        user.FavoriteSkills.Add(skill);
+        int resultCount = await this.SaveChangesAsync();
+
+        return resultCount == 1;
+    }
+
+    public async Task<ApplicationUser> GetUserWithFavoriteSkillsAsync(Guid userId)
+        => await this.Context
+            .Users
+            .Include(u => u.FavoriteSkills)
+            .SingleAsync(u => u.Id == userId);
+
+    public async Task<Skill> GetTrackedSkillByIdAsync(Guid id)
+        => await this.Context
+            .Skills
+            .SingleAsync(s => s.Id == id);
+
+    public async Task<HashSet<Guid>> GetUserFavoriteSkills(Guid userId)
+    {
+        List<Guid> ids = await this.Context
+            .Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.FavoriteSkills.Select(e => e.Id))
+            .ToListAsync();
+
+        return ids.ToHashSet();
+    }
 }

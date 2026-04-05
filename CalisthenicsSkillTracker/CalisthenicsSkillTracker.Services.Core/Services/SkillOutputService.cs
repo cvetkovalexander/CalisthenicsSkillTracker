@@ -19,7 +19,7 @@ public class SkillOutputService : ISkillOutputService
         this._repository = repository;
     }
 
-    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllSkillsAsync(string? indexName, Guid? indexId, bool isPreviousPage, string? filter = null, int pageSize = DefaultPageSize)
+    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllSkillsAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, int pageSize = DefaultPageSize)
     {
         IQueryable<Skill> query = this._repository.GetAllSkills();
 
@@ -30,6 +30,14 @@ public class SkillOutputService : ISkillOutputService
         IQueryable<ListTableItemViewModel> projectedQuery = ProjectSkills(query);
 
         List<ListTableItemViewModel> items = await GetPagedSkillsAsync(projectedQuery, pageSize, isPreviousPage);
+
+        if (userId.HasValue)
+        {
+            HashSet<Guid> favoritedSkillsIds = await this._repository.GetUserFavoriteSkills(userId.Value);
+
+            foreach (ListTableItemViewModel item in items)
+                item.IsFavorited = favoritedSkillsIds.Contains(item.Id);
+        }
 
         return CreatePaginationViewModel(items, filter, pageSize, indexName, indexId, isPreviousPage);
     }

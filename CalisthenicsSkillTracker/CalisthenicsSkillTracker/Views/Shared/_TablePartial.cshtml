@@ -62,7 +62,7 @@
                                 {
                                     <a href="#"
                                            class="table-action-btn favorite-btn @(item.IsFavorited ? "favorited" : "")"
-                                           data-url="@Url.Action("ToggleFavorite", "Exercises", new { id = item.Id })"
+                                           data-url="@Url.Action("ToggleFavorite", controllerName, new { id = item.Id })"
                                            data-is-favorited="@item.IsFavorited.ToString().ToLower()"
                                            title="Favorite">
                                         <i class="bi @(item.IsFavorited ? "bi-star-fill" : "bi-star")"></i>
