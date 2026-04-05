@@ -27,11 +27,13 @@ public class Exercise
     [Required]
     public Measurement MeasurementType { get; set; }
 
-    public virtual ICollection<Skill> Skills { get; set; } 
-        = new List<Skill>();
-
     [Required]
     public SkillType ExerciseType { get; set; }
 
     public Category Category { get; set; }
+    public virtual ICollection<Skill> Skills { get; set; } 
+        = new List<Skill>();
+
+    public virtual ICollection<ApplicationUser> FavoritedByUsers { get; set; }
+        = new List<ApplicationUser>();
 }

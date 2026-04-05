@@ -25,4 +25,10 @@ public class ApplicationUser : IdentityUser<Guid>
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
         = new List<ApplicationUserRole>();
 
+    public virtual ICollection<Exercise> FavoriteExercises { get; set; }
+        = new List<Exercise>();
+
+    public virtual ICollection<Skill> FavoriteSkills { get; set; }
+        = new List<Skill>();
+
 }
