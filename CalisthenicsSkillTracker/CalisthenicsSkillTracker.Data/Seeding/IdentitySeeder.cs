@@ -55,6 +55,7 @@ public class IdentitySeeder : IIdentitySeeder
             {
                 UserName = email,
                 Email = email,
+                EmailConfirmed = true,
                 FullName = "Admin User",
                 DateOfBirth = DateTime.Now.AddYears(-18)
             };
