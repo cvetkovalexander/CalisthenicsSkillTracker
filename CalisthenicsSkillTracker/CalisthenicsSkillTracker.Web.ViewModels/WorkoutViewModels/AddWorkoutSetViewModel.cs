@@ -27,13 +27,16 @@ public class AddWorkoutSetViewModel
 
     public Progression? Progression { get; set; }
 
-    public List<SelectListItem> Progressions { get; set; } 
+    public List<SelectListItem> Progressions { get; set; }
         = new List<SelectListItem>();
 
     [MinLength(NotesMinLength)]
     [MaxLength(NotesMaxLength)]
     public string? Notes { get; set; }
 
-    public List<SelectListItem> Exercises { get; set; } 
+    public List<SelectListItem> Exercises { get; set; }
         = new List<SelectListItem>();
+
+    public Dictionary<Guid, string> ExerciseMeasurementTypes { get; set; }
+        = new Dictionary<Guid, string>();
 }

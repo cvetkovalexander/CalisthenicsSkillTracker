@@ -67,6 +67,7 @@ public class WorkoutRepository : BaseRepository, IWorkoutRepository
     {
         return await this.Context
             .WorkoutExercises
+            .Include(we => we.Exercise)
             .FirstAsync(we => we.WorkoutId == workoutId && we.Id == workoutExerciseId);
     }
 

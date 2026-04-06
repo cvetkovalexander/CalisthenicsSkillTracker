@@ -6,6 +6,7 @@ using static CalisthenicsSkillTracker.GCommon.OutputMessages.EntityMessages;
 using static CalisthenicsSkillTracker.GCommon.ApplicationConstants;
 
 using Microsoft.AspNetCore.Mvc;
+using CalisthenicsSkillTracker.Data.Models.Enums;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
@@ -174,15 +175,31 @@ public class WorkoutsController : ControllerBase
             return this.NotFound();
 
         model.Exercises = await this._workoutService.GetWorkoutExercisesAsync(model.WorkoutId);
+        model.Progressions = this._workoutService.FetchProgressions();
+        model.ExerciseMeasurementTypes = this._workoutService.FetchWorkoutMeasurementTypes(model.WorkoutId);
 
         if (!await this._workoutService.WorkoutExerciseExistsAsync(model.WorkoutId, model.WorkoutExerciseId)) 
             ModelState.AddModelError(nameof(model.WorkoutExerciseId), "Invalid workout exercise id!");
 
-        if (!ModelState.IsValid) 
-            return this.View(model);
-
-
         WorkoutExercise workoutExercise = await this._workoutService.GetWorkoutExerciseAsync(model.WorkoutId, model.WorkoutExerciseId);
+
+        if (workoutExercise.Exercise.MeasurementType == Measurement.Repetitions)
+        {
+            model.Duration = null;
+
+            if (!model.Repetitions.HasValue)
+                ModelState.AddModelError(nameof(model.Repetitions), "Repetitions are required for this exercise.");
+        }
+        else if (workoutExercise.Exercise.MeasurementType == Measurement.Duration)
+        {
+            model.Repetitions = null;
+
+            if (!model.Duration.HasValue)
+                ModelState.AddModelError(nameof(model.Duration), "Duration is required for this exercise.");
+        }
+
+        if (!ModelState.IsValid)
+            return this.View(model);
 
         try
         {

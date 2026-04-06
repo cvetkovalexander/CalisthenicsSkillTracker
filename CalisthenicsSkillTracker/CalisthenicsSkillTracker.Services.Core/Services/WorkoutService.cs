@@ -99,7 +99,8 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
             {
                 WorkoutId = workout.Id,
                 Exercises = this.FetchWorkoutExercises(workout),
-                Progressions = this.FetchProgressions()
+                Progressions = this.FetchProgressions(),
+                ExerciseMeasurementTypes = this.FetchWorkoutMeasurementTypes(workout.Id)
             };
         }
 
@@ -214,6 +215,14 @@ namespace CalisthenicsSkillTracker.Services.Core.Services
                 })
                 .ToList();
         }
+
+        public Dictionary<Guid, string> FetchWorkoutMeasurementTypes(Guid workoutId)
+            =>  this._repository.GetWorkoutWithExercisesAsync(workoutId)
+                .Result
+                .WorkoutExercises
+                .ToDictionary(
+                    we => we.Id,
+                    we => we.Exercise.MeasurementType.ToString());
 
         public async Task<List<SelectListItem>> GetWorkoutExercisesAsync(Guid id)
         {
