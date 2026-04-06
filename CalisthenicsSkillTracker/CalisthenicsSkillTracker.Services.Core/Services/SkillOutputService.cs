@@ -66,7 +66,7 @@ public class SkillOutputService : ISkillOutputService
     public async Task<bool> SkillExistsAsync(Guid id)
         => await this._repository.SkillExistsAsync(id);
 
-    private static IQueryable<Skill> ApplyFiltering(IQueryable<Skill> query, string? filter, string? difficultyFilter)
+    public static IQueryable<Skill> ApplyFiltering(IQueryable<Skill> query, string? filter, string? difficultyFilter)
     {
         if (!string.IsNullOrWhiteSpace(filter))
             query = query.Where(s => EF.Functions.Like(s.Name, $"%{filter}%"));
@@ -78,7 +78,7 @@ public class SkillOutputService : ISkillOutputService
         return query;
     }
 
-    private static IQueryable<Skill> ApplyOrdering(IQueryable<Skill> query, bool isPreviousPage, string? sortOrder) 
+    public static IQueryable<Skill> ApplyOrdering(IQueryable<Skill> query, bool isPreviousPage, string? sortOrder) 
     {
         bool isDescending = IsDescendingSort(sortOrder);
 
@@ -91,7 +91,7 @@ public class SkillOutputService : ISkillOutputService
         return query.OrderBy(s => s.Name).ThenBy(s => s.Id);
     }
 
-    private static IQueryable<Skill> ApplyPagination(IQueryable<Skill> query, string? indexName, Guid? indexId, bool isPreviousPage, string? sortOrder) 
+    public static IQueryable<Skill> ApplyPagination(IQueryable<Skill> query, string? indexName, Guid? indexId, bool isPreviousPage, string? sortOrder) 
     {
         if (string.IsNullOrWhiteSpace(indexName) || !indexId.HasValue)
             return query;
@@ -142,7 +142,7 @@ public class SkillOutputService : ISkillOutputService
         return skills;
     }
 
-    private static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage, string? sortOrder, string? difficultyFilter) 
+    public static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage, string? sortOrder, string? difficultyFilter) 
     {
         bool hasMoreItems = items.Count > pageSize;
 
