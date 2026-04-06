@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CalisthenicsSkillTracker.Controllers;
 
-public class ExercisesController : Controller
+public class ExercisesController : ControllerBase
 {
     private readonly IExerciseInputService _inputService;
     private readonly IExerciseOutputService _outputService;
@@ -24,22 +24,29 @@ public class ExercisesController : Controller
         this._logger = logger;
     }
     [HttpGet]
-    public async Task<IActionResult> Index()
+    [AllowAnonymous]
+    public async Task<IActionResult> Index(string? sortOrder = null, string? difficultyFilter = null)
     {
-        PaginationResultViewModel<ListTableItemViewModel> allExercises = await this._outputService.GetAllExercisesAsync(null, null, false);
+        Guid? userId = Guid.TryParse(this.GetUserId(), out Guid parsedUserId) ? parsedUserId : null;
+
+        PaginationResultViewModel<ListTableItemViewModel> allExercises = await this._outputService.GetAllExercisesAsync(null, null, false, userId, sortOrder, difficultyFilter);
 
         return this.View(allExercises);
     }
 
     [HttpGet]
-    public async Task<IActionResult> Search(string? filter, string? indexName, Guid? indexId, bool isPreviousPage = false)
+    [AllowAnonymous]
+    public async Task<IActionResult> Search(string? filter, string? sortOrder, string? difficultyFilter, string? indexName, Guid? indexId, bool isPreviousPage = false)
     {
-        PaginationResultViewModel<ListTableItemViewModel> filteredExercises = await this._outputService.GetAllExercisesAsync(indexName, indexId, isPreviousPage, filter);
+        Guid? userId = Guid.TryParse(this.GetUserId(), out Guid parsedUserId) ? parsedUserId : null;
+
+        PaginationResultViewModel<ListTableItemViewModel> filteredExercises = await this._outputService.GetAllExercisesAsync(indexName, indexId, isPreviousPage, userId, filter, sortOrder, difficultyFilter);
 
         return PartialView("_ExercisePaginationTablePartial", filteredExercises);
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Details(Guid id)
     {
         if (!await this._outputService.ExerciseExistsAsync(id))
@@ -200,5 +207,30 @@ public class ExercisesController : Controller
         TempData[SuccessTempDataKey] = string.Format(EntitySuccessfullyDeleted, nameof(Exercise));
 
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ToggleFavorite(Guid id) 
+    {
+        if (!await this._outputService.ExerciseExistsAsync(id))
+            return this.NotFound();
+
+        if (!Guid.TryParse(this.GetUserId(), out Guid userId))
+            return this.Unauthorized();
+
+        try
+        {
+            bool isFavorited = await this._inputService.ToggleFavoriteAsync(id, userId);
+            return Json(new { success = true, isFavorited = isFavorited });
+        }
+        catch (EntityFavoritePersistException efpe)
+        {
+            this._logger.LogError(efpe, UnexpectedErrorMessage);
+
+            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+
+            return Json(new { success = false });
+        }
     }
 }

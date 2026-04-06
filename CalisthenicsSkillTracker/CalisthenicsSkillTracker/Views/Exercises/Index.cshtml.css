@@ -1,17 +1,4 @@
-﻿table {
-    background-color: gray;
-}
-
-input[name="filter"] {
-    padding: 5px;
-    font-size: 14px;
-}
-
-button {
-    padding: 5px 10px;
-}
-
-.table-toolbar {
+﻿.table-toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;

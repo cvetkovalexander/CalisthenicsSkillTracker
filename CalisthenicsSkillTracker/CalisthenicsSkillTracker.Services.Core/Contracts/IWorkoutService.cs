@@ -30,6 +30,7 @@ public interface IWorkoutService
     List<SelectListItem> FetchProgressions();
     bool IsTimeValid(string input, out TimeSpan output);
     Task<bool> ExerciseAlreadyAddedAsync(Guid workoutId, Guid exerciseId);
+    Dictionary<Guid, string> FetchWorkoutMeasurementTypes(Guid workoutId);
     Task<bool> EntityExistsAsync<TEntity>(Expression<Func<TEntity, bool>> predicate)
         where TEntity : class;
 }

@@ -120,3 +120,8 @@
     .card-tips ul li {
         margin-bottom: 8px;
     }
+
+#repetitionsGroup,
+#durationGroup {
+    transition: all 0.2s ease;
+}

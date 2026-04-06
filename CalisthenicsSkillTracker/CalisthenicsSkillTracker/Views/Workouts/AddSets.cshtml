@@ -40,13 +40,13 @@
                 <span asp-validation-for="SetNumber" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" id="repetitionsGroup">
                 <label asp-for="Repetitions" class="form-label">Repetitions</label>
                 <input asp-for="Repetitions" type="number" class="custom-input" placeholder="e.g. 8" />
                 <span asp-validation-for="Repetitions" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" id="durationGroup">
                 <label asp-for="Duration" class="form-label">Duration</label>
                 <div class="input-group">
                     <input asp-for="Duration" type="number" class="custom-input" placeholder="seconds" />
@@ -97,16 +97,62 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
+        const exerciseMeasurementTypes = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            Model.ExerciseMeasurementTypes.ToDictionary(
+                x => x.Key.ToString(),
+                x => x.Value)));
+
         (function () {
             const dec = document.getElementById('decSet');
             const inc = document.getElementById('incSet');
             const setInput = document.querySelector('input[name="SetNumber"]');
+
+            const exerciseSelect = document.querySelector('select[name="WorkoutExerciseId"]');
+            const repetitionsGroup = document.getElementById('repetitionsGroup');
+            const durationGroup = document.getElementById('durationGroup');
+            const repetitionsInput = document.querySelector('input[name="Repetitions"]');
+            const durationInput = document.querySelector('input[name="Duration"]');
 
             function clamp(v, min, max) {
                 v = parseInt(v) || min;
                 if (v < min) return min;
                 if (v > max) return max;
                 return v;
+            }
+
+            function updateMeasurementFields() {
+                if (!exerciseSelect || !repetitionsGroup || !durationGroup || !repetitionsInput || !durationInput) {
+                    return;
+                }
+
+                const selectedExerciseId = exerciseSelect.value;
+                const measurementType = exerciseMeasurementTypes[selectedExerciseId];
+
+                if (measurementType === 'Duration') {
+                    repetitionsGroup.style.display = 'none';
+                    durationGroup.style.display = 'block';
+                    durationGroup.querySelector('label').textContent = 'Duration (seconds)';
+
+                    repetitionsInput.value = '';
+                    repetitionsInput.disabled = true;
+                    durationInput.disabled = false;
+                } else if (measurementType === 'Repetitions') {
+                    repetitionsGroup.style.display = 'block';
+                    durationGroup.style.display = 'none';
+                    repetitionsGroup.querySelector('label').textContent = 'Repetitions';
+
+                    durationInput.value = '';
+                    durationInput.disabled = true;
+                    repetitionsInput.disabled = false;
+                } else {
+                    repetitionsGroup.style.display = 'none';
+                    durationGroup.style.display = 'none';
+
+                    repetitionsInput.value = '';
+                    durationInput.value = '';
+                    repetitionsInput.disabled = true;
+                    durationInput.disabled = true;
+                }
             }
 
             if (dec && inc && setInput) {
@@ -120,19 +166,10 @@
                 });
             }
 
-            // Basic client-side bootstrap validation activation
-            (function () {
-                var forms = document.querySelectorAll('.needs-validation');
-                Array.prototype.slice.call(forms).forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            form.classList.add('was-validated');
-                        }
-                    }, false);
-                });
-            })();
+            if (exerciseSelect) {
+                exerciseSelect.addEventListener('change', updateMeasurementFields);
+                updateMeasurementFields();
+            }                
         })();
     </script>
 }

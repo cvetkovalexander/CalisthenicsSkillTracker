@@ -37,4 +37,7 @@ public class Skill
 
     public virtual ICollection<Exercise> Exercises { get; set; }
         = new List<Exercise>();
+
+    public virtual ICollection<ApplicationUser> FavoritedByUsers { get; set; }
+        = new List<ApplicationUser>();
 }

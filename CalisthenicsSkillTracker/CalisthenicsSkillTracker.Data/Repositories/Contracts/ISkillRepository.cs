@@ -14,11 +14,21 @@ public interface ISkillRepository
 
     Task<bool> HardDeleteSkillAsync(Skill skill);
 
+    Task<bool> RemoveSkillFromFavorites(Skill skill, ApplicationUser user);
+
+    Task<bool> AddSkillToFavorites(Skill skill, ApplicationUser user);
+
+    Task<ApplicationUser> GetUserWithFavoriteSkillsAsync(Guid userId);
+
+    Task<HashSet<Guid>> GetUserFavoriteSkills(Guid userId);
+
     Task<bool> SkillNameExistsAsync(string name);
 
     Task<bool> SkillNameExcludingCurrentExistsAsync(Guid id, string name);
 
     Task<Skill> GetSkillByIdAsync(Guid id);
+
+    Task<Skill> GetTrackedSkillByIdAsync(Guid id);
 
     public string RemoveWhitespaces(string input);
 

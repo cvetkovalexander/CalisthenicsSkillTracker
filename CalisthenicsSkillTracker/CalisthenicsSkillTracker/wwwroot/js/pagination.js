@@ -1,12 +1,16 @@
 ﻿export function initKeysetPagination({
     searchBoxId,
+    sortSelectId,
+    difficultySelectId,
     containerId,
     endpoint,
     pageSize = 10,
     debounceDelay = 300
 }) {
     const searchBox = document.getElementById(searchBoxId);
+    const sortSelect = document.getElementById(sortSelectId);
     const container = document.getElementById(containerId);
+    const difficultySelect = document.getElementById(difficultySelectId);
 
     if (!container) {
         return;
@@ -16,6 +20,8 @@
 
     async function loadPage(filter = '', indexName = '', indexId = '', currentPageSize = pageSize, isPreviousPage = false) {
         const params = new URLSearchParams();
+        const sortOrder = sortSelect ? sortSelect.value : '';
+        const difficultyFilter = difficultySelect ? difficultySelect.value : '';
 
         if (filter) {
             params.append('filter', filter);
@@ -27,6 +33,14 @@
 
         if (indexId) {
             params.append('indexId', indexId);
+        }
+
+        if (sortOrder) {
+            params.append('sortOrder', sortOrder);
+        }
+
+        if (difficultyFilter) {
+            params.append('difficultyFilter', difficultyFilter);
         }
 
         params.append('pageSize', currentPageSize);
@@ -49,6 +63,20 @@
             timeoutId = setTimeout(() => {
                 loadPage(searchBox.value.trim(), '', '', pageSize, false);
             }, debounceDelay);
+        });
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener('change', () => {
+            const filter = searchBox ? searchBox.value.trim() : '';
+            loadPage(filter, '', '', pageSize, false);
+        });
+    }
+
+    if (difficultySelect) {
+        difficultySelect.addEventListener('change', () => {
+            const filter = searchBox ? searchBox.value.trim() : '';
+            loadPage(filter, '', '', pageSize, false);
         });
     }
 

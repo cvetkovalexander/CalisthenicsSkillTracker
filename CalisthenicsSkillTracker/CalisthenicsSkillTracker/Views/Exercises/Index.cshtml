@@ -8,12 +8,28 @@
 
 <h1 class="text-center fw-bold">Available exercises for your workouts:</h1>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="table-toolbar">
     @if (User.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Moderator")))
     {
-        <a asp-action="Create" class="btn btn-primary">Insert new exercise</a>    
+        <a asp-action="Create" class="btn btn-primary">Insert new exercise</a>
     }
-    <input type="text" id="searchBox" class="form-control w-25" placeholder="Search exercises..." />
+
+    <div class="toolbar-right">
+        <input type="text" id="searchBox" class="form-control toolbar-input" placeholder="Search exercises..." />
+
+        <select id="difficultyFilterSelect" class="form-select toolbar-input">
+            <option value="">All Difficulties</option>
+            <option value="Beginner" selected="@(Model.DifficultyFilter == "Beginner")">Beginner</option>
+            <option value="Intermediate" selected="@(Model.DifficultyFilter == "Intermediate")">Intermediate</option>
+            <option value="Advanced" selected="@(Model.DifficultyFilter == "Advanced")">Advanced</option>
+            <option value="Expert" selected="@(Model.DifficultyFilter == "Expert")">Expert</option>
+        </select>
+
+        <select id="sortOrderSelect" class="form-select toolbar-input">
+            <option value="name-asc" selected="@(Model.SortOrder == "name-asc" || string.IsNullOrWhiteSpace(Model.SortOrder))">Name A-Z</option>
+            <option value="name-desc" selected="@(Model.SortOrder == "name-desc")">Name Z-A</option>
+        </select>
+    </div>
 </div>
 
 @if (Model == null || !Model.Items.Any())
@@ -22,6 +38,10 @@
 }
 else
 {
+    <form id="antiForgeryForm" method="post">
+        @Html.AntiForgeryToken()
+    </form>
+
     <div id="exercisesContainer">
         <partial name="_ExercisePaginationTablePartial" model="@Model" />
     </div>
@@ -33,6 +53,8 @@ else
 
         initKeysetPagination({
             searchBoxId: 'searchBox',
+            sortSelectId: 'sortOrderSelect',
+			difficultySelectId: 'difficultyFilterSelect',
             containerId: 'exercisesContainer',
             endpoint: '/Exercises/Search',
             pageSize: 5

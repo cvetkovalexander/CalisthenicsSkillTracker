@@ -62,6 +62,11 @@ public class ExerciseRepository : BaseRepository, IExerciseRepository
             .Exercises
             .AsNoTracking()
             .SingleAsync(e => e.Id == id);
+
+    public Task<Exercise> GetTrackedExerciseByIdAsync(Guid id)
+        => this.Context
+            .Exercises
+            .SingleAsync(e => e.Id == id);
     public IQueryable<Skill> GetAllSkills()
         => this.Context
             .Skills
@@ -104,4 +109,37 @@ public class ExerciseRepository : BaseRepository, IExerciseRepository
     public string RemoveWhitespaces(string input)
         => string.Concat(input.Where(c => !char.IsWhiteSpace(c)));
 
+    public async Task<ApplicationUser> GetUserWithFavoriteExercisesAsync(Guid userId)
+        => await this.Context
+            .Users
+            .Include(u => u.FavoriteExercises)
+            .SingleAsync(u => u.Id == userId);
+
+    public async Task<bool> RemoveExerciseFromFavorites(Exercise exercise, ApplicationUser user)
+    {
+        user.FavoriteExercises.Remove(exercise);
+        int resultCount = await this.SaveChangesAsync();
+
+        return resultCount == 1;
+    }
+
+    public async Task<bool> AddExerciseToFavorites(Exercise exercise, ApplicationUser user)
+    {
+        user.FavoriteExercises.Add(exercise);
+        int resultCount = await this.SaveChangesAsync();
+
+        return resultCount == 1;
+    }
+
+    public async Task<HashSet<Guid>> GetUserFavoriteExercises(Guid userId)
+    {
+        List<Guid> ids = await this.Context
+            .Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.FavoriteExercises.Select(e => e.Id))
+            .ToListAsync();
+
+        return ids.ToHashSet();
+    }
 }

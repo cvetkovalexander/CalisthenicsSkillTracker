@@ -1,4 +1,5 @@
 ﻿using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.Data.Models.Enums;
 using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
@@ -17,19 +18,27 @@ public class ExerciseOutputService : IExerciseOutputService
         this._repository = repository;
     }
 
-    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllExercisesAsync(string? indexName, Guid? indexId, bool isPreviousPage, string? filter = null, int pageSize = DefaultPageSize)
+    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllExercisesAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, string? sortOrder = null, string? difficultyFilter = null, int pageSize = DefaultPageSize)
     {
         IQueryable<Exercise> query = this._repository.GetAllExercises();
 
-        query = ApplyFiltering(query, filter);
-        query = ApplyOrdering(query, isPreviousPage);
-        query = ApplyPagination(query, indexName, indexId, isPreviousPage);
+        query = ApplyFiltering(query, filter, difficultyFilter);
+        query = ApplyPagination(query, indexName, indexId, isPreviousPage, sortOrder);
+        query = ApplyOrdering(query, isPreviousPage, sortOrder);
 
         IQueryable<ListTableItemViewModel> projectedQuery = ProjectExercises(query);
 
-        List<ListTableItemViewModel> items = await GetPagedExercisesAsync(projectedQuery, pageSize, isPreviousPage);
+        List<ListTableItemViewModel> items = await GetPagedExercisesAsync(projectedQuery, pageSize, isPreviousPage, sortOrder);
 
-        return CreatePaginationViewModel(items, filter, pageSize, indexName, indexId, isPreviousPage);
+        if (userId.HasValue) 
+        {
+            HashSet<Guid> favoritedExerciseIds = await this._repository.GetUserFavoriteExercises(userId.Value);
+
+            foreach (ListTableItemViewModel item in items)
+                item.IsFavorited = favoritedExerciseIds.Contains(item.Id);
+        }
+
+        return CreatePaginationViewModel(items, filter, pageSize, indexName, indexId, isPreviousPage, sortOrder, difficultyFilter);
     }
    
     public async Task<DetailsExerciseViewModel> GetExerciseDetailsAsync(Guid id)
@@ -58,40 +67,50 @@ public class ExerciseOutputService : IExerciseOutputService
     public async Task<bool> ExerciseExistsAsync(Guid id)
         => await this._repository.ExerciseExistsAsync(id);
 
-    public static IQueryable<Exercise> ApplyFiltering(IQueryable<Exercise> query, string? filter)
+    public static IQueryable<Exercise> ApplyFiltering(IQueryable<Exercise> query, string? filter, string? difficultyFilter)
     {
         if (!string.IsNullOrWhiteSpace(filter))
-        {
             query = query.Where(e => e.Name.Contains(filter));
-        }
+
+        if (!string.IsNullOrWhiteSpace(difficultyFilter) &&
+            Enum.TryParse<Difficulty>(difficultyFilter, out Difficulty parsedDifficulty))
+            query = query.Where(e => e.Difficulty == parsedDifficulty);
+
         return query;
     }
 
-    public static IQueryable<Exercise> ApplyOrdering(IQueryable<Exercise> query, bool isPreviousPage)
+    public static IQueryable<Exercise> ApplyOrdering(IQueryable<Exercise> query, bool isPreviousPage, string? sortOrder)
     {
-        if (isPreviousPage)
-            query = query.OrderByDescending(e => e.Name).ThenByDescending(e => e.Id);
-        else
-            query = query.OrderBy(e => e.Name).ThenBy(e => e.Id);
+        bool isDescending = IsDescendingSort(sortOrder);
 
-        return query;
+        bool shouldReverseQueryOrder = isPreviousPage;
+        bool effectiveDescending = shouldReverseQueryOrder ? !isDescending : isDescending;
+
+        if (effectiveDescending)
+            return query.OrderByDescending(e => e.Name).ThenByDescending(e => e.Id);
+
+        return query.OrderBy(e => e.Name).ThenBy(e => e.Id);
     }
 
-    public static IQueryable<Exercise> ApplyPagination(IQueryable<Exercise> query, string? indexName, Guid? indexId, bool isPreviousPage)
+    public static IQueryable<Exercise> ApplyPagination(IQueryable<Exercise> query, string? indexName, Guid? indexId, bool isPreviousPage,  string? sortOrder)
     {
         if (string.IsNullOrWhiteSpace(indexName) || !indexId.HasValue)
             return query;
 
-        if (isPreviousPage)
-            query = query.Where(e =>
+        bool isDescending = IsDescendingSort(sortOrder);
+
+        bool useLessThan = isDescending ? !isPreviousPage : isPreviousPage;
+
+        if (useLessThan)
+            return query
+                .Where(e =>
                 string.Compare(e.Name, indexName) < 0 ||
                 (e.Name == indexName && e.Id.CompareTo(indexId.Value) < 0));
-        else
-            query = query.Where(e =>
-                string.Compare(e.Name, indexName) > 0 ||
-                (e.Name == indexName && e.Id.CompareTo(indexId.Value) > 0));
 
-        return query;
+        return query
+            .Where(e =>
+            string.Compare(e.Name, indexName) > 0 ||
+            (e.Name == indexName && e.Id.CompareTo(indexId.Value) > 0));
     }
 
     public static IQueryable<ListTableItemViewModel> ProjectExercises(IQueryable<Exercise> query)
@@ -106,27 +125,32 @@ public class ExerciseOutputService : IExerciseOutputService
         });
     }
 
-    public async Task<List<ListTableItemViewModel>> GetPagedExercisesAsync(IQueryable<ListTableItemViewModel> query, int pageSize, bool isPreviousPage)
+    public async Task<List<ListTableItemViewModel>> GetPagedExercisesAsync(IQueryable<ListTableItemViewModel> query, int pageSize, bool isPreviousPage, string? sortOrder)
     {
         List<ListTableItemViewModel> exercises = await query
             .Take(pageSize + 1)
             .ToListAsync();
 
-        if (isPreviousPage)
-            exercises = exercises
-                .OrderBy(e => e.Name)
-                .ThenBy(e => e.Id)
-                .ToList();
+        if (isPreviousPage) 
+        {
+            bool isDescending = IsDescendingSort(sortOrder);
+
+            exercises = isDescending
+                ? exercises.OrderByDescending(e => e.Name).ThenByDescending(e => e.Id).ToList()
+                : exercises.OrderBy(e => e.Name).ThenBy(e => e.Id).ToList();
+        }
 
         return exercises;
     }
 
-    public static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage)
+    public static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage, string? sortOrder, string? difficultyFilter)
     {
         bool hasMoreItems = items.Count > pageSize;
 
         if (hasMoreItems)
-            items = items.Take(pageSize).ToList();
+            items = isPreviousPage
+                ? items.Skip(1).Take(pageSize).ToList()
+                : items.Take(pageSize).ToList();
 
         ListTableItemViewModel? firstItem = items.FirstOrDefault();
         ListTableItemViewModel? lastItem = items.LastOrDefault();
@@ -145,8 +169,13 @@ public class ExerciseOutputService : IExerciseOutputService
             HasPreviousPage = hasPreviousPage,
             NextIndexName = hasNextPage ? lastItem?.Name : null,
             NextIndexId = hasNextPage ? lastItem?.Id : null,
+            SortOrder = sortOrder,
+            DifficultyFilter = difficultyFilter,
             PreviousIndexName = hasPreviousPage ? firstItem?.Name : null,
             PreviousIndexId = hasPreviousPage ? firstItem?.Id : null
         };
     }
+
+    private static bool IsDescendingSort(string? sortOrder)
+        => sortOrder == "name-desc";
 }

@@ -15,6 +15,8 @@ public interface ISkillInputService
 
     Task DeleteSkillAsync(Guid id);
 
+    Task<bool> ToggleFavoriteAsync(Guid skillId, Guid userId);
+
     /* Helper methods */
     Task<bool> SkillNameExistsAsync(string name);
     Task<bool> SkillNameExcludingCurrentExistsAsync(Guid id, string name);
