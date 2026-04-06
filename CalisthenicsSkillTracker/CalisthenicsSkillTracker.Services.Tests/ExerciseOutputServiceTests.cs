@@ -130,7 +130,7 @@ public class ExerciseOutputServiceTests
         IQueryable<Exercise> query = exercises.AsQueryable();
 
         IQueryable<Exercise> result = ExerciseOutputService
-            .ApplyFiltering(query, "Push");
+            .ApplyFiltering(query, "Push", null);
 
         List<Exercise> resultList = result.ToList();
 
@@ -152,7 +152,7 @@ public class ExerciseOutputServiceTests
         IQueryable<Exercise> query = exercises.AsQueryable();
 
         IQueryable<Exercise> result = ExerciseOutputService
-            .ApplyFiltering(query, filter);
+            .ApplyFiltering(query, filter, null);
 
         List<Exercise> resultList = result.ToList();
 
@@ -172,7 +172,7 @@ public class ExerciseOutputServiceTests
         IQueryable<Exercise> query = exercises.AsQueryable();
 
         IQueryable<Exercise> result = ExerciseOutputService
-            .ApplyOrdering(query, false);
+            .ApplyOrdering(query, false, "name-asc");
 
         List<Exercise> resultList = result.ToList();
 
@@ -194,13 +194,13 @@ public class ExerciseOutputServiceTests
         IQueryable<Exercise> query = exercises.AsQueryable();
 
         IQueryable<Exercise> result = ExerciseOutputService
-            .ApplyOrdering(query, true);
+            .ApplyOrdering(query, true, "name-desc");
 
         List<Exercise> resultList = result.ToList();
 
-        Assert.That(resultList[0].Name, Is.EqualTo("C"));
+        Assert.That(resultList[0].Name, Is.EqualTo("A"));
         Assert.That(resultList[1].Name, Is.EqualTo("B"));
-        Assert.That(resultList[2].Name, Is.EqualTo("A"));
+        Assert.That(resultList[2].Name, Is.EqualTo("C"));
     }
 
     [Test]
@@ -218,7 +218,7 @@ public class ExerciseOutputServiceTests
         IQueryable<Exercise> query = exercises.AsQueryable();
 
         IQueryable<Exercise> result = ExerciseOutputService
-            .ApplyOrdering(query, false);
+            .ApplyOrdering(query, false, "name-asc");
 
         List<Exercise> resultList = result.ToList();
 
@@ -241,12 +241,12 @@ public class ExerciseOutputServiceTests
         IQueryable<Exercise> query = exercises.AsQueryable();
 
         IQueryable<Exercise> result = ExerciseOutputService
-            .ApplyOrdering(query, true);
+            .ApplyOrdering(query, true, "name-desc");
 
         List<Exercise> resultList = result.ToList();
 
-        Assert.That(resultList[0].Id, Is.EqualTo(secondId));
-        Assert.That(resultList[1].Id, Is.EqualTo(firstId));
+        Assert.That(resultList[0].Id, Is.EqualTo(firstId));
+        Assert.That(resultList[1].Id, Is.EqualTo(secondId));
     }
 
     [Test]
@@ -264,13 +264,15 @@ public class ExerciseOutputServiceTests
             query,
             null,
             Guid.Parse("00000001-0000-0000-0000-000000000000"),
-            false);
+            false,
+            "name-asc");
 
         IQueryable<Exercise> resultWithNullId = ExerciseOutputService.ApplyPagination(
             query,
             "A",
             null,
-            false);
+            false,
+            "name-asc");
 
         Assert.That(resultWithNullName.ToList().Count, Is.EqualTo(2));
         Assert.That(resultWithNullId.ToList().Count, Is.EqualTo(2));
@@ -296,7 +298,8 @@ public class ExerciseOutputServiceTests
             query,
             "B",
             lowerSameNameId,
-            false);
+            false,
+            "name-asc");
 
         List<Exercise> resultList = result.ToList();
 
@@ -325,7 +328,8 @@ public class ExerciseOutputServiceTests
             query,
             "B",
             higherSameNameId,
-            true);
+            true,
+            "name-asc");
 
         List<Exercise> resultList = result.ToList();
 
@@ -419,7 +423,9 @@ public class ExerciseOutputServiceTests
             pageSize,
             null,
             null,
-            false);
+            false,
+            "name-asc",
+            null);
 
         Assert.That(result.Items.Count, Is.EqualTo(2));
         Assert.That(result.Items.ToArray()[0].Name, Is.EqualTo("A"));
@@ -427,6 +433,8 @@ public class ExerciseOutputServiceTests
 
         Assert.That(result.Filter, Is.EqualTo("filter"));
         Assert.That(result.PageSize, Is.EqualTo(pageSize));
+        Assert.That(result.SortOrder, Is.EqualTo("name-asc"));
+        Assert.That(result.DifficultyFilter, Is.Null);
 
         Assert.That(result.HasPreviousPage, Is.False);
         Assert.That(result.HasNextPage, Is.True);
@@ -463,11 +471,16 @@ public class ExerciseOutputServiceTests
             pageSize,
             "Cursor",
             indexId,
-            false);
+            false,
+            "name-asc",
+            null);
 
         Assert.That(result.Items.Count, Is.EqualTo(2));
         Assert.That(result.HasPreviousPage, Is.True);
         Assert.That(result.HasNextPage, Is.False);
+
+        Assert.That(result.SortOrder, Is.EqualTo("name-asc"));
+        Assert.That(result.DifficultyFilter, Is.Null);
 
         Assert.That(result.PreviousIndexName, Is.EqualTo("A"));
         Assert.That(result.PreviousIndexId, Is.EqualTo(Guid.Parse("00000001-0000-0000-0000-000000000000")));
@@ -506,19 +519,24 @@ public class ExerciseOutputServiceTests
             pageSize,
             "Cursor",
             indexId,
-            true);
+            true,
+            "name-asc",
+            null);
 
         Assert.That(result.Items.Count, Is.EqualTo(2));
-        Assert.That(result.Items.ToArray()[0].Name, Is.EqualTo("A"));
-        Assert.That(result.Items.ToArray()[1].Name, Is.EqualTo("B"));
+        Assert.That(result.Items.ToArray()[0].Name, Is.EqualTo("B"));
+        Assert.That(result.Items.ToArray()[1].Name, Is.EqualTo("C"));
+
+        Assert.That(result.SortOrder, Is.EqualTo("name-asc"));
+        Assert.That(result.DifficultyFilter, Is.Null);
 
         Assert.That(result.HasPreviousPage, Is.True);
         Assert.That(result.HasNextPage, Is.True);
 
-        Assert.That(result.PreviousIndexName, Is.EqualTo("A"));
-        Assert.That(result.PreviousIndexId, Is.EqualTo(Guid.Parse("00000001-0000-0000-0000-000000000000")));
-        Assert.That(result.NextIndexName, Is.EqualTo("B"));
-        Assert.That(result.NextIndexId, Is.EqualTo(Guid.Parse("00000002-0000-0000-0000-000000000000")));
+        Assert.That(result.PreviousIndexName, Is.EqualTo("B"));
+        Assert.That(result.PreviousIndexId, Is.EqualTo(Guid.Parse("00000002-0000-0000-0000-000000000000")));
+        Assert.That(result.NextIndexName, Is.EqualTo("C"));
+        Assert.That(result.NextIndexId, Is.EqualTo(Guid.Parse("00000003-0000-0000-0000-000000000000")));
     }
 
     [Test]
@@ -546,9 +564,13 @@ public class ExerciseOutputServiceTests
             pageSize,
             null,
             null,
-            true);
+            true,
+            "name-asc",
+            null);
 
         Assert.That(result.Items.Count, Is.EqualTo(2));
+        Assert.That(result.SortOrder, Is.EqualTo("name-asc"));
+        Assert.That(result.DifficultyFilter, Is.Null);
         Assert.That(result.HasPreviousPage, Is.False);
         Assert.That(result.HasNextPage, Is.False);
         Assert.That(result.PreviousIndexName, Is.Null);
