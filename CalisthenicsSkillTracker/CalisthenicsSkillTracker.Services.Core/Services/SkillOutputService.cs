@@ -1,4 +1,5 @@
 ﻿using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.Data.Models.Enums;
 using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
@@ -19,11 +20,11 @@ public class SkillOutputService : ISkillOutputService
         this._repository = repository;
     }
 
-    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllSkillsAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, string? sortOrder = null, int pageSize = DefaultPageSize)
+    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllSkillsAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, string? sortOrder = null, string? difficultyFilter = null, int pageSize = DefaultPageSize)
     {
         IQueryable<Skill> query = this._repository.GetAllSkills();
 
-        query = ApplyFiltering(query, filter);
+        query = ApplyFiltering(query, filter, difficultyFilter);
         query = ApplyPagination(query, indexName, indexId, isPreviousPage, sortOrder);
         query = ApplyOrdering(query, isPreviousPage, sortOrder);
 
@@ -39,7 +40,7 @@ public class SkillOutputService : ISkillOutputService
                 item.IsFavorited = favoritedSkillsIds.Contains(item.Id);
         }
 
-        return CreatePaginationViewModel(items, filter, pageSize, indexName, indexId, isPreviousPage, sortOrder);
+        return CreatePaginationViewModel(items, filter, pageSize, indexName, indexId, isPreviousPage, sortOrder, difficultyFilter);
     }
 
     public async Task<DetailsSkillViewModel> GetSkillDetailsAsync(Guid id)
@@ -65,12 +66,15 @@ public class SkillOutputService : ISkillOutputService
     public async Task<bool> SkillExistsAsync(Guid id)
         => await this._repository.SkillExistsAsync(id);
 
-    private static IQueryable<Skill> ApplyFiltering(IQueryable<Skill> query, string? filter)
+    private static IQueryable<Skill> ApplyFiltering(IQueryable<Skill> query, string? filter, string? difficultyFilter)
     {
         if (!string.IsNullOrWhiteSpace(filter))
-        {
             query = query.Where(s => EF.Functions.Like(s.Name, $"%{filter}%"));
-        }
+
+        if (!string.IsNullOrWhiteSpace(difficultyFilter) &&
+            Enum.TryParse<Difficulty>(difficultyFilter, out Difficulty parsedDifficulty))
+            query = query.Where(s => s.Difficulty == parsedDifficulty);
+
         return query;
     }
 
@@ -138,7 +142,7 @@ public class SkillOutputService : ISkillOutputService
         return skills;
     }
 
-    private static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage, string? sortOrder) 
+    private static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage, string? sortOrder, string? difficultyFilter) 
     {
         bool hasMoreItems = items.Count > pageSize;
 
@@ -163,6 +167,7 @@ public class SkillOutputService : ISkillOutputService
             NextIndexName = hasNextPage ? lastItem?.Name : null,
             NextIndexId = hasNextPage ? lastItem?.Id : null,
             SortOrder = sortOrder,
+            DifficultyFilter = difficultyFilter,
             PreviousIndexName = hasPreviousPage ? firstItem?.Name : null,
             PreviousIndexId = hasPreviousPage ? firstItem?.Id : null
         };

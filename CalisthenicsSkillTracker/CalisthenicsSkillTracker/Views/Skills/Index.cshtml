@@ -11,11 +11,19 @@
 <div class="table-toolbar">
     @if (User.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Moderator")))
     {
-        <a asp-action="Create" class="btn btn-primary">Insert new exercise</a>
+        <a asp-action="Create" class="btn btn-primary">Insert new skill</a>
     }
 
     <div class="toolbar-right">
-        <input type="text" id="searchBox" class="form-control toolbar-input" placeholder="Search exercises..." />
+        <input type="text" id="searchBox" class="form-control toolbar-input" placeholder="Search skills..." />
+
+        <select id="difficultyFilterSelect" class="form-select toolbar-input">
+            <option value="">All Difficulties</option>
+            <option value="Beginner" selected="@(Model.DifficultyFilter == "Beginner")">Beginner</option>
+            <option value="Intermediate" selected="@(Model.DifficultyFilter == "Intermediate")">Intermediate</option>
+            <option value="Advanced" selected="@(Model.DifficultyFilter == "Advanced")">Advanced</option>
+            <option value="Expert" selected="@(Model.DifficultyFilter == "Expert")">Expert</option>
+        </select>
 
         <select id="sortOrderSelect" class="form-select toolbar-input">
             <option value="name-asc" selected="@(Model.SortOrder == "name-asc" || string.IsNullOrWhiteSpace(Model.SortOrder))">Name A-Z</option>
@@ -46,6 +54,7 @@ else
         initKeysetPagination({
             searchBoxId: 'searchBox',
             sortSelectId: 'sortOrderSelect',
+            difficultySelectId: 'difficultyFilterSelect',
             containerId: 'skillsContainer',
             endpoint: '/Skills/Search',
             pageSize: 5
