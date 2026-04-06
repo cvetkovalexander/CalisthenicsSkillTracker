@@ -148,7 +148,9 @@ public class ExerciseOutputService : IExerciseOutputService
         bool hasMoreItems = items.Count > pageSize;
 
         if (hasMoreItems)
-            items = items.Take(pageSize).ToList();
+            items = isPreviousPage
+                ? items.Skip(1).Take(pageSize).ToList()
+                : items.Take(pageSize).ToList();
 
         ListTableItemViewModel? firstItem = items.FirstOrDefault();
         ListTableItemViewModel? lastItem = items.LastOrDefault();
