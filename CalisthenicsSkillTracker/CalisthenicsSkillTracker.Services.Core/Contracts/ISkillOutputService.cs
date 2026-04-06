@@ -6,7 +6,7 @@ namespace CalisthenicsSkillTracker.Services.Core.Interfaces;
 
 public interface ISkillOutputService
 {
-    Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllSkillsAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, int pageSize = DefaultPageSize);
+    Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllSkillsAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, string? sortOrder = null, int pageSize = DefaultPageSize);
 
     Task<DetailsSkillViewModel> GetSkillDetailsAsync(Guid id);
 

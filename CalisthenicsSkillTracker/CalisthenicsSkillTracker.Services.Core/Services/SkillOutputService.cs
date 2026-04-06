@@ -19,17 +19,17 @@ public class SkillOutputService : ISkillOutputService
         this._repository = repository;
     }
 
-    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllSkillsAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, int pageSize = DefaultPageSize)
+    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllSkillsAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, string? sortOrder = null, int pageSize = DefaultPageSize)
     {
         IQueryable<Skill> query = this._repository.GetAllSkills();
 
         query = ApplyFiltering(query, filter);
-        query = ApplyOrdering(query, isPreviousPage);
-        query = ApplyPagination(query, indexName, indexId, isPreviousPage);
+        query = ApplyPagination(query, indexName, indexId, isPreviousPage, sortOrder);
+        query = ApplyOrdering(query, isPreviousPage, sortOrder);
 
         IQueryable<ListTableItemViewModel> projectedQuery = ProjectSkills(query);
 
-        List<ListTableItemViewModel> items = await GetPagedSkillsAsync(projectedQuery, pageSize, isPreviousPage);
+        List<ListTableItemViewModel> items = await GetPagedSkillsAsync(projectedQuery, pageSize, isPreviousPage, sortOrder);
 
         if (userId.HasValue)
         {
@@ -39,7 +39,7 @@ public class SkillOutputService : ISkillOutputService
                 item.IsFavorited = favoritedSkillsIds.Contains(item.Id);
         }
 
-        return CreatePaginationViewModel(items, filter, pageSize, indexName, indexId, isPreviousPage);
+        return CreatePaginationViewModel(items, filter, pageSize, indexName, indexId, isPreviousPage, sortOrder);
     }
 
     public async Task<DetailsSkillViewModel> GetSkillDetailsAsync(Guid id)
@@ -74,31 +74,38 @@ public class SkillOutputService : ISkillOutputService
         return query;
     }
 
-    private static IQueryable<Skill> ApplyOrdering(IQueryable<Skill> query, bool isPreviousPage) 
+    private static IQueryable<Skill> ApplyOrdering(IQueryable<Skill> query, bool isPreviousPage, string? sortOrder) 
     {
-        if (isPreviousPage)
-            query = query.OrderByDescending(s => s.Name).ThenByDescending(s => s.Id);
-        else
-            query = query.OrderBy(s => s.Name).ThenBy(s => s.Id);
+        bool isDescending = IsDescendingSort(sortOrder);
 
-        return query;
+        bool shouldReverseQueryOrder = isPreviousPage;
+        bool effectiveDescending = shouldReverseQueryOrder ? !isDescending : isDescending;
+
+        if (effectiveDescending)
+            return query.OrderByDescending(s => s.Name).ThenByDescending(s => s.Id);
+
+        return query.OrderBy(s => s.Name).ThenBy(s => s.Id);
     }
 
-    private static IQueryable<Skill> ApplyPagination(IQueryable<Skill> query, string? indexName, Guid? indexId, bool isPreviousPage) 
+    private static IQueryable<Skill> ApplyPagination(IQueryable<Skill> query, string? indexName, Guid? indexId, bool isPreviousPage, string? sortOrder) 
     {
         if (string.IsNullOrWhiteSpace(indexName) || !indexId.HasValue)
             return query;
 
-        if (isPreviousPage)
-            query = query.Where(s =>
+        bool isDescending = IsDescendingSort(sortOrder);
+
+        bool useLessThan = isDescending ? !isPreviousPage : isPreviousPage;
+
+        if (useLessThan)
+            return query
+                .Where(s =>
                 string.Compare(s.Name, indexName) < 0 ||
                 (s.Name == indexName && s.Id.CompareTo(indexId.Value) < 0));
-        else
-            query = query.Where(s =>
-                string.Compare(s.Name, indexName) > 0 ||
-                (s.Name == indexName && s.Id.CompareTo(indexId.Value) > 0));
 
-        return query;
+        return query
+            .Where(s =>
+            string.Compare(s.Name, indexName) > 0 ||
+            (s.Name == indexName && s.Id.CompareTo(indexId.Value) > 0));
     }
 
     private static IQueryable<ListTableItemViewModel> ProjectSkills(IQueryable<Skill> query) 
@@ -113,22 +120,25 @@ public class SkillOutputService : ISkillOutputService
         });
     }
 
-    private async Task<List<ListTableItemViewModel>> GetPagedSkillsAsync(IQueryable<ListTableItemViewModel> query, int pageSize, bool isPreviousPage) 
+    private async Task<List<ListTableItemViewModel>> GetPagedSkillsAsync(IQueryable<ListTableItemViewModel> query, int pageSize, bool isPreviousPage, string? sortOrder) 
     {
         List<ListTableItemViewModel> skills = await query
             .Take(pageSize + 1)
             .ToListAsync();
 
-        if (isPreviousPage)
-            skills = skills
-                .OrderBy(s => s.Name)
-                .ThenBy(s => s.Id)
-                .ToList();
+        if (isPreviousPage) 
+        {
+            bool isDescending = IsDescendingSort(sortOrder);
+
+            skills = isDescending
+                ? skills.OrderByDescending(s => s.Name).ThenByDescending(s => s.Id).ToList()
+                : skills.OrderBy(s => s.Name).ThenBy(s => s.Id).ToList();
+        }
 
         return skills;
     }
 
-    private static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage) 
+    private static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage, string? sortOrder) 
     {
         bool hasMoreItems = items.Count > pageSize;
 
@@ -152,8 +162,12 @@ public class SkillOutputService : ISkillOutputService
             HasPreviousPage = hasPreviousPage,
             NextIndexName = hasNextPage ? lastItem?.Name : null,
             NextIndexId = hasNextPage ? lastItem?.Id : null,
+            SortOrder = sortOrder,
             PreviousIndexName = hasPreviousPage ? firstItem?.Name : null,
             PreviousIndexId = hasPreviousPage ? firstItem?.Id : null
         };
     }
+
+    private static bool IsDescendingSort(string? sortOrder)
+        => sortOrder == "name-desc";
 }

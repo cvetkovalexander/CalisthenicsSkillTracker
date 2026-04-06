@@ -10,3 +10,20 @@ input[name="filter"] {
 button {
     padding: 5px 10px;
 }
+
+.table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.toolbar-right {
+    display: flex;
+    gap: 1rem;
+}
+
+.toolbar-input {
+    width: 220px;
+    border-radius: 10px;
+}
