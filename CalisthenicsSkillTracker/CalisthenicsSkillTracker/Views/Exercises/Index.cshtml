@@ -8,6 +8,17 @@
 
 <h1 class="text-center fw-bold">Available exercises for your workouts:</h1>
 
+<div class="table-toolbar">
+    <div class="filter-sort-group">
+        <input type="text" id="filterInput" class="form-control" placeholder="Search exercises..." value="@Model.Filter" />
+
+        <select id="sortOrderSelect" class="form-select">
+            <option value="name-asc" selected="@(Model.SortOrder == "name-asc" || string.IsNullOrWhiteSpace(Model.SortOrder))">Name A-Z</option>
+            <option value="name-desc" selected="@(Model.SortOrder == "name-desc")">Name Z-A</option>
+        </select>
+    </div>
+</div>
+
 <div class="d-flex justify-content-between align-items-center mb-3">
     @if (User.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Moderator")))
     {
@@ -37,6 +48,7 @@ else
 
         initKeysetPagination({
             searchBoxId: 'searchBox',
+            sortSelectId: 'sortOrderSelect',
             containerId: 'exercisesContainer',
             endpoint: '/Exercises/Search',
             pageSize: 5
