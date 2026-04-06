@@ -22,12 +22,12 @@ public class ExerciseOutputService : IExerciseOutputService
         IQueryable<Exercise> query = this._repository.GetAllExercises();
 
         query = ApplyFiltering(query, filter);
-        query = ApplyOrdering(query, isPreviousPage, sortOrder);
         query = ApplyPagination(query, indexName, indexId, isPreviousPage, sortOrder);
+        query = ApplyOrdering(query, isPreviousPage, sortOrder);
 
         IQueryable<ListTableItemViewModel> projectedQuery = ProjectExercises(query);
 
-        List<ListTableItemViewModel> items = await GetPagedExercisesAsync(projectedQuery, pageSize, isPreviousPage);
+        List<ListTableItemViewModel> items = await GetPagedExercisesAsync(projectedQuery, pageSize, isPreviousPage, sortOrder);
 
         if (userId.HasValue) 
         {
@@ -77,12 +77,12 @@ public class ExerciseOutputService : IExerciseOutputService
 
     public static IQueryable<Exercise> ApplyOrdering(IQueryable<Exercise> query, bool isPreviousPage, string? sortOrder)
     {
-        bool descending = sortOrder == "name-desc";
+        bool isDescending = IsDescendingSort(sortOrder);
 
-        if (isPreviousPage)
-            descending = !descending;
-        
-        if (descending)
+        bool shouldReverseQueryOrder = isPreviousPage;
+        bool effectiveDescending = shouldReverseQueryOrder ? !isDescending : isDescending;
+
+        if (effectiveDescending)
             return query.OrderByDescending(e => e.Name).ThenByDescending(e => e.Id);
 
         return query.OrderBy(e => e.Name).ThenBy(e => e.Id);
@@ -93,9 +93,9 @@ public class ExerciseOutputService : IExerciseOutputService
         if (string.IsNullOrWhiteSpace(indexName) || !indexId.HasValue)
             return query;
 
-        bool descending = sortOrder == "name-desc";
+        bool isDescending = IsDescendingSort(sortOrder);
 
-        bool useLessThan = descending ? !isPreviousPage : isPreviousPage;
+        bool useLessThan = isDescending ? !isPreviousPage : isPreviousPage;
 
         if (useLessThan)
             return query
@@ -121,17 +121,20 @@ public class ExerciseOutputService : IExerciseOutputService
         });
     }
 
-    public async Task<List<ListTableItemViewModel>> GetPagedExercisesAsync(IQueryable<ListTableItemViewModel> query, int pageSize, bool isPreviousPage)
+    public async Task<List<ListTableItemViewModel>> GetPagedExercisesAsync(IQueryable<ListTableItemViewModel> query, int pageSize, bool isPreviousPage, string? sortOrder)
     {
         List<ListTableItemViewModel> exercises = await query
             .Take(pageSize + 1)
             .ToListAsync();
 
-        if (isPreviousPage)
-            exercises = exercises
-                .OrderBy(e => e.Name)
-                .ThenBy(e => e.Id)
-                .ToList();
+        if (isPreviousPage) 
+        {
+            bool isDescending = IsDescendingSort(sortOrder);
+
+            exercises = isDescending
+                ? exercises.OrderByDescending(e => e.Name).ThenByDescending(e => e.Id).ToList()
+                : exercises.OrderBy(e => e.Name).ThenBy(e => e.Id).ToList();
+        }
 
         return exercises;
     }
@@ -165,4 +168,7 @@ public class ExerciseOutputService : IExerciseOutputService
             PreviousIndexId = hasPreviousPage ? firstItem?.Id : null
         };
     }
+
+    private static bool IsDescendingSort(string? sortOrder)
+        => sortOrder == "name-desc";
 }
