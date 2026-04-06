@@ -7,8 +7,8 @@
     debounceDelay = 300
 }) {
     const searchBox = document.getElementById(searchBoxId);
-    const container = document.getElementById(containerId);
     const sortSelect = document.getElementById(sortSelectId);
+    const container = document.getElementById(containerId);
 
     if (!container) {
         return;
@@ -16,8 +16,9 @@
 
     let timeoutId;
 
-    async function loadPage(filter = '', sortOrder = '', indexName = '', indexId = '', currentPageSize = pageSize, isPreviousPage = false) {
+    async function loadPage(filter = '', indexName = '', indexId = '', currentPageSize = pageSize, isPreviousPage = false) {
         const params = new URLSearchParams();
+        const sortOrder = sortSelect ? sortSelect.value : '';
 
         if (filter) {
             params.append('filter', filter);
@@ -31,7 +32,6 @@
             params.append('indexId', indexId);
         }
 
-        sortOrder = sortSelect ? sortSelect.value : '';
         if (sortOrder) {
             params.append('sortOrder', sortOrder);
         }
@@ -54,7 +54,7 @@
             clearTimeout(timeoutId);
 
             timeoutId = setTimeout(() => {
-                loadPage(searchBox.value.trim(), '', '', '', pageSize, false);
+                loadPage(searchBox.value.trim(), '', '', pageSize, false);
             }, debounceDelay);
         });
     }
@@ -62,7 +62,7 @@
     if (sortSelect) {
         sortSelect.addEventListener('change', () => {
             const filter = searchBox ? searchBox.value.trim() : '';
-            loadPage(filter, '', '', '', pageSize, false);
+            loadPage(filter, '', '', pageSize, false);
         });
     }
 
@@ -79,6 +79,6 @@
         const buttonPageSize = Number(button.dataset.pageSize) || pageSize;
         const isPreviousPage = button.dataset.isPreviousPage === 'true';
 
-        loadPage(filter, '', indexName, indexId, buttonPageSize, isPreviousPage);
+        loadPage(filter, indexName, indexId, buttonPageSize, isPreviousPage);
     });
 }

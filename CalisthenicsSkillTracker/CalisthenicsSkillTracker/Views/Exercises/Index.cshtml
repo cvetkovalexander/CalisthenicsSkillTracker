@@ -9,22 +9,19 @@
 <h1 class="text-center fw-bold">Available exercises for your workouts:</h1>
 
 <div class="table-toolbar">
-    <div class="filter-sort-group">
-        <input type="text" id="filterInput" class="form-control" placeholder="Search exercises..." value="@Model.Filter" />
+    @if (User.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Moderator")))
+    {
+        <a asp-action="Create" class="btn btn-primary">Insert new exercise</a>
+    }
 
-        <select id="sortOrderSelect" class="form-select">
+    <div class="toolbar-right">
+        <input type="text" id="searchBox" class="form-control toolbar-input" placeholder="Search exercises..." />
+
+        <select id="sortOrderSelect" class="form-select toolbar-input">
             <option value="name-asc" selected="@(Model.SortOrder == "name-asc" || string.IsNullOrWhiteSpace(Model.SortOrder))">Name A-Z</option>
             <option value="name-desc" selected="@(Model.SortOrder == "name-desc")">Name Z-A</option>
         </select>
     </div>
-</div>
-
-<div class="d-flex justify-content-between align-items-center mb-3">
-    @if (User.Identity != null && User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Moderator")))
-    {
-        <a asp-action="Create" class="btn btn-primary">Insert new exercise</a>    
-    }
-    <input type="text" id="searchBox" class="form-control w-25" placeholder="Search exercises..." />
 </div>
 
 @if (Model == null || !Model.Items.Any())
