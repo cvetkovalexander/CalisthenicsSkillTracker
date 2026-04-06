@@ -76,16 +76,20 @@ http://localhost:5000
 
 ## 📁 Project Structure
 
-```
+```id="vmd3y4"
 CalisthenicsSkillTracker/
-├── Controllers/        # MVC Controllers
-├── Models/             # Domain models & ViewModels
-├── Views/              # Razor Views (.cshtml)
-├── Data/               # DbContext, configurations, migrations
-├── Services/           # Business logic layer
-├── wwwroot/            # Static files (CSS, JS, images)
-├── appsettings.json    # Configuration
-└── Program.cs          # Application entry point
+├── CalisthenicsSkillTracker/                 # Main ASP.NET Core web project
+├── CalisthenicsSkillTracker.Data/            # DbContext, repositories, configurations, seeding
+├── CalisthenicsSkillTracker.Data.Models/     # Entity models
+├── CalisthenicsSkillTracker.GCommon/         # Constants, messages, exceptions, validation attributes
+├── CalisthenicsSkillTracker.Infrastructure/  # Middleware, extensions, utilities
+├── CalisthenicsSkillTracker.Services.Common/ # Shared service-layer components
+├── CalisthenicsSkillTracker.Services.Core/   # Business logic and service implementations
+├── CalisthenicsSkillTracker.Services.Tests/  # Unit tests
+├── CalisthenicsSkillTracker.Web.ViewModels/  # Input and output view models
+└── CalisthenicsSkillTracker.sln              # Solution file
+```
+
 ```
 
 
