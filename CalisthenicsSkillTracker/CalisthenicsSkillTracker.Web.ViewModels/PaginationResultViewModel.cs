@@ -19,6 +19,8 @@ public class PaginationResultViewModel<T> where T : class
 
     public string? SortOrder { get; set; }
 
+    public string? DifficultyFilter { get; set; }
+
     public Guid? PreviousIndexId { get; set; }
 
     public Guid? NextIndexId { get; set; }

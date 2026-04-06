@@ -1,4 +1,5 @@
 ﻿using CalisthenicsSkillTracker.Data.Models;
+using CalisthenicsSkillTracker.Data.Models.Enums;
 using CalisthenicsSkillTracker.Data.Repositories.Contracts;
 using CalisthenicsSkillTracker.Services.Core.Interfaces;
 using CalisthenicsSkillTracker.ViewModels;
@@ -17,11 +18,11 @@ public class ExerciseOutputService : IExerciseOutputService
         this._repository = repository;
     }
 
-    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllExercisesAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, string? sortOrder = null, int pageSize = DefaultPageSize)
+    public async Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllExercisesAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, string? sortOrder = null, string? difficultyFilter = null, int pageSize = DefaultPageSize)
     {
         IQueryable<Exercise> query = this._repository.GetAllExercises();
 
-        query = ApplyFiltering(query, filter);
+        query = ApplyFiltering(query, filter, difficultyFilter);
         query = ApplyPagination(query, indexName, indexId, isPreviousPage, sortOrder);
         query = ApplyOrdering(query, isPreviousPage, sortOrder);
 
@@ -37,7 +38,7 @@ public class ExerciseOutputService : IExerciseOutputService
                 item.IsFavorited = favoritedExerciseIds.Contains(item.Id);
         }
 
-        return CreatePaginationViewModel(items, filter, pageSize, indexName, indexId, isPreviousPage, sortOrder);
+        return CreatePaginationViewModel(items, filter, pageSize, indexName, indexId, isPreviousPage, sortOrder, difficultyFilter);
     }
    
     public async Task<DetailsExerciseViewModel> GetExerciseDetailsAsync(Guid id)
@@ -66,12 +67,15 @@ public class ExerciseOutputService : IExerciseOutputService
     public async Task<bool> ExerciseExistsAsync(Guid id)
         => await this._repository.ExerciseExistsAsync(id);
 
-    public static IQueryable<Exercise> ApplyFiltering(IQueryable<Exercise> query, string? filter)
+    public static IQueryable<Exercise> ApplyFiltering(IQueryable<Exercise> query, string? filter, string? difficultyFilter)
     {
         if (!string.IsNullOrWhiteSpace(filter))
-        {
             query = query.Where(e => e.Name.Contains(filter));
-        }
+
+        if (!string.IsNullOrWhiteSpace(difficultyFilter) &&
+            Enum.TryParse<Difficulty>(difficultyFilter, out Difficulty parsedDifficulty))
+            query = query.Where(e => e.Difficulty == parsedDifficulty);
+
         return query;
     }
 
@@ -139,7 +143,7 @@ public class ExerciseOutputService : IExerciseOutputService
         return exercises;
     }
 
-    public static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage, string? sortOrder)
+    public static PaginationResultViewModel<ListTableItemViewModel> CreatePaginationViewModel(List<ListTableItemViewModel> items, string? filter, int pageSize, string? indexName, Guid? indexId, bool isPreviousPage, string? sortOrder, string? difficultyFilter)
     {
         bool hasMoreItems = items.Count > pageSize;
 
@@ -164,6 +168,7 @@ public class ExerciseOutputService : IExerciseOutputService
             NextIndexName = hasNextPage ? lastItem?.Name : null,
             NextIndexId = hasNextPage ? lastItem?.Id : null,
             SortOrder = sortOrder,
+            DifficultyFilter = difficultyFilter,
             PreviousIndexName = hasPreviousPage ? firstItem?.Name : null,
             PreviousIndexId = hasPreviousPage ? firstItem?.Id : null
         };

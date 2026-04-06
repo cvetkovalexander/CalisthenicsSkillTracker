@@ -7,6 +7,6 @@ namespace CalisthenicsSkillTracker.Services.Core.Interfaces;
 public interface IExerciseOutputService
 {
     Task<bool> ExerciseExistsAsync(Guid id);
-    Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllExercisesAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, string? sortOder = null, int pageSize = DefaultPageSize);
+    Task<PaginationResultViewModel<ListTableItemViewModel>> GetAllExercisesAsync(string? indexName, Guid? indexId, bool isPreviousPage, Guid? userId, string? filter = null, string? sortOder = null, string? difficultyFilter = null, int pageSize = DefaultPageSize);
     Task<DetailsExerciseViewModel> GetExerciseDetailsAsync(Guid id);
 }
