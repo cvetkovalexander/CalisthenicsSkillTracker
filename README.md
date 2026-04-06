@@ -76,15 +76,18 @@ http://localhost:5000
 
 ## 📁 Project Structure
 
+```
 CalisthenicsSkillTracker/
-├── Controllers/
-├── Models/
-├── Views/
-├── Data/
-├── Services/
-├── wwwroot/
-├── appsettings.json
-└── Program.cs
+├── Controllers/        # MVC Controllers
+├── Models/             # Domain models & ViewModels
+├── Views/              # Razor Views (.cshtml)
+├── Data/               # DbContext, configurations, migrations
+├── Services/           # Business logic layer
+├── wwwroot/            # Static files (CSS, JS, images)
+├── appsettings.json    # Configuration
+└── Program.cs          # Application entry point
+```
+
 
 ---
 
