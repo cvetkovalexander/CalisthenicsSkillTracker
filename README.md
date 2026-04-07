@@ -148,7 +148,6 @@ The database is automatically seeded with:
 ## 🧱 Database Diagram
 
 ![Database Diagram](docs/diagram.png)
-
 ---
 
 ## ⚙️ Configuration
