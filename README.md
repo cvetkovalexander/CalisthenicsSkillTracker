@@ -8,19 +8,19 @@ data tracking.
 
 ## 📋 Table of Contents
 
--   About the Project\
--   Technologies Used\
--   Prerequisites\
--   Getting Started\
--   Project Structure\
--   Features\
--   Usage\
--   Database Setup\
--   Data Seeding\
--   Database Diagram\
--   Configuration\
--   License\
--   Contact
+- [About the Project](#-about-the-project)
+- [Technologies Used](#-technologies-used)
+- [Prerequisites](#-prerequisites)
+- [Getting Started](#-getting-started)
+- [Project Structure](#-project-structure)
+- [Features](#-features)
+- [Usage](#-usage)
+- [Database Setup](#-database-setup)
+- [Data Seeding](#-data-seeding)
+- [Database Diagram](#-database-diagram)
+- [Configuration](#-configuration)
+- [License](#-license)
+- [Contact](#-contact)
 
 ------------------------------------------------------------------------
 
@@ -34,15 +34,15 @@ and monitor their progression over time.
 
 ## 🛠️ Technologies Used
 
-  Technology              Version   Purpose
-  ----------------------- --------- ----------------
-  ASP.NET Core MVC        6.0       Web framework
-  Entity Framework Core   6.0       ORM / Database
-  SQL Server              \-        Database
-  ASP.NET Identity        \-        Authentication
-  Bootstrap               5.x       Styling
-  jQuery & AJAX           \-        Dynamic UI
-  Razor Views             \-        Rendering
+| Technology             | Version | Purpose                     |
+|----------------------|--------|-----------------------------|
+| ASP.NET Core MVC     | 6.0    | Web framework               |
+| Entity Framework Core| 6.0    | ORM / Database access       |
+| SQL Server           | -      | Database                    |
+| ASP.NET Identity     | -      | Authentication & roles      |
+| Bootstrap            | 5.x    | Frontend styling            |
+| jQuery & AJAX        | -      | Dynamic UI interactions     |
+| Razor Views          | -      | Server-side rendering       |
 
 ------------------------------------------------------------------------
 
@@ -85,14 +85,13 @@ dotnet run
 
 ## ✨ Features
 
--   Authentication & roles\
--   CRUD for exercises & skills\
--   Favorites system\
--   Search, sorting, filtering\
--   Keyset pagination\
--   Workout logging\
--   Dynamic reps/duration input\
--   Skill progress tracking
+-   🔐 Authentication & roles\
+-   📋 CRUD for exercises & skills\
+-   ⭐ Favorites system\
+-   🔍 Search, sorting, filtering\
+-   📄 Keyset pagination\
+-   🏋️ Workout logging\
+-   🎨 Responsive UI\
 
 ------------------------------------------------------------------------
 
@@ -110,7 +109,7 @@ dotnet run
 
 ``` json
 "ConnectionStrings": {
-  "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=CalisthenicsSkillTrackerDb;Trusted_Connection=True;"
+  "DefaultConnection": "Server=(localdbname);Database=CalisthenicsSkillTracker2026;Trusted_Connection=True;Encrypt=False;"
 }
 ```
 
