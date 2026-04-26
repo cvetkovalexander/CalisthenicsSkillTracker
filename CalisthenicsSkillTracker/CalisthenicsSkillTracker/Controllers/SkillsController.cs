@@ -14,13 +14,11 @@ public class SkillsController : ControllerBase
 {
     private readonly ISkillOutputService _outputService;
     private readonly ISkillInputService _inputService;
-    private readonly ILogger<SkillsController> _logger;
 
-    public SkillsController(ISkillOutputService outputService, ISkillInputService inputService, ILogger<SkillsController> logger)
+    public SkillsController(ISkillOutputService outputService, ISkillInputService inputService)
     {
         this._outputService = outputService;
         this._inputService = inputService;
-        this._logger = logger;
     }
 
     [HttpGet]
@@ -90,17 +88,13 @@ public class SkillsController : ControllerBase
         }
         catch (EntityCreatePersistException ecpe)
         {
-            this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(Skill)));
-
-            TempData[ErrorTempDataKey] = string.Format(EntitySaveError, nameof(Skill));
+            this.HandleException(ecpe, string.Format(EntitySaveError, nameof(Skill)));
 
             return this.View(model);
         }
         catch (Exception ex)
         {
-            this._logger.LogError(ex, UnexpectedErrorMessage);
-
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+            this.HandleUnexpectedException(ex);
 
             return this.View(model);
         }
@@ -147,17 +141,13 @@ public class SkillsController : ControllerBase
         }
         catch (EntityEditPersistException eepe) 
         {
-            this._logger.LogError(eepe, string.Format(EntityEditError, nameof(Skill)));
-
-            TempData[ErrorTempDataKey] = string.Format(EntityEditError, nameof(Skill));
+            this.HandleException(eepe, string.Format(EntityEditError, nameof(Skill)));
 
             return this.View(model);
         }
         catch (Exception ex)
         {
-            this._logger.LogError(ex, UnexpectedErrorMessage);
-
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+            this.HandleUnexpectedException(ex);
 
             return this.View(model);
         }
@@ -181,19 +171,15 @@ public class SkillsController : ControllerBase
         }
         catch (EntityDeleteException ede) 
         {
-            this._logger.LogError(ede, string.Format(EntityDeleteError, nameof(Skill)));
+            this.HandleException(ede, string.Format(EntityDeleteError, nameof(Skill)));
 
-            TempData[ErrorTempDataKey] = string.Format(EntityDeleteError, nameof(Skill));
-
-            return this.RedirectToAction("Edit");
+            return this.RedirectToAction(nameof(Edit), new { id });
         }
-        catch (Exception e) 
+        catch (Exception ex) 
         {
-            this._logger.LogError(e, UnexpectedErrorMessage);
+            this.HandleUnexpectedException(ex);
 
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
-
-            return this.RedirectToAction("Edit");
+            return this.RedirectToAction(nameof(Edit), new { id });
         }
 
         TempData[SuccessTempDataKey] = string.Format(EntitySuccessfullyDeleted, nameof(Skill));
@@ -218,9 +204,7 @@ public class SkillsController : ControllerBase
         }
         catch (EntityFavoritePersistException efpe)
         {
-            this._logger.LogError(efpe, UnexpectedErrorMessage);
-
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+            this.HandleUnexpectedException(efpe);
 
             return Json(new { success = false });
         }

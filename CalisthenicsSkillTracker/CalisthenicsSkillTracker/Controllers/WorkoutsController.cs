@@ -13,12 +13,10 @@ namespace CalisthenicsSkillTracker.Controllers;
 public class WorkoutsController : ControllerBase
 {
     private readonly IWorkoutService _workoutService;
-    private readonly ILogger<WorkoutsController> _logger;
 
-    public WorkoutsController(IWorkoutService workoutService, ILogger<WorkoutsController> logger)
+    public WorkoutsController(IWorkoutService workoutService)
     {
         this._workoutService = workoutService;
-        this._logger = logger;
     }
 
     [HttpGet]
@@ -61,17 +59,13 @@ public class WorkoutsController : ControllerBase
         }
         catch (EntityCreatePersistException ecpe)
         {
-            this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(Workout)));
-
-            TempData[ErrorTempDataKey] = string.Format(EntitySaveError, nameof(Workout));
+            this.HandleException(ecpe, string.Format(EntitySaveError, nameof(Workout)));
 
             return this.View(model);
         }
         catch (Exception ex) 
         {
-            this._logger.LogError(ex, UnexpectedErrorMessage);
-
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+            this.HandleUnexpectedException(ex);
 
             return this.View(model);
         }
@@ -134,17 +128,13 @@ public class WorkoutsController : ControllerBase
         }
         catch (EntityCreatePersistException ecpe)
         {
-            this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(WorkoutExercise)));
-
-            TempData[ErrorTempDataKey] = string.Format(EntitySaveError, nameof(WorkoutExercise));
+            this.HandleException(ecpe, string.Format(EntitySaveError, nameof(WorkoutExercise)));
 
             return this.View(model);
         }
         catch (Exception ex)
         {
-            this._logger.LogError(ex, UnexpectedErrorMessage);
-
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+            this.HandleUnexpectedException(ex);
 
             return this.View(model);
         }
@@ -207,17 +197,13 @@ public class WorkoutsController : ControllerBase
         }
         catch (EntityCreatePersistException ecpe)
         {
-            this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(WorkoutSet)));
-
-            TempData[ErrorTempDataKey] = string.Format(EntitySaveError, nameof(WorkoutSet));
+            this.HandleException(ecpe, string.Format(EntitySaveError, nameof(WorkoutSet)));
 
             return this.View(model);
         }
         catch (Exception ex)
         {
-            this._logger.LogError(ex, UnexpectedErrorMessage);
-
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+            this.HandleUnexpectedException(ex);
 
             return this.View(model);
         }

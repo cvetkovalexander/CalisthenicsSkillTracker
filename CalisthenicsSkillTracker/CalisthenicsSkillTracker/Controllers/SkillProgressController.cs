@@ -12,12 +12,10 @@ namespace CalisthenicsSkillTracker.Controllers;
 public class SkillProgressController : ControllerBase
 {
     private readonly ISkillProgressService _skillProgressService;
-    private readonly ILogger<SkillProgressController> _logger;
 
-    public SkillProgressController(ISkillProgressService skillProgress, ILogger<SkillProgressController> logger)
+    public SkillProgressController(ISkillProgressService skillProgress)
     {
         this._skillProgressService = skillProgress;
-        this._logger = logger;
     }
 
     [HttpGet]
@@ -62,17 +60,13 @@ public class SkillProgressController : ControllerBase
         }
         catch (EntityCreatePersistException ecpe)
         {
-            this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(SkillProgress)));
-
-            TempData[ErrorTempDataKey] = string.Format(EntitySaveError, nameof(SkillProgress));
+            this.HandleException(ecpe, string.Format(EntitySaveError, nameof(SkillProgress)));
 
             return this.RedirectToAction(nameof(Index));
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            this._logger.LogError(e, UnexpectedErrorMessage);
-
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+            this.HandleUnexpectedException(ex);
 
             return this.RedirectToAction(nameof(Index));
         }
@@ -95,17 +89,13 @@ public class SkillProgressController : ControllerBase
         }
         catch (EntityDeleteException ede)
         {
-            this._logger.LogError(ede, string.Format(EntityDeleteError, nameof(SkillProgress)));
-
-            TempData[ErrorTempDataKey] = string.Format(EntityDeleteError, nameof(SkillProgress));
+            this.HandleException(ede, string.Format(EntityDeleteError, nameof(SkillProgress)));
 
             return this.RedirectToAction(nameof(Index));
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            this._logger.LogError(e, UnexpectedErrorMessage);
-
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+            this.HandleUnexpectedException(ex);
 
             return this.RedirectToAction(nameof(Index));
         }

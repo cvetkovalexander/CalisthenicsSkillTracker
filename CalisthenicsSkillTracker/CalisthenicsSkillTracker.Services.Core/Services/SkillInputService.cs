@@ -29,6 +29,8 @@ public class SkillInputService : ISkillInputService
 
     public async Task CreateSkillAsync(CreateSkillViewModel model)
     {
+        throw new Exception();
+
         Skill skill = new Skill()
         {
             Name = model.Name,

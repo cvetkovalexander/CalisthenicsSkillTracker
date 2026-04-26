@@ -15,13 +15,11 @@ public class ExercisesController : ControllerBase
 {
     private readonly IExerciseInputService _inputService;
     private readonly IExerciseOutputService _outputService;
-    private readonly ILogger<ExercisesController> _logger;
 
-    public ExercisesController(IExerciseOutputService outputService, IExerciseInputService inputService, ILogger<ExercisesController> logger)
+    public ExercisesController(IExerciseOutputService outputService, IExerciseInputService inputService)
     {
         this._inputService = inputService;
         this._outputService = outputService;
-        this._logger = logger;
     }
     [HttpGet]
     [AllowAnonymous]
@@ -93,17 +91,13 @@ public class ExercisesController : ControllerBase
         }
         catch (EntityCreatePersistException ecpe)
         {
-            this._logger.LogError(ecpe, string.Format(EntitySaveError, nameof(Exercise)));
-
-            TempData[ErrorTempDataKey] = string.Format(EntitySaveError, nameof(Exercise));
+            this.HandleException(ecpe, string.Format(EntitySaveError, nameof(Exercise)));
 
             return this.View(model);
         }
         catch (Exception ex)
         {
-            this._logger.LogError(ex, UnexpectedErrorMessage);
-
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+            this.HandleUnexpectedException(ex);
 
             return this.View(model);
         }
@@ -155,17 +149,13 @@ public class ExercisesController : ControllerBase
         }
         catch (EntityEditPersistException eepe)
         {
-            this._logger.LogError(eepe, string.Format(EntityEditError, nameof(Exercise)));
-
-            TempData[ErrorTempDataKey] = string.Format(EntityEditError, nameof(Exercise));
+            this.HandleException(eepe, string.Format(EntityEditError, nameof(Exercise)));
 
             return this.View(model);
         }
         catch (Exception ex)
         {
-            this._logger.LogError(ex, UnexpectedErrorMessage);
-
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+            this.HandleUnexpectedException(ex);
 
             return this.View(model);
         }
@@ -189,17 +179,13 @@ public class ExercisesController : ControllerBase
         }
         catch (EntityDeleteException ede)
         {
-            this._logger.LogError(ede, string.Format(EntityDeleteError, nameof(Exercise)));
-
-            TempData[ErrorTempDataKey] = string.Format(EntityDeleteError, nameof(Exercise));
+            this.HandleException(ede, string.Format(EntityDeleteError, nameof(Exercise)));
 
             return this.RedirectToAction("Edit");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            this._logger.LogError(e, UnexpectedErrorMessage);
-
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+            this.HandleUnexpectedException(ex);
 
             return this.RedirectToAction("Edit");
         }
@@ -226,9 +212,7 @@ public class ExercisesController : ControllerBase
         }
         catch (EntityFavoritePersistException efpe)
         {
-            this._logger.LogError(efpe, UnexpectedErrorMessage);
-
-            TempData[ErrorTempDataKey] = UnexpectedErrorMessage;
+            this.HandleUnexpectedException(efpe);
 
             return Json(new { success = false });
         }
